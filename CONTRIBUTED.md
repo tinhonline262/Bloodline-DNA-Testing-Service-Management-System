@@ -36,3 +36,12 @@
 
 ---
 
+## 📌 Project Naming Conventions
+
+| **Item**           | **Convention**                  | **Example**                         |
+| :----------------- | :------------------------------ | :---------------------------------- |
+| **Class Names**    | PascalCase                      | `UserService`, `OrderItem`          |
+| **Method Names**   | camelCase                       | `getUserById()`, `calculateTotal()` |
+| **Variable Names** | camelCase                       | `userId`, `totalAmount`             |
+| **Constant Names** | UPPER\_SNAKE\_CASE              | `MAX_VALUE`, `DEFAULT_TIMEOUT`      |
+| **Package Names**  | lowercase (often dot-separated) | `com.example.myapp`                 |
