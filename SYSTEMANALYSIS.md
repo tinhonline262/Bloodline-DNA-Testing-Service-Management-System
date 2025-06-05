@@ -125,7 +125,7 @@
 
 ---
 
-#### Quản lý Kit Xét nghiệm
+#### Quản lý Kit Xét nghiệm (review)
 
 - **Thông tin kit:** Danh sách nội dung kit và hướng dẫn sử dụng
 - **Kho kit:** Inventory management
@@ -156,7 +156,7 @@
 - **Theo nhân viên:** Assigned staff
 - **Theo khách hàng:** Customer search
   
-#### 📌 Quản lý Lịch làm việc
+#### 📌 Quản lý Lịch làm việc (review)
 
 ##### Cấu hình Lịch
 - **Giờ làm việc:** Working hours setup
