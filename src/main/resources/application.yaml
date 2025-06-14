@@ -6,6 +6,8 @@ server:
 spring:
   application:
     name: dev
+  thymeleaf:
+    cache: false
   datasource:
     url: "jdbc:mysql://localhost:3306/dna_testing_system"
     username: root
