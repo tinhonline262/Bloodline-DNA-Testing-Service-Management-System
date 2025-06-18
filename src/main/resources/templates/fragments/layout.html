@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
@@ -37,18 +37,18 @@
                 </ul>
                 <ul class="navbar-nav">
                     <!-- Show these items when user is NOT logged in -->
-                    <li class="nav-item" th:if="${session.user == null}">
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
                         <a class="nav-link" th:href="@{/login}">Login</a>
                     </li>
-                    <li class="nav-item" th:if="${session.user == null}">
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
                         <a class="nav-link" th:href="@{/register}">Register</a>
                     </li>
                     <!-- Show these items when user IS logged in -->
-                    <li class="nav-item dropdown" th:if="${session.user != null}">
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle"></i>
-                            <span th:text="${session.user.firstName}">User</span>
+                            <span sec:authentication="name">User</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" th:href="@{/profile}">My Profile</a></li>
@@ -57,7 +57,11 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="dropdown-item p-0">
+                                    <button type="submit" class="dropdown-item">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                 </ul>

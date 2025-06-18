@@ -8,6 +8,9 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,8 +31,12 @@ public class AuthenticationController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
+        // Redirect to home if user is already authenticated
+        if (isAuthenticated()) {
+            return "redirect:/index";
+        }
         model.addAttribute("registerRequest", new RegisterRequest());
-        return "register";
+        return "signup";
     }
 
     @PostMapping("/register")
@@ -39,67 +46,44 @@ public class AuthenticationController {
                                RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            return "register";
+            return "signup";
         }
+        User user = authenticationService.register(request);
+        return "redirect:/login";
 
-        // Check if username is available
-        if (!authenticationService.isUsernameAvailable(request.getUsername())) {
-            model.addAttribute("errorMessage", "Username already exists");
-            return "register";
-        }
-
-        try {
-            User user = authenticationService.register(request);
-            redirectAttributes.addFlashAttribute("successMessage",
-                    "Registration successful! Please check your email to activate your account.");
-            return "redirect:/login";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "register";
-        }
+//        // Check if username is available
+//        if (!authenticationService.isUsernameAvailable(request.getUsername())) {
+//            model.addAttribute("errorMessage", "Username already exists");
+//            return "signup";
+//        }
+//
+//        try {
+//            User user = authenticationService.register(request);
+//            redirectAttributes.addFlashAttribute("successMessage",
+//                    "Registration successful! Please login with your credentials.");
+//            return "redirect:/login";
+//        } catch (Exception e) {
+//            model.addAttribute("errorMessage", e.getMessage());
+//            return "signup";
+//        }
     }
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
-        model.addAttribute("authRequest", new AuthenticationRequest());
-        return "login";
-    }
-    
-    @PostMapping("/login")
-    public String login(@Valid @ModelAttribute("authRequest") AuthenticationRequest request,
-                       BindingResult bindingResult,
-                       Model model,
-                       RedirectAttributes redirectAttributes) {
-        
-        if (bindingResult.hasErrors()) {
-            return "login";
-        }
-        
-        try {
-            User user = authenticationService.authenticate(request);
-            
-            // In a real application, you would set up the security context here
-            // and handle "remember me" functionality if requested
-            if (request.isRememberMe()) {
-                // Set remember-me cookie or token
-            }
-            
-            redirectAttributes.addFlashAttribute("successMessage", 
-                "Login successful! Welcome, " + user.getUserProfile().getFirstName());
-            
+        // Redirect to home if user is already authenticated
+        if (isAuthenticated()) {
             return "redirect:/index";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            // Don't clear the username to make it easier for the user to retry
-            model.addAttribute("username", request.getUsername());
-            return "login";
         }
+        model.addAttribute("authRequest", new AuthenticationRequest());
+        return "signin";
     }
     
-    @GetMapping("/logout")
-    public String logout(RedirectAttributes redirectAttributes) {
-        // In a real application, you would invalidate the session and clear the security context
-        redirectAttributes.addFlashAttribute("successMessage", "You have been logged out successfully");
-        return "redirect:/login";
+    // No need for the POST /login handler anymore since Spring Security handles it
+    
+    private boolean isAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null && 
+               authentication.isAuthenticated() && 
+               !(authentication instanceof AnonymousAuthenticationToken);
     }
 }

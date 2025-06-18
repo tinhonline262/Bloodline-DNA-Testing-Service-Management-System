@@ -1,7 +1,5 @@
 server:
   port: 8080
-  servlet:
-    context-path: /v1
 
 spring:
   application:
@@ -16,3 +14,9 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    springframework.web: DEBUG
+    springframework.security: DEBUG

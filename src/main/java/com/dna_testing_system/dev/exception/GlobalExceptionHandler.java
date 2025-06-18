@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -24,34 +25,27 @@ public class GlobalExceptionHandler {
      * Returns the user to the login page with an error message
      */
     @ExceptionHandler(AuthenticationException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String handleAuthenticationException(
-            AuthenticationException ex, 
-            Model model,
-            HttpServletRequest request) {
+            AuthenticationException ex,
+            HttpServletRequest request, RedirectAttributes redirectAttributes) {
         
-        log.error("Authentication error: {} (Error Code: {})", 
+        log.error("Authentication error: {} (Error Code: {})",
                 ex.getMessage(), ex.getErrorCode());
         
-        model.addAttribute("errorMessage", ex.getMessage());
-        model.addAttribute("errorCode", ex.getErrorCode());
-        
-        // Always return to login page for authentication errors
-        return "login";
+        redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        return getCurrentViewName(request);
     }
 
     /**
      * Handles resource not found exceptions for web requests
      */
     @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleResourceNotFoundException(
             ResourceNotFoundException ex,
-            Model model,
-            HttpServletRequest request) {
+            HttpServletRequest request, RedirectAttributes redirectAttributes) {
         
         log.error("Resource not found: {}", ex.getMessage());
-        model.addAttribute("errorMessage", ex.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         
         // Return the current view or a default error page
         return getCurrentViewName(request);
@@ -62,15 +56,14 @@ public class GlobalExceptionHandler {
      * Handles all other exceptions for web requests
      */
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleGenericException(
             Exception ex,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
         
         log.error("Unexpected error: {}", ex.getMessage(), ex);
-        model.addAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
+        redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
         
-        return "error";
+        return "redirect:/access-denied";
     }
     
     /**
@@ -83,23 +76,14 @@ public class GlobalExceptionHandler {
         if (!contextPath.isEmpty() && uri.startsWith(contextPath)) {
             uri = uri.substring(contextPath.length());
         }
-        
+
         if (uri.startsWith("/")) {
             uri = uri.substring(1);
         }
         
         // Default to home page if URI is empty
         if (uri.isEmpty()) {
-            return "home";
-        }
-        
-        // Handle common patterns
-        if (uri.startsWith("users/")) {
-            return "user-details";
-        }
-        
-        if (uri.startsWith("tests/")) {
-            return "test-details";
+            uri = "index";
         }
         
         // Remove extensions if present
@@ -107,6 +91,6 @@ public class GlobalExceptionHandler {
             uri = uri.substring(0, uri.lastIndexOf("."));
         }
         
-        return uri;
+        return "redirect:/" + uri;
     }
 }

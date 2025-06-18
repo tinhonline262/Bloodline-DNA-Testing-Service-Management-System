@@ -2,13 +2,18 @@ package com.dna_testing_system.dev.service.impl;
 
 import com.dna_testing_system.dev.dto.request.AuthenticationRequest;
 import com.dna_testing_system.dev.dto.request.RegisterRequest;
+import com.dna_testing_system.dev.entity.Role;
 import com.dna_testing_system.dev.entity.User;
 import com.dna_testing_system.dev.entity.UserProfile;
+import com.dna_testing_system.dev.entity.UserRole;
+import com.dna_testing_system.dev.enums.RoleType;
 import com.dna_testing_system.dev.exception.AuthenticationException;
 import com.dna_testing_system.dev.exception.ErrorCode;
 import com.dna_testing_system.dev.exception.ResourceNotFoundException;
+import com.dna_testing_system.dev.repository.RoleRepository;
 import com.dna_testing_system.dev.repository.UserProfileRepository;
 import com.dna_testing_system.dev.repository.UserRepository;
+import com.dna_testing_system.dev.repository.UserRoleRepository;
 import com.dna_testing_system.dev.service.AuthenticationService;
 import com.dna_testing_system.dev.utils.PasswordUtil;
 import lombok.AccessLevel;
@@ -17,6 +22,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.HashSet;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -24,15 +32,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     
     UserRepository userRepository;
     UserProfileRepository userProfileRepository;
-      @Override
+    RoleRepository roleRepository;
+    UserRoleRepository userRoleRepository;
+
+    @Override
     @Transactional
     public User register(RegisterRequest request) {
         // Check if username already exists
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new AuthenticationException(ErrorCode.USER_EXISTS, 
-                "Username '" + request.getUsername() + "' already exists. Please choose a different username.");
+            throw new AuthenticationException(ErrorCode.USER_EXISTS);
         }
-        
+        if (userProfileRepository.existsByEmail(request.getEmail())) {
+            throw new AuthenticationException(ErrorCode.EMAIL_EXISTS);
+        }
         // Validate username
         if (request.getUsername() == null || request.getUsername().length() < 3) {
             throw new AuthenticationException(ErrorCode.USERNAME_INVALID);
@@ -43,15 +55,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AuthenticationException(ErrorCode.PASSWORD_INVALID);
         }
 
+        Role role = roleRepository.findByRoleName(RoleType.CUSTOMER.name());
+
         // Create and save the User entity with minimal information
         User user = User.builder()
                 .username(request.getUsername())
                 .passwordHash(PasswordUtil.encode(request.getPassword()))
-                .isActive(false)
+                .isActive(true)
+                .userRoles(new HashSet<>())
                 .build();
         
         user = userRepository.save(user);
-        
+
+        UserRole userRoleForCreate = UserRole.builder()
+                .user(user)
+                .role(role)
+                .isActive(true)
+                .build();
+        UserRole userRole = userRoleRepository.save(userRoleForCreate);
+        user.getUserRoles().add(userRole);
+        userRepository.save(user);
+
         // Create and save minimal UserProfile
         UserProfile userProfile = UserProfile.builder()
                 .user(user)
@@ -66,7 +90,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setUserProfile(userProfile);
         
         return user;
-    }    @Override
+    }
+    @Override
     @Transactional
     public User activateUser(String userId) {
         User user = userRepository.findById(userId)
@@ -80,7 +105,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         
         user.setIsActive(true);
         return userRepository.save(user);
-    }@Override
+    }
+    @Override
     public User authenticate(AuthenticationRequest request) {
         if (request == null) {
             throw new AuthenticationException(ErrorCode.UNKNOWN_ERROR, "Authentication request cannot be null");
@@ -109,7 +135,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // if (!user.getIsActive()) {
         //     throw new AuthenticationException(ErrorCode.ACCOUNT_INACTIVE, "Account is not activated. Please activate your account first.");
         // }
-
+        if (!user.getIsActive()) {
+            user.setIsActive(true);
+        }
         return user;
     }
 

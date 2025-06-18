@@ -25,7 +25,7 @@ public class ApplicationInitConfig implements ApplicationRunner {
 
     public void run(ApplicationArguments args) throws Exception {
         initRoleDatabase();
-//        launchBrowser();
+        launchBrowser();
     }
 
     private void initRoleDatabase() {
@@ -47,7 +47,7 @@ public class ApplicationInitConfig implements ApplicationRunner {
 
     private void launchBrowser() throws Exception{
         if (Desktop.isDesktopSupported())
-            Desktop.getDesktop().browse(new URI("http://localhost:8080/v1/index"));
+            Desktop.getDesktop().browse(new URI("http://localhost:8080/index"));
         else {
             log.warn("Desktop is not supported, cannot launch Browser");
             log.info("Starting to launch Browser with OS Call System...");
@@ -55,7 +55,7 @@ public class ApplicationInitConfig implements ApplicationRunner {
             Runtime runtime = Runtime.getRuntime();
             if (os.contains("win")) {
                 // Windows
-                runtime.exec("rundll32 url.dll,FileProtocolHandler " + "http://localhost:8080/v1/index");
+                runtime.exec("rundll32 url.dll,FileProtocolHandler " + "http://localhost:8080/index");
             } else {
                 log.warn("Unsupported OS. Cannot open browser automatically.");
             }
