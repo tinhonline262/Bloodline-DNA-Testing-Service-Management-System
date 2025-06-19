@@ -36,5 +36,5 @@ build/
 src/main/java/com/dna_testing_system/dev/mock/
 src/main/resources/application-mockapi.yaml
 
-### asset ###
+### Static Assets ###
 src/main/resources/static/assets/
