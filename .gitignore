@@ -31,5 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
-# Static assets
+
+### Mock API for Postman Testing ###
+src/main/java/com/dna_testing_system/dev/mock/
+src/main/resources/application-mockapi.yaml
+
+### Static Assets ###
 src/main/resources/static/assets/
