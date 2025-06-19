@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thông tin người dùng</title>
+</head>
+<body>
+<h2>Thông tin cá nhân</h2>
+<div>
+    <label>Họ:</label>
+    <span th:text="${userProfile.firstName}"></span>
+</div>
+<div>
+    <label>Tên:</label>
+    <span th:text="${userProfile.lastName}"></span>
+</div>
+<div>
+    <label>Email:</label>
+    <span th:text="${userProfile.email}"></span>
+</div>
+<div>
+    <label>Ngày sinh:</label>
+    <span th:text="${userProfile.dateOfBirth}"></span>
+</div>
+<div>
+    <label>Số điện thoại:</label>
+    <span th:text="${userProfile.phoneNumber}"></span>
+</div>
+<div>
+    <label>Ảnh đại diện:</label>
+    <img th:src="@{${userProfile.profileImageUrl}}" alt="Profile Image" width="120"/>
+</div>
+<div style="margin-top: 20px;">
+    <a th:href="@{'/user/profile/update/' + ${userProfile.id}}">Sửa hồ sơ</a> |
+    <a th:href="@{'/user/profile/delete/' + ${userProfile.id}}" onclick="return confirm('Bạn có chắc muốn xóa không?')">Xóa hồ sơ</a>
+</div>
+</body>
+</html>
