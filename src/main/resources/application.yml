@@ -1,32 +1,32 @@
-# Cấu hình server
 server:
   port: 8080
-  servlet:
-    context-path: /v1
+  # servlet:
+  #   context-path: /v1    # Comment dòng này để test
 
-# Cấu hình Spring Boot
 spring:
   application:
-    name: dna-testing-system
-  
-  # Cấu hình MySQL cho XAMPP
+    name: dev
+
+  thymeleaf:
+    cache: false
+
+  # Cấu hình welcome page
+  web:
+    resources:
+      static-locations: classpath:/static/
+  mvc:
+    view:
+      prefix: /
+      suffix: .html
+
   datasource:
-    url: jdbc:mysql://localhost:3306/dna_testing_system
-    username: root
-    password:
+    url: "jdbc:mysql://localhost:3306/dna_testing_system"
+    username: hil
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
-  
-  # Cấu hình JPA
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-
-# Logging để debug
-logging:
-  level:
-    web: DEBUG
-    org.springframework.web: DEBUG
+    database-platform: org.hibernate.dialect.MySQL8Dialect
