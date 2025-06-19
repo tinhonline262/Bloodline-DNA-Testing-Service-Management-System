@@ -5,7 +5,7 @@
 </head>
 <body>
 <h2>Tạo mới hồ sơ cá nhân</h2>
-<form th:action="@{/user/profile/create}" method="post" enctype="multipart/form-data" th:object="${userProfile}">
+<form th:action="@{/user/profile/update{id}}" method="post" enctype="multipart/form-data" th:object="${userProfile}">
     <div>
         <label>Họ:</label>
         <input type="text" th:field="*{firstName}" required/>

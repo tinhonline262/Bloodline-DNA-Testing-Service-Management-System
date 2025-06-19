@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Xem Profile User</title>
 </head>
 <body>
-$END$
+<h2>Thông tin Profile User</h2>
+<div>
+    <label>User Name:</label>
+    <span th:text="${userProfileResponse.userName}"></span>
+</div>
+<div>
+    <label>First Name:</label>
+    <span th:text="${userProfileResponse.firstName}"></span>
+</div>
+<div>
+    <label>Last Name:</label>
+    <span th:text="${userProfileResponse.lastName}"></span>
+</div>
+<div>
+    <label>Email:</label>
+    <span th:text="${userProfileResponse.email}"></span>
+</div>
+<div>
+    <label>Date Of Birth:</label>
+    <span th:text="${userProfileResponse.dateOfBirth}"></span>
+</div>
+<div>
+    <label>Phone Number:</label>
+    <span th:text="${userProfileResponse.phoneNumber}"></span>
+</div>
+<div>
+    <label>Profile Image:</label>
+    <img th:src="${userProfileResponse.profileImageUrl}" alt="Profile Image" width="120"/>
+</div>
+<!-- Không nên show password ra ngoài, chỉ show nếu thực sự cần -->
 </body>
 </html>

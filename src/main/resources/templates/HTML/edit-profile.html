@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Sửa thông tin người dùng</title>
 </head>
 <body>
-$END$
+<h2>Sửa thông tin cá nhân</h2>
+<form th:action="@{'/user/profile/update/{id}' + ${userProfile.id}}" method="post" enctype="multipart/form-data" th:object="${userProfile}">
+    <input type="hidden" th:field="*{userProfile.id}"/>
+    <div>
+        <label>Họ:</label>
+        <input type="text" th:field="*{userProfile.firstName}" required/>
+    </div>
+    <div>
+        <label>Tên:</label>
+        <input type="text" th:field="*{userProfile.lastName}" required/>
+    </div>
+    <div>
+        <label>Email:</label>
+        <input type="email" th:field="*{userProfile.email}" required/>
+    </div>
+    <div>
+        <label>Ngày sinh:</label>
+        <input type="date" th:field="*{userProfile.dateOfBirth}" required/>
+    </div>
+    <div>
+        <label>Số điện thoại:</label>
+        <input type="text" th:field="*{userProfile.phoneNumber}"/>
+    </div>
+    <div>
+        <label>Mật khẩu:</label>
+        <input type="password" th:field="*{userProfile.password}" required/>
+    </div>
+    <div>
+        <label>Ảnh đại diện mới:</label>
+        <input type="file" th:field="*{userProfile.profileImage}" accept="image/*"/>
+        <div>
+            <label>Ảnh hiện tại:</label>
+            <img th:src="@{${userProfile.profileImageUrl}}" alt="Profile Image" width="120"/>
+        </div>
+    </div>
+    <button type="submit">Cập nhật</button>
+</form>
 </body>
 </html>
