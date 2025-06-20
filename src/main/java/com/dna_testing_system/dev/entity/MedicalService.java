@@ -1,7 +1,7 @@
 package com.dna_testing_system.dev.entity;
 
+import com.dna_testing_system.dev.enums.ServiceCategory;
 import com.dna_testing_system.dev.enums.DNATestType;
-import com.dna_testing_system.dev.enums.ServiceType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -37,17 +37,14 @@ public class MedicalService {
     @Column(name = "service_name", nullable = false)
     String serviceName;
 
-    @Enumerated(EnumType.STRING)
-    @Size(max = 100)
-    @NotNull
-    @Column(name = "test_type", nullable = false, length = 100)
-    DNATestType testType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_type_id")
+    ServiceType serviceType;
 
     @Enumerated(EnumType.STRING)
-    @Size(max = 100)
     @NotNull
     @Column(name = "service_category", nullable = false, length = 100)
-    ServiceType serviceCategory;
+    ServiceCategory serviceCategory;
 
     @Builder.Default
     @Column(name = "participants", nullable = false)
@@ -69,6 +66,10 @@ public class MedicalService {
     @Column(name = "is_available", nullable = false)
     Boolean isAvailable = true;
 
+    @Builder.Default
+    @Column(name = "is_best_value", nullable = false)
+    Boolean isBestValue = false; // mark to best service
+
     @Size(max = 1000)
     @Column(name = "service_description", length = 1000)
     String serviceDescription;
@@ -86,4 +87,11 @@ public class MedicalService {
 
     @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
     private Set<CustomerFeedback> customerFeedbacks = new HashSet<>();
+
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private Set<ServiceFeature> serviceFeatures = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "test_type", nullable = false, length = 100)
+    DNATestType testType;
 }

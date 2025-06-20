@@ -1,0 +1,30 @@
+package com.dna_testing_system.dev.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
+@Table(name = "tbl_service_types")
+public class ServiceType {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "service_type_id")
+    Long id;
+
+    @NotBlank
+    @Column(name = "type_name", nullable = false, unique = true, length = 100)
+    String typeName;
+
+    @Builder.Default
+    @Column(name = "is_active", nullable = false)
+    Boolean isActive = true;
+}

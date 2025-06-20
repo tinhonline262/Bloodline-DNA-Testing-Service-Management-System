@@ -19,12 +19,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final UserDetailsServiceImpl userDetailsService;    @Bean
+    private final UserDetailsServiceImpl userDetailsService;
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
         .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/", "/register", "/login", "/error", "/assets/**").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/", "/register", "/login", "/error", "/assets/**", "/api/**").permitAll()
                 .anyRequest().authenticated()
             )
                 .csrf(csrf -> csrf.disable())
