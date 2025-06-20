@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
-$END$
+
+<div th:fragment="scripts">
+    <script>
+        if (localStorage.valexdarktheme) {
+            document.querySelector("html").setAttribute("data-theme-mode", "dark")
+        }
+        if (localStorage.valexrtl) {
+            document.querySelector("html").setAttribute("dir", "rtl")
+            document.querySelector("#style")?.setAttribute("href", "/assets/libs/bootstrap/css/bootstrap.rtl.min.css");
+        }
+    </script>
+    <!-- Popper JS -->
+    <script th:src="@{/assets/libs/@popperjs/core/umd/popper.min.js}"></script>
+
+    <!-- Bootstrap JS -->
+    <script th:src="@{/assets/libs/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Color Picker JS -->
+    <script th:src="@{/assets/libs/@simonwep/pickr/pickr.es5.min.js}"></script>
+
+    <!-- Choices JS -->
+    <script th:src="@{/assets/libs/choices.js/public/assets/scripts/choices.min.js}"></script>
+
+    <!-- Swiper JS -->
+    <script th:src="@{/assets/libs/swiper/swiper-bundle.min.js}"></script>
+
+    <!-- Defaultmenu JS -->
+    <script th:src="@{/assets/js/defaultmenu.min.js}"></script>
+
+    <!-- Internal Landing JS -->
+    <script th:src="@{/assets/js/landing.js}"></script>
+
+    <!-- Node Waves JS-->
+    <script th:src="@{/assets/libs/node-waves/waves.min.js}"></script>
+
+    <!-- Sticky JS -->
+    <script th:src="@{/assets/js/sticky.js}"></script>
+</div>
 </body>
 </html>
