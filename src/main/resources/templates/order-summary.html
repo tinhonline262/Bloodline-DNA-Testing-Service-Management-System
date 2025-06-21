@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tóm Tắt Đơn Hàng - DNACare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Tóm Tắt Đơn Hàng</h2>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <div th:unless="${customer == null}" class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin khách hàng</h5>
+            <p class="card-text"><strong>Tên:</strong> <span th:text="${customer.name}"></span></p>
+            <p class="card-text"><strong>Phone:</strong> <span th:text="${customer.phone}"></span></p>
+            <p class="card-text"><strong>Email:</strong> <span th:text="${customer.email}"></span></p>
+            <h5 class="card-title">Thông tin dịch vụ</h5>
+            <p class="card-text"><strong>Dịch vụ:</strong> <span th:text="${customer.service.serviceName}"></span></p>
+            <p class="card-text"><strong>Giá:</strong> <span th:text="${#numbers.formatDecimal(customer.service.price, 0, 2)} + ' VNĐ'"></span></p>
+            <p class="card-text"><strong>Phương thức thu mẫu:</strong> <span th:text="${customer.collectionMethod.displayName}"></span></p>
+            <p class="card-text"><strong>Thời gian hẹn:</strong> <span th:text="${#temporals.format(customer.appointmentDate, 'dd/MM/yyyy HH:mm')}"></span></p>
+            <form th:action="@{/v1/confirm-booking}" method="post" th:object="${customer}">
+                <input type="hidden" th:field="*{name}" th:value="${customer.name}">
+                <input type="hidden" th:field="*{phone}" th:value="${customer.phone}">
+                <input type="hidden" th:field="*{email}" th:value="${customer.email}">
+                <input type="hidden" th:field="*{service}" th:value="${customer.service}">
+                <input type="hidden" th:field="*{collectionMethod}" th:value="${customer.collectionMethod}">
+                <input type="hidden" th:field="*{appointmentDate}" th:value="${customer.appointmentDate}">
+                <button type="submit" class="btn btn-success">Xác nhận đặt lịch</button>
+            </form>
+            <a th:href="@{/v1/appointment}" class="btn btn-secondary mt-2">Quay lại</a>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
