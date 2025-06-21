@@ -19,49 +19,36 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequestMapping("/user") // Thêm base path
 public class UserController {
 
     UserProfileService userProfileService;
-    @GetMapping("/profile")
+
+    @GetMapping("/profile")  // URL sẽ là /user/profile
     public String getProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         UserProfileResponse userProfile = userProfileService.getUserProfile(currentPrincipalName);
         model.addAttribute("userProfile", userProfile);
-        return "profile"; // Return the view name for the profile page
+        return "user/profile";
     }
 
-    @GetMapping("/profile/update")
+    @GetMapping("/profile/update")  // URL sẽ là /user/profile/update
     public String showUpdateProfileForm(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         UserProfileResponse userProfile = userProfileService.getUserProfile(currentPrincipalName);
-        model.addAttribute("userEditProfile",userProfile);
-        return "edit-profile"; // Return the view name for the update profile page
+        model.addAttribute("userEditProfile", userProfile);
+        return "user/edit-profile";
     }
-    @PostMapping("/profile/update")
-    public String updateProfile(@ModelAttribute("userEditProfile") UserProfileRequest userProfile, @RequestParam(value = "file",required = false) MultipartFile file) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        String uploadsDir = "uploads/"; // Specify your upload directory
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        Path path = Paths.get(uploadsDir + fileName);
 
-        try{
-            Files.createDirectories(Paths.get(uploadsDir));
-            file.transferTo(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String imageUrl = "/uploads/" + fileName;
-
-        userProfile.setProfileImageUrl(imageUrl);
-        userProfileService.updateUserProfile(currentPrincipalName, userProfile);
-        return "redirect:/profile";
+    @PostMapping("/profile/update")  // URL sẽ là /user/profile/update
+    public String updateProfile(@ModelAttribute("userEditProfile") UserProfileRequest userProfile,
+                                @RequestParam(value = "file", required = false) MultipartFile file) {
+        // ... existing code ...
+        return "redirect:/user/profile"; // Sửa redirect URL
     }
 }

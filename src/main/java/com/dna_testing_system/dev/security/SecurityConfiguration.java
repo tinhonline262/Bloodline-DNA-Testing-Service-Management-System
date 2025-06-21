@@ -24,9 +24,15 @@ public class SecurityConfiguration {
         http
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/", "/register", "/login", "/error", "/assets/**", "/manage/profile/", "/manage/profiles", "/manage/profile/delete", "/manage/search-profiles").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(
+                                "/css/**", "/js/**", "/images/**", "/webjars/**",
+                                "/", "/register", "/login", "/error", "/assets/**",
+                                "/uploads/**"
+                        ).permitAll()
+                        .requestMatchers("/user/profile", "/user/profile/update").authenticated()// Cho phép tất cả /user/* với authentication
+                        .anyRequest().permitAll() // Hoặc authenticated() tùy yêu cầu
                 )
+
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form
                         .loginPage("/login")

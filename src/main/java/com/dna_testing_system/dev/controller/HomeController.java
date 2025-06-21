@@ -16,7 +16,7 @@ public class HomeController {
     public String index() {
         return "index";
     }
-    @GetMapping("/user/home")
+    @GetMapping("/user/home") // <--- Dòng này xử lý yêu cầu GET đến /user/home
     public String userHomePage() {
         return "user/home"; // Thymeleaf view tên user/home.html
     }
