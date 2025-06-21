@@ -1,0 +1,322 @@
+<html th:replace="~{layouts/manager-layout :: layout(~{::#content}, ~{::#page-scripts}, 'Service Management', null, null)}"
+      xmlns:th="http://www.thymeleaf.org">
+
+
+
+<div id="content">
+    <!-- Service Management Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <div class="card-title">DNA Testing Services</div>
+                    <div class="ms-auto">
+                        <a href="javascript:void(0);" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                           data-bs-target="#addServiceModal">
+                            <i class="ri-add-line me-1"></i> Add New Service
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table text-nowrap table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">Service Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Duration</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Paternity Testing -->
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                                    <span class="avatar avatar-xs me-2 bg-primary-transparent avatar-rounded">
+                                                        <i class="ri-heart-pulse-line"></i>
+                                                    </span>
+                                        <span class="fw-semibold">Paternity Testing</span>
+                                    </div>
+                                </td>
+                                <td>Determines biological relationship between alleged father and child</td>
+                                <td>$299.00</td>
+                                <td>3-5 days</td>
+                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                <td>
+                                    <div class="hstack gap-2 flex-wrap">
+                                        <a href="javascript:void(0);" class="text-info fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Edit">
+                                            <i class="ri-edit-line"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" class="text-danger fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Delete">
+                                            <i class="ri-delete-bin-5-line"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Maternity Testing -->
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                                    <span
+                                                            class="avatar avatar-xs me-2 bg-purple-transparent avatar-rounded">
+                                                        <i class="ri-parent-line"></i>
+                                                    </span>
+                                        <span class="fw-semibold">Maternity Testing</span>
+                                    </div>
+                                </td>
+                                <td>Confirms biological relationship between mother and child</td>
+                                <td>$299.00</td>
+                                <td>3-5 days</td>
+                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                <td>
+                                    <div class="hstack gap-2 flex-wrap">
+                                        <a href="javascript:void(0);" class="text-info fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Edit">
+                                            <i class="ri-edit-line"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" class="text-danger fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Delete">
+                                            <i class="ri-delete-bin-5-line"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Sibling DNA Test -->
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                                    <span
+                                                            class="avatar avatar-xs me-2 bg-success-transparent avatar-rounded">
+                                                        <i class="ri-group-line"></i>
+                                                    </span>
+                                        <span class="fw-semibold">Sibling DNA Test</span>
+                                    </div>
+                                </td>
+                                <td>Determines if two individuals are biologically related as siblings</td>
+                                <td>$349.00</td>
+                                <td>5-7 days</td>
+                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                <td>
+                                    <div class="hstack gap-2 flex-wrap">
+                                        <a href="javascript:void(0);" class="text-info fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Edit">
+                                            <i class="ri-edit-line"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" class="text-danger fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Delete">
+                                            <i class="ri-delete-bin-5-line"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Ancestry DNA Test -->
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                                    <span
+                                                            class="avatar avatar-xs me-2 bg-info-transparent avatar-rounded">
+                                                        <i class="ri-earth-line"></i>
+                                                    </span>
+                                        <span class="fw-semibold">Ancestry DNA Test</span>
+                                    </div>
+                                </td>
+                                <td>Reveals ethnic origins and ancestral connections across the globe</td>
+                                <td>$199.00</td>
+                                <td>14-21 days</td>
+                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                <td>
+                                    <div class="hstack gap-2 flex-wrap">
+                                        <a href="javascript:void(0);" class="text-info fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Edit">
+                                            <i class="ri-edit-line"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" class="text-danger fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Delete">
+                                            <i class="ri-delete-bin-5-line"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Health Predisposition -->
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                                    <span
+                                                            class="avatar avatar-xs me-2 bg-danger-transparent avatar-rounded">
+                                                        <i class="ri-microscope-line"></i>
+                                                    </span>
+                                        <span class="fw-semibold">Health Predisposition</span>
+                                    </div>
+                                </td>
+                                <td>Identifies genetic predispositions to various health conditions</td>
+                                <td>$399.00</td>
+                                <td>14-21 days</td>
+                                <td><span class="badge bg-light text-dark">Inactive</span></td>
+                                <td>
+                                    <div class="hstack gap-2 flex-wrap">
+                                        <a href="javascript:void(0);" class="text-info fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Edit">
+                                            <i class="ri-edit-line"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" class="text-danger fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Delete">
+                                            <i class="ri-delete-bin-5-line"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Twin Zygosity -->
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                                    <span
+                                                            class="avatar avatar-xs me-2 bg-warning-transparent avatar-rounded">
+                                                        <i class="ri-file-copy-line"></i>
+                                                    </span>
+                                        <span class="fw-semibold">Twin Zygosity Test</span>
+                                    </div>
+                                </td>
+                                <td>Determines if twins are identical or fraternal</td>
+                                <td>$249.00</td>
+                                <td>3-5 days</td>
+                                <td><span class="badge bg-success-transparent">Active</span></td>
+                                <td>
+                                    <div class="hstack gap-2 flex-wrap">
+                                        <a href="javascript:void(0);" class="text-info fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Edit">
+                                            <i class="ri-edit-line"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" class="text-danger fs-14 lh-1"
+                                           data-bs-toggle="tooltip" title="Delete">
+                                            <i class="ri-delete-bin-5-line"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-3 d-flex justify-content-end">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1"
+                                       aria-disabled="true">Previous</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Service Modal -->
+    <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addServiceModalLabel">Add New DNA Testing Service</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addServiceForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="serviceName" class="form-label">Service Name</label>
+                                <input type="text" class="form-control" id="serviceName"
+                                       placeholder="Enter service name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="servicePrice" class="form-label">Price ($)</label>
+                                <input type="number" class="form-control" id="servicePrice"
+                                       placeholder="Enter price" required min="0" step="0.01">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="serviceDuration" class="form-label">Duration</label>
+                                <input type="text" class="form-control" id="serviceDuration"
+                                       placeholder="e.g., 3-5 days" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="serviceStatus" class="form-label">Status</label>
+                                <select class="form-select" id="serviceStatus" required>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="serviceDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="serviceDescription" rows="4"
+                                      placeholder="Enter service description" required></textarea>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="serviceIcon" class="form-label">Icon</label>
+                                <select class="form-select" id="serviceIcon">
+                                    <option value="ri-heart-pulse-line">Heart Pulse</option>
+                                    <option value="ri-parent-line">Parent</option>
+                                    <option value="ri-group-line">Group (Family)</option>
+                                    <option value="ri-earth-line">Earth (Ancestry)</option>
+                                    <option value="ri-microscope-line">Microscope</option>
+                                    <option value="ri-file-copy-line">Copy (Twins)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="serviceDetails" class="form-label">Detailed Information</label>
+                            <textarea class="form-control" id="serviceDetails" rows="6"
+                                      placeholder="Enter detailed information about the service"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Add Service</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block id="page-scripts">
+    <th:block th:replace="~{fragments/common/scripts :: scripts}"></th:block>
+</th:block>
+<!-- Page-specific scripts -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Form submission handling would go here
+        console.log('Services management page loaded');
+    });
+</script>
+</html>
