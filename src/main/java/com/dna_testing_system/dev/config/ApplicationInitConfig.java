@@ -54,7 +54,7 @@ public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigure
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         // Redirect root URL to /index
-        registry.addRedirectViewController("/", "/index");
+
         registry.addViewController("/index").setViewName("index");
     }
 

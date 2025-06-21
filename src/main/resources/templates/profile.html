@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Profile</title>
+    <meta charset="UTF-8"/>
+    <style>
+        .profile-container {
+            max-width: 500px;
+            margin: 40px auto;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 24px;
+            background: #fff;
+            box-shadow: 0 0 8px #eee;
+        }
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            display: block;
+            box-shadow: 0 0 4px #bbb;
+            background: #f7f7f7;
+        }
+        .profile-row {
+            margin-bottom: 12px;
+        }
+        .profile-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 130px;
+        }
+        .profile-value {
+            display: inline-block;
+        }
+        .status-active {
+            color: green;
+        }
+        .status-inactive {
+            color: red;
+        }
+        .message {
+            background: #f9f9b6;
+            border: 1px solid #e5e577;
+            padding: 8px 14px;
+            margin-bottom: 18px;
+            border-radius: 6px;
+            color: #6d6700;
+        }
+        .form-submit {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 5px;
+            background: #0078D7;
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="profile-container">
+    <!-- Hiển thị avatar (ảnh đại diện) của user -->
+    <div class="profile-container">
+        <!-- Avatar: nếu có thì hiện, nếu không thì dùng mặc định -->
+        <img th:if="${userProfile.profileImageUrl != null and !#strings.isEmpty(userProfile.profileImageUrl)}"
+             th:src="@{${userProfile.profileImageUrl}}" alt="Profile Image" class="profile-image"/>
+        <img th:if="${userProfile.profileImageUrl == null or #strings.isEmpty(userProfile.profileImageUrl)}"
+             th:src="@{/images/default-avatar.png}" alt="Default Avatar" class="profile-image"/>
+
+        <h2 th:text="${userProfile.username}">Username</h2>
+        <!-- ... các phần khác giữ nguyên ... -->
+    </div>
+    <h2 th:text="${userProfile.username}">Username</h2>
+    <div th:if="${userProfile.message}" class="message" th:text="${userProfile.message}"></div>
+
+    <!-- Xóa dòng img mẫu cứng, chỉ dùng dòng trên -->
+    <!--<img src="http://localhost:8080/uploads/123456789_avatar.jpg" alt="User Avatar" />-->
+
+    <div class="profile-row"><span class="profile-label">User ID:</span>
+        <span class="profile-value" th:text="${userProfile.userId}"></span>
+    </div>
+    <div class="profile-row"><span class="profile-label">First Name:</span>
+        <span class="profile-value" th:text="${userProfile.firstName}"></span>
+    </div>
+    <div class="profile-row"><span class="profile-label">Last Name:</span>
+        <span class="profile-value" th:text="${userProfile.lastName}"></span>
+    </div>
+    <div class="profile-row"><span class="profile-label">Email:</span>
+        <span class="profile-value" th:text="${userProfile.email}"></span>
+    </div>
+    <div class="profile-row"><span class="profile-label">Phone Number:</span>
+        <span class="profile-value" th:text="${userProfile.phoneNumber}"></span>
+    </div>
+    <div class="profile-row"><span class="profile-label">Date of Birth:</span>
+        <span class="profile-value" th:text="${#temporals.format(userProfile.dateOfBirth, 'yyyy-MM-dd')}"></span>
+    </div>
+    <div class="profile-row"><span class="profile-label">Created At:</span>
+        <span class="profile-value" th:text="${#temporals.format(userProfile.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+    </div>
+    <div class="profile-row"><span class="profile-label">Status:</span>
+        <span class="profile-value" th:text="${userProfile.active ? 'Active' : 'Inactive'}"
+              th:classappend="${userProfile.active ? 'status-active' : 'status-inactive'}"></span>
+    </div>
+    <div class="profile-row">
+        <button type="submit" class="form-submit"><a th:href="@{/profile/update}" class="btn btn-primary">Edit Profile</a></button>
+        <button type="submit" class="form-submit"><a th:href="@{/index}" class="btn btn-secondary">Back to Home</a></button>
+    </div>
+</div>
+</body>
+</html>
