@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Đặt Lịch - DNACare</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="icon" href="/assets/images/brand-logos/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Red+Rose:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/assets/css/styles.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/assets/css/icons.css" rel="stylesheet">
+    <link href="/assets/libs/node-waves/waves.min.css" rel="stylesheet">
+    <link href="/assets/libs/simplebar/simplebar.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="/assets/libs/@simonwep/pickr/themes/nano.min.css">
+    <link rel="stylesheet" href="/assets/libs/choices.js/public/assets/styles/choices.min.css">
+    <link rel="stylesheet" href="/assets/libs/prismjs/themes/prism-coy.min.css">
+</head>
+<body>
+<div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <h1 class="display-2 text-white mb-3 animated slideInDown">Đặt Lịch</h1>
+    <nav aria-label="breadcrumb animated slideInDown">
+        <ol class="container text-center py-3">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="/v1/service-catalog">Dịch vụ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Đặt lịch</li>
+            </ol>
+        </ol>
+    </nav>
+</div>
+
+<div th:if="${success}" class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" th:text="${success}"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<div th:if="${error}" class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" th:text="${error}"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                <h1 class="display-6 mb-4">Chúng tôi Đảm Bảo Kết Quả Xét Nghiệm Tốt Nhất</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <div class="d-flex align-items-start wow fadeIn" data-wow-delay="0.3s">
+                    <div class="icon-box-primary"><i class="bi bi-geo-alt text-dark fs-1"></i></div>
+                    <div class="ms-3"><h5>Địa chỉ</h5><span>123 Đường Lê Lợi, TP. HCM</span></div>
+                </div>
+                <hr>
+                <div class="d-flex align-items-start wow fadeIn" data-wow-delay="0.4s">
+                    <div class="icon-box-primary"><i class="bi bi-clock text-dark fs-1"></i></div>
+                    <div class="ms-3"><h5>Thời gian làm việc</h5><span>Thứ 2 - Thứ 7: 08:00-17:00</span></div>
+                </div>
+                <h3 class="mt-4">Dịch vụ tham khảo</h3>
+                <ul class="list-group">
+                    <li class="list-group-item" th:each="service : ${services}"
+                        th:text="${'(' + service.id + ') ' + service.serviceName + ' - ' + service.description + ' (Giá: ' + #numbers.formatDecimal(service.price, 0, 2) + ' VNĐ)'}"></li>
+                </ul>
+            </div>
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
+                <h2 class="mb-4">Đặt Lịch Trực Tuyến</h2>
+                <form th:action="@{/v1/booking}" th:object="${customer}" method="post" class="row g-3" id="bookingForm">
+                    <div class="col-sm-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Họ và tên" required>
+                            <label for="name">Họ và tên</label>
+                            <div class="text-danger" th:errors="*{name}"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Email" required>
+                            <label for="email">Email</label>
+                            <div class="text-danger" th:errors="*{email}"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-floating">
+                            <input type="tel" class="form-control" id="phone" th:field="*{phone}" placeholder="Số điện thoại" pattern="[0-9]{10}" required>
+                            <label for="phone">Số điện thoại</label>
+                            <div class="text-danger" th:errors="*{phone}"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-floating">
+                            <select class="form-select" id="serviceId" th:field="*{service.id}" required>
+                                <option value="">Chọn dịch vụ</option>
+                                <option th:each="service : ${services}"
+                                        th:value="${service.id}"
+                                        th:text="${service.serviceName + ' (Giá: ' + #numbers.formatDecimal(service.price, 0, 2) + ' VNĐ)'}"></option>
+                            </select>
+                            <label for="serviceId">Dịch vụ</label>
+                            <div class="text-danger" th:errors="*{service.id}"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-floating">
+                            <select class="form-select" id="collectionMethod" th:field="*{collectionMethod}" required>
+                                <option value="" disabled selected>Chọn phương thức thu mẫu</option>
+                                <option th:each="method : ${collectionMethods}"
+                                        th:value="${method}"
+                                        th:text="${method.displayName}"></option>
+                            </select>
+                            <label for="collectionMethod">Phương thức thu mẫu</label>
+                            <div class="text-danger" th:errors="*{collectionMethod}"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-floating">
+                            <input type="datetime-local" class="form-control" id="appointmentDate"
+                                   th:field="*{appointmentDate}" placeholder="Ngày hẹn" required>
+                            <label for="appointmentDate">Ngày hẹn</label>
+                            <div class="text-danger" th:errors="*{appointmentDate}"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <h5>Thông tin Người tham gia Xét nghiệm</h5>
+                        <div id="participants">
+                            <div class="participant mb-2">
+                                <div class="input-group">
+                                    <input type="text" name="participantNames[]" class="form-control" placeholder="Họ và Tên Người tham gia" required>
+                                    <button type="button" class="btn btn-danger removeParticipant">Xóa</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="addParticipant" class="btn btn-secondary mt-2">Thêm Người tham gia</button>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder="Ghi chú" id="message" th:field="*{message}" style="height: 130px"></textarea>
+                            <label for="message">Ghi chú</label>
+                        </div>
+                    </div>
+                    <div class="col-12 text-center">
+                        <button class="btn btn-primary w-100 py-3" type="submit" id="submitButton">Xác nhận đặt lịch</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    new WOW().init();
+    document.addEventListener('DOMContentLoaded', function () {
+        const toastElList = document.querySelectorAll('.toast');
+        toastElList.forEach(toastEl => {
+            const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+            if (toastEl.closest('div[th\\:if="${success}"]') || toastEl.closest('div[th\\:if="${error}"]')) {
+                toast.show();
+            }
+        });
+
+        const form = document.getElementById('bookingForm');
+        const submitButton = document.getElementById('submitButton');
+        const collectionMethodSelect = document.getElementById('collectionMethod');
+        if (form && submitButton && collectionMethodSelect) {
+            form.addEventListener('submit', function (event) {
+                if (collectionMethodSelect.value === '') {
+                    event.preventDefault();
+                    alert('Vui lòng chọn phương thức thu mẫu!');
+                    return;
+                }
+                submitButton.disabled = true;
+                submitButton.innerHTML = 'Đang xử lý...';
+            });
+
+            if (document.querySelector('div[th\\:if="${error}"]')) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Xác nhận đặt lịch';
+            }
+        }
+
+        flatpickr("#appointmentDate", {
+            enableTime: true,
+            dateFormat: "Y-m-d\\TH:i",
+            minDate: "today",
+            minTime: "08:00",
+            maxTime: "17:00",
+            time_24hr: true
+        });
+
+        document.getElementById('addParticipant').addEventListener('click', function() {
+            const container = document.getElementById('participants');
+            const newParticipant = document.createElement('div');
+            newParticipant.className = 'participant mb-2';
+            newParticipant.innerHTML = `
+                <div class="input-group">
+                    <input type="text" name="participantNames[]" class="form-control" placeholder="Họ và Tên Người tham gia" required>
+                    <button type="button" class="btn btn-danger removeParticipant">Xóa</button>
+                </div>
+            `;
+            container.appendChild(newParticipant);
+            newParticipant.querySelector('.removeParticipant').addEventListener('click', function() {
+                newParticipant.remove();
+            });
+        });
+    });
+</script>
+</body>
+</html>
