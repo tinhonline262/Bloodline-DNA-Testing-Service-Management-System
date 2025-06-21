@@ -1,54 +1,67 @@
 package com.dna_testing_system.dev.controller;
 
+
 import com.dna_testing_system.dev.dto.request.UserProfileRequest;
-import com.dna_testing_system.dev.service.IUserProfileService;
+import com.dna_testing_system.dev.dto.response.UserProfileResponse;
+import com.dna_testing_system.dev.service.UserProfileService;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.Base64;
-import java.io.File;
-import java.io.IOException;
-import java.util.Base64;
+
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
-    IUserProfileService userProfileService;
 
-    //view user profile
-    @GetMapping("/user/profile/{id}")
-    public String userProfile(@PathVariable String id, Model model) {
-        model.addAttribute("userProfile", userProfileService.getUserProfileById(id)); // Replace "1" with the actual user ID
-        return "profile";
+    UserProfileService userProfileService;
+    @GetMapping("/profile")
+    public String getProfile(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        UserProfileResponse userProfile = userProfileService.getUserProfile(currentPrincipalName);
+        model.addAttribute("userProfile", userProfile);
+        return "profile"; // Return the view name for the profile page
     }
 
-    //update user profile
-    @RequestMapping("/user/profile/update/{id}")
-    public String updateUserProfileForm(@PathVariable String id, Model model) {
-        model.addAttribute("userProfile", userProfileService.getUserProfileById(id));
-        return "update-profile";
+    @GetMapping("/profile/update")
+    public String showUpdateProfileForm(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        UserProfileResponse userProfile = userProfileService.getUserProfile(currentPrincipalName);
+        model.addAttribute("userEditProfile",userProfile);
+        return "edit-profile"; // Return the view name for the update profile page
     }
+    @PostMapping("/profile/update")
+    public String updateProfile(@ModelAttribute("userEditProfile") UserProfileRequest userProfile, @RequestParam(value = "file",required = false) MultipartFile file) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        String uploadsDir = "uploads/"; // Specify your upload directory
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        Path path = Paths.get(uploadsDir + fileName);
 
-    @PostMapping("/user/profile/update/{id}")
-    public String updateUserProfile(@ModelAttribute("userProfile") UserProfileRequest userProfileDto, Model model) {
-        MultipartFile file = userProfileDto.getProfileImage();
-        if (file != null && !file.isEmpty()) {
-            // Convert MultipartFile to Base64 String
-            try {
-                byte[] fileBytes = file.getBytes();
-                String base64 = Base64.getEncoder().encodeToString(fileBytes);
-                userProfileDto.setProfileImageUrl(base64);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try{
+            Files.createDirectories(Paths.get(uploadsDir));
+            file.transferTo(path);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        userProfileService.createUserProfile(userProfileDto);
+
+        String imageUrl = "/uploads/" + fileName;
+
+        userProfile.setProfileImageUrl(imageUrl);
+        userProfileService.updateUserProfile(currentPrincipalName, userProfile);
         return "redirect:/profile";
     }
-    //end update user profile
 }

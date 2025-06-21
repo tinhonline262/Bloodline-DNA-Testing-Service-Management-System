@@ -1,21 +1,35 @@
 package com.dna_testing_system.dev.dto.response;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserProfileResponse {
-    String userName;
-    String firstName;
-    String lastName;
-    String email;
-    LocalDate dateOfBirth;
-    String phoneNumber;
-    String profileImageUrl;
-    String password;
+    private String userId;
+    private String username;
+    private String password;
+    private boolean isActive;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phoneNumber;
+    private String profileImageUrl;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateOfBirth;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    private String message;
 }
