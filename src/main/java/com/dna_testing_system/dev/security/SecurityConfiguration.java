@@ -22,31 +22,31 @@ public class SecurityConfiguration {
     private final UserDetailsServiceImpl userDetailsService;    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-        .authenticationProvider(authenticationProvider())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/", "/register", "/login", "/error", "/assets/**", "/manage/profile/","/manage/profiles","manage/profile/delete","manage/search-profiles").permitAll()
-                .anyRequest().authenticated()
-            )
+                .authenticationProvider(authenticationProvider())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/", "/register", "/login", "/error", "/assets/**", "/manage/profile/", "/manage/profiles", "/manage/profile/delete", "/manage/search-profiles").permitAll()
+                        .anyRequest().authenticated()
+                )
                 .csrf(csrf -> csrf.disable())
-            .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/index", true)
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
-            )
-            .rememberMe(remember -> remember
-                .key("uniqueAndSecretKey")
-                .tokenValiditySeconds(86400) // 1 day
-            )
-            .exceptionHandling(exceptions -> exceptions
-                .accessDeniedPage("/access-denied")
-            );
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/user/home", true)  // ← SỬA CHÍNH TẠI ĐÂY
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
+                .rememberMe(remember -> remember
+                        .key("uniqueAndSecretKey")
+                        .tokenValiditySeconds(86400) // 1 day
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .accessDeniedPage("/access-denied")
+                );
             
         return http.build();
     }
