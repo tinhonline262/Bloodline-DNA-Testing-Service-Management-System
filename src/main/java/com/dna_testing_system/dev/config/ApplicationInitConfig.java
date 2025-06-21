@@ -11,6 +11,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.awt.*;
 import java.net.URI;
@@ -20,8 +23,40 @@ import java.net.URI;
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ApplicationInitConfig implements ApplicationRunner {
+public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigurer {
     RoleRepository roleRepository;
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // Cấu hình chi tiết hơn cho static resources
+        registry.addResourceHandler("/assets/**")
+                .addResourceLocations("classpath:/static/assets/")
+                .setCachePeriod(0);
+
+        registry.addResourceHandler("/css/**")
+                .addResourceLocations("classpath:/static/css/")
+                .setCachePeriod(0);
+
+        registry.addResourceHandler("/js/**")
+                .addResourceLocations("classpath:/static/js/")
+                .setCachePeriod(0);
+
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("classpath:/static/images/")
+                .setCachePeriod(0);
+
+        // Cấu hình cho tất cả static resources
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/")
+                .setCachePeriod(0);
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        // Redirect root URL to /index
+
+        registry.addViewController("/index").setViewName("index");
+    }
 
     public void run(ApplicationArguments args) throws Exception {
         initRoleDatabase();
