@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestKitResponse {
-    Long idKit;
+    Long id;
     String kitName;
     String kitType;
     String sampleType;
     BigDecimal basePrice;
     BigDecimal currentPrice;
-    Integer quantity;
+    Integer quantityInStock;
     String kitDescription;
     LocalDate expiryDate;
     String producedBy;

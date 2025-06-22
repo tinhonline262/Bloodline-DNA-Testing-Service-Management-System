@@ -182,13 +182,13 @@
     </thead>
     <tbody>
     <tr th:each="kit : ${testKits}">
-        <td th:text="${kit.idKit}"></td>
+        <td th:text="${kit.id}"></td>
         <td th:text="${kit.kitName}"></td>
         <td th:text="${kit.kitType}"></td>
         <td th:text="${kit.sampleType}"></td>
         <td th:text="${kit.basePrice}"></td>
         <td th:text="${kit.currentPrice}"></td>
-        <td th:text="${kit.quantity}"></td>
+        <td th:text="${kit.quantityInStock}"></td>
         <td th:text="${kit.kitDescription}"></td>
         <td th:text="${kit.expiryDate}"></td>
         <td th:text="${kit.producedBy}"></td>
@@ -196,8 +196,8 @@
         <td th:text="${kit.createdAt}"></td>
         <td th:text="${kit.updatedAt}"></td>
         <td>
-            <a th:href="@{/test-kits/update(kitId=${kit.idKit})}">Edit</a> |
-            <a th:href="@{/test-kits/delete(kitId=${kit.idKit})}" onclick="return confirm('Are you sure?');">Delete</a>
+            <a th:href="@{/test-kits/update(kitId=${kit.id})}">Edit</a> |
+            <a th:href="@{/test-kits/delete(kitId=${kit.id})}" onclick="return confirm('Are you sure?');">Delete</a>
         </td>
     </tr>
     </tbody>

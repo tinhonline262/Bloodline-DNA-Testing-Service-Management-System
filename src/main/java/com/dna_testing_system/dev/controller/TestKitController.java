@@ -21,10 +21,15 @@ import java.util.List;
 public class TestKitController {
     TestKitService testKitService;
 
+    @GetMapping("/test-kits/create")
+    public String showCreateTestKitForm(Model model) {
+        model.addAttribute("newTestKit", new TestKitRequest()); // Add an empty TestKitRequest object to the model
+        return "admin-manager/create-test-kit"; // Return the view name for the create test kit form
+    }
     @PostMapping("/test-kits/create")
     public String createTestKit(@ModelAttribute("newTestKit") TestKitRequest testKitRequest) {
         testKitService.CreateTestKit(testKitRequest);
-        return "admin-manager/create-test-kit"; // Redirect to the test kits page after creation
+        return "redirect:/test-kits"; // Redirect to the test kits page after creation
     }
 
     @GetMapping("/test-kits")
@@ -37,6 +42,9 @@ public class TestKitController {
     @GetMapping("/test-kits/search")
     public String searchTestKits(@RequestParam("searchQuery") String kitName, Model model) {
         List<TestKitResponse> testKits = testKitService.GetTestKitResponseByName(kitName);
+        if (testKits.isEmpty()) {
+            return "redirect:/test-kits"; // Redirect to the test kits page if no results found
+        }
         model.addAttribute("testKits", testKits);
         return "admin-manager/view-test-kits"; // Return the view name for displaying search results
     }

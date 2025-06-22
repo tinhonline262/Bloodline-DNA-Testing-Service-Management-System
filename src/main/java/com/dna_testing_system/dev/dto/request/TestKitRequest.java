@@ -1,6 +1,7 @@
 package com.dna_testing_system.dev.dto.request;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,8 +19,9 @@ public class TestKitRequest {
     String sampleType;
     BigDecimal basePrice;
     BigDecimal currentPrice;
-    Integer quantity;
+    Integer quantityInStock;
     String kitDescription;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate expiryDate;
     String producedBy;
 }

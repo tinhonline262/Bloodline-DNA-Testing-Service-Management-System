@@ -41,9 +41,6 @@ public class TestKitServiceImpl implements TestKitService {
                 testKitResponses.add(response);
             }
         }
-        if (testKitResponses.isEmpty()) {
-            throw new RuntimeException("No Test Kit found with name: " + kitName);
-        }
         return testKitResponses;
     }
 
