@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="light" data-menu-styles="light" data-toggled="close"
-xmlns:th="http://www.thymeleaf.org">
+<html lang="en" dir="ltr"
+      xmlns:th="http://www.thymeleaf.org"
+      data-nav-layout="vertical"
+      data-theme-mode="light"
+      data-header-styles="light"
+      data-menu-styles="light"
+      data-toggled="close">
 
-<head th:replace="/fragments/public/head :: head"></head>
+<head th:replace="/fragments/user/head :: head"></head>
 <body>
-this page is for user dashabord
+<div class="page">
+    <div th:replace="fragments/user/sidebar :: sidebar"></div>
+    <div th:replace="fragments/user/header_dashboard :: header_dashboard"></div>
+</div>
+
+<script th:replace="fragments/user/script_user :: script_user"></script>
 </body>
 </html>

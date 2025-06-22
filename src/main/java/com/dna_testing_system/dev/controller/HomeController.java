@@ -20,4 +20,8 @@ public class HomeController {
     public String userHomePage() {
         return "user/home"; // Thymeleaf view tên user/home.html
     }
+    @GetMapping("/layouts/user-layout")
+    public String userLayout() {
+        return "layouts/user-layout";
+    }
 }

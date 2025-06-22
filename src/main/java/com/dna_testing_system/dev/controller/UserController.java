@@ -44,11 +44,44 @@ public class UserController {
         model.addAttribute("userEditProfile", userProfile);
         return "user/edit-profile";
     }
-
-    @PostMapping("/profile/update")  // URL sẽ là /user/profile/update
+    @PostMapping("/profile/update")
     public String updateProfile(@ModelAttribute("userEditProfile") UserProfileRequest userProfile,
                                 @RequestParam(value = "file", required = false) MultipartFile file) {
-        // ... existing code ...
-        return "redirect:/user/profile"; // Sửa redirect URL
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        UserProfileResponse existingProfile = userProfileService.getUserProfile(currentPrincipalName);
+
+        // Xử lý file upload
+        if (file != null && !file.getOriginalFilename().equals("")) {
+            String uploadsDir = "uploads/";
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path path = Paths.get(uploadsDir + fileName);
+
+            try {
+                Files.createDirectories(Paths.get(uploadsDir));
+                file.transferTo(path);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String imageUrl = "/uploads/" + fileName;
+            userProfile.setProfileImageUrl(imageUrl);
+        } else {
+            // Giữ nguyên ảnh cũ nếu không upload ảnh mới
+            userProfile.setProfileImageUrl(existingProfile.getProfileImageUrl());
+        }
+
+        // Giữ nguyên dateOfBirth nếu không có thay đổi
+        if (userProfile.getDateOfBirth() == null) {
+            userProfile.setDateOfBirth(existingProfile.getDateOfBirth());
+        }
+
+        userProfileService.updateUserProfile(currentPrincipalName, userProfile);
+        return "redirect:/user/profile";
     }
+    @GetMapping({"/layouts/user-layout", "/dashboard"})
+    public String userLayout() {
+        return "layouts/user-layout";
+    }
+
 }

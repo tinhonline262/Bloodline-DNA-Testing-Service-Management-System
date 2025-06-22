@@ -3,111 +3,473 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        .form-container {
-            max-width: 450px;
-            margin: 40px auto;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            padding: 24px;
-            background: #fff;
-            box-shadow: 0 0 8px #eee;
+        body {
+            background: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        .form-row {
-            margin-bottom: 16px;
+
+        .edit-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
         }
-        .form-label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+
+        .edit-header {
+            background: linear-gradient(45deg, #0162e8, #4285f4);
+            color: white;
+            padding: 30px;
+            text-align: center;
         }
-        .form-input, .form-date {
-            width: 100%;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #bbb;
+
+        .edit-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
         }
-        .form-error {
-            color: #d60000;
-            font-size: 0.96em;
-            margin-top: 2px;
+
+        .avatar-section {
+            position: relative;
+            margin-top: 20px;
         }
-        .form-submit {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 5px;
-            background: #0078D7;
-            color: #fff;
-            font-weight: bold;
-        }
+
         .avatar-preview {
-            display: block;
-            margin: 0 auto 16px auto;
-            width: 120px;
-            height: 120px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.3);
             object-fit: cover;
-            box-shadow: 0 0 4px #bbb;
+            background: rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .avatar-preview:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar-change-btn {
+            position: absolute;
+            bottom: -5px;
+            right: calc(50% - 45px);
+            background: white;
+            border: 2px solid #0162e8;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0162e8;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .avatar-change-btn:hover {
+            background: #0162e8;
+            color: white;
+        }
+
+        .form-body {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .label-icon {
+            width: 16px;
+            height: 16px;
+            color: #0162e8;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: #fdfdfd;
+        }
+
+        .form-control:focus {
+            border-color: #0162e8;
+            box-shadow: 0 0 0 3px rgba(1, 98, 232, 0.1);
+            background: white;
+        }
+
+        .form-control:hover {
+            border-color: #ced4da;
+            background: white;
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 4px;
+        }
+
+        .password-hint {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-display {
+            background: #f8f9fa;
+            border: 2px dashed #ced4da;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .file-input-display:hover {
+            border-color: #0162e8;
+            background: #f3f8ff;
+        }
+
+        .file-input-display.dragover {
+            border-color: #0162e8;
+            background: #f3f8ff;
+        }
+
+        .file-icon {
+            font-size: 2rem;
+            color: #0162e8;
+            margin-bottom: 8px;
+        }
+
+        .file-text {
+            color: #495057;
+            font-size: 0.9rem;
+        }
+
+        .file-selected {
+            color: #28a745;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .form-actions {
+            background: #fdfdfd;
+            padding: 24px 30px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            border-top: 1px solid #f1f3f4;
+        }
+
+        .btn-modern {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .btn-primary-modern {
+            background: #0162e8;
+            color: white;
+        }
+
+        .btn-primary-modern:hover {
+            background: #0151c9;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary-modern {
+            background: #e3f2fd;
+            color: #0162e8;
+        }
+
+        .btn-secondary-modern:hover {
+            background: #bbdefb;
+            color: #0151c9;
+        }
+
+        .btn-secondary-modern a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .row-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-grid-full {
+            grid-column: 1 / -1;
+        }
+
+        /* Loading state */
+        .btn-loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid currentColor;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .edit-container {
+                margin: 1rem;
+                border-radius: 12px;
+            }
+
+            .form-body {
+                padding: 30px 20px;
+            }
+
+            .form-actions {
+                padding: 20px;
+                flex-direction: column;
+            }
+
+            .row-form {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
         }
     </style>
 </head>
 <body>
-<div class="form-container">
-    <h2>Edit Profile</h2>
-    <!-- Hiển thị avatar hiện tại nếu có -->
-    <div class="form-row" th:if="${userEditProfile.profileImageUrl != null and !#strings.isEmpty(userEditProfile.profileImageUrl)}">
-        <img th:src="@{${userEditProfile.profileImageUrl}}" alt="Avatar" class="avatar-preview"/>
+<div class="edit-container">
+    <!-- Header -->
+    <div class="edit-header">
+        <h2 class="edit-title">
+            <i class="fas fa-user-edit me-2"></i>Edit Profile
+        </h2>
+
+        <!-- Avatar Preview -->
+        <div class="avatar-section">
+            <img th:src="${userEditProfile.profileImageUrl != null and !#strings.isEmpty(userEditProfile.profileImageUrl)}
+            ? @{${userEditProfile.profileImageUrl}}
+            : @{/images/default-avatar.png}"
+                 alt="Avatar" class="avatar-preview" id="avatarPreview"/>
+
+            <div class="avatar-change-btn" onclick="document.getElementById('file').click()">
+                <i class="fas fa-camera" style="font-size: 12px;"></i>
+            </div>
+        </div>
     </div>
-    <form th:action="@{/profile/update}" th:object="${userEditProfile}" method="post" enctype="multipart/form-data">
-        <div class="form-row">
-            <label class="form-label" for="firstName">First Name</label>
-            <input id="firstName" type="text" th:field="*{firstName}" class="form-input"/>
-            <div class="form-error" th:if="${#fields.hasErrors('firstName')}"
-                 th:errors="*{firstName}"></div>
-        </div>
-        <div class="form-row">
-            <label class="form-label" for="lastName">Last Name</label>
-            <input id="lastName" type="text" th:field="*{lastName}" class="form-input"/>
-            <div class="form-error" th:if="${#fields.hasErrors('lastName')}"
-                 th:errors="*{lastName}"></div>
-        </div>
-        <div class="form-row">
-            <label class="form-label" for="email">Email</label>
-            <input id="email" type="email" th:field="*{email}" class="form-input"/>
-            <div class="form-error" th:if="${#fields.hasErrors('email')}"
-                 th:errors="*{email}"></div>
-        </div>        <div class="form-row">
-            <label class="form-label" for="dateOfBirth">Date of Birth</label>
-            <input id="dateOfBirth" type="date" th:field="*{dateOfBirth}" class="form-date"/>
-            <div class="form-error" th:if="${#fields.hasErrors('dateOfBirth')}"
-                 th:errors="*{dateOfBirth}"></div>
-        </div>
-        <div class="form-row">
-            <label class="form-label" for="phoneNumber">Phone Number</label>
-            <input id="phoneNumber" type="text" th:field="*{phoneNumber}" class="form-input"/>
-            <div class="form-error" th:if="${#fields.hasErrors('phoneNumber')}"
-                 th:errors="*{phoneNumber}"></div>
-        </div>
-        <div class="form-row">
-            <label class="form-label" for="password">Password</label>
-            <!-- Nếu muốn hiển thị password cũ (KHÔNG KHUYẾN KHÍCH, KHÔNG AN TOÀN):
-            <input id="password" type="password" th:field="*{password}" class="form-input"/>
-            -->
-            <!-- Nên để trống khi hiển thị form update -->
-            <input id="password" type="password" th:field="*{password}" class="form-input" placeholder="Enter new password (leave blank to keep current)"/>
-            <div class="form-error" th:if="${#fields.hasErrors('password')}"
-                 th:errors="*{password}"></div>
-        </div>
-        <!-- Input upload file avatar: phải có name="file" -->
-        <div class="form-row">
-            <label class="form-label" for="file">Avatar</label>
-            <input id="file" type="file" name="file" class="form-input" accept="image/*"/>
-        </div>
-        <div class="form-row">
-            <button type="submit" class="form-submit">Update</button>
-            <button type="submit" class="form-submit"><a th:href="@{/profile}">Cancel</a></button>
-        </div>
-    </form>
+
+    <!-- Form Body -->
+    <div class="form-body">
+        <form th:action="@{/user/profile/update}" th:object="${userEditProfile}" method="post" enctype="multipart/form-data" id="profileForm">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <div class="row-form">
+                <!-- First Name -->
+                <div class="form-group">
+                    <label class="form-label" for="firstName">
+                        <i class="fas fa-user label-icon"></i>First Name
+                    </label>
+                    <input id="firstName" type="text" th:field="*{firstName}"
+                           class="form-control" th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''"
+                           placeholder="Enter your first name"/>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+                </div>
+
+                <!-- Last Name -->
+                <div class="form-group">
+                    <label class="form-label" for="lastName">
+                        <i class="fas fa-user-tag label-icon"></i>Last Name
+                    </label>
+                    <input id="lastName" type="text" th:field="*{lastName}"
+                           class="form-control" th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid' : ''"
+                           placeholder="Enter your last name"/>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label class="form-label" for="email">
+                    <i class="fas fa-envelope label-icon"></i>Email Address
+                </label>
+                <input id="email" type="email" th:field="*{email}"
+                       class="form-control" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                       placeholder="Enter your email address"/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+
+            <div class="row-form">
+                <!-- Date of Birth -->
+                <div class="form-group">
+                    <label class="form-label" for="dateOfBirth">
+                        <i class="fas fa-birthday-cake label-icon"></i>Date of Birth
+                    </label>
+                    <input id="dateOfBirth" type="date" th:field="*{dateOfBirth}"
+                           class="form-control" th:classappend="${#fields.hasErrors('dateOfBirth')} ? 'is-invalid' : ''"/>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                    <label class="form-label" for="phoneNumber">
+                        <i class="fas fa-phone label-icon"></i>Phone Number
+                    </label>
+                    <input id="phoneNumber" type="text" th:field="*{phoneNumber}"
+                           class="form-control" th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid' : ''"
+                           placeholder="Enter your phone number"/>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label class="form-label" for="password">
+                    <i class="fas fa-lock label-icon"></i>Password
+                </label>
+                <input id="password" type="password" th:field="*{password}"
+                       class="form-control" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                       placeholder="Enter new password (leave blank to keep current)"/>
+                <div class="password-hint">Leave blank to keep your current password</div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            </div>
+
+            <!-- Avatar Upload -->
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-image label-icon"></i>Profile Picture
+                </label>
+                <div class="file-input-wrapper">
+                    <input id="file" type="file" name="file" class="file-input" accept="image/*"/>
+                    <div class="file-input-display" id="fileDisplay">
+                        <div class="file-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="file-text">
+                            Click to select or drag and drop an image
+                        </div>
+                        <div class="file-selected" id="fileSelected" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+        <button type="submit" form="profileForm" class="btn-modern btn-primary-modern" id="submitBtn">
+            <i class="fas fa-save"></i>
+            Update Profile
+        </button>
+        <button type="button" class="btn-secondary-modern btn-modern">
+            <a th:href="@{/user/profile}">
+                <i class="fas fa-times"></i>
+                Cancel
+            </a>
+        </button>
+    </div>
 </div>
+
+<script>
+    // File upload handling
+    const fileInput = document.getElementById('file');
+    const fileDisplay = document.getElementById('fileDisplay');
+    const fileSelected = document.getElementById('fileSelected');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const submitBtn = document.getElementById('submitBtn');
+
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            fileSelected.textContent = file.name;
+            fileSelected.style.display = 'block';
+
+            // Preview avatar
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                avatarPreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Drag and drop
+    fileDisplay.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        fileDisplay.classList.add('dragover');
+    });
+
+    fileDisplay.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        fileDisplay.classList.remove('dragover');
+    });
+
+    fileDisplay.addEventListener('drop', function(e) {
+        e.preventDefault();
+        fileDisplay.classList.remove('dragover');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    });
+
+    // Form submission loading state
+    document.getElementById('profileForm').addEventListener('submit', function() {
+        submitBtn.innerHTML = '<div class="loading-spinner"></div> Updating...';
+        submitBtn.classList.add('btn-loading');
+    });
+</script>
 </body>
 </html>

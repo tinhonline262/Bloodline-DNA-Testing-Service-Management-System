@@ -19,7 +19,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final UserDetailsServiceImpl userDetailsService;    @Bean
+    private final UserDetailsServiceImpl userDetailsService;
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authenticationProvider(authenticationProvider())
@@ -27,16 +28,20 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/", "/register", "/login", "/error", "/assets/**",
-                                "/uploads/**"
+                                "/uploads/**",
+                                "/layouts/**"
                         ).permitAll()
-                        .requestMatchers("/user/profile", "/user/profile/update").authenticated()// Cho phép tất cả /user/* với authentication
-                        .anyRequest().permitAll() // Hoặc authenticated() tùy yêu cầu
-                )
 
-                .csrf(csrf -> csrf.disable())
+                        .requestMatchers("/user/**").authenticated() // Cho phép tất cả /user/* với authentication
+                        .anyRequest().permitAll()
+                )
+                // SỬA: Bật lại CSRF thay vì disable
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/register") // Nếu có form register không cần CSRF
+                )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/user/home", true)  // ← SỬA CHÍNH TẠI ĐÂY
+                        .defaultSuccessUrl("/user/home", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -48,15 +53,15 @@ public class SecurityConfiguration {
                 )
                 .rememberMe(remember -> remember
                         .key("uniqueAndSecretKey")
-                        .tokenValiditySeconds(86400) // 1 day
+                        .tokenValiditySeconds(86400)
                 )
                 .exceptionHandling(exceptions -> exceptions
                         .accessDeniedPage("/access-denied")
                 );
-            
+
         return http.build();
     }
-    
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -64,7 +69,7 @@ public class SecurityConfiguration {
         authProvider.setPasswordEncoder(PasswordUtil.getPasswordEncoder());
         return authProvider;
     }
-    
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
