@@ -14,21 +14,22 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponse {
+public class UserProfileResponse {
     private String userId;
     private String username;
+    private String password;
     private boolean isActive;
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
     private String profileImageUrl;
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
-    
+
     private String message;
 }
