@@ -95,8 +95,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public User activateUser(String userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new AuthenticationException(ErrorCode.USER_NOT_EXISTS, 
-                    "User not found with id: " + userId));
+                .orElseThrow(() -> new AuthenticationException(ErrorCode.USER_NOT_EXISTS));
         
         // If user is already active, no need to update
         if (user.getIsActive()) {
@@ -109,17 +108,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public User authenticate(AuthenticationRequest request) {
         if (request == null) {
-            throw new AuthenticationException(ErrorCode.UNKNOWN_ERROR, "Authentication request cannot be null");
+            throw new AuthenticationException(ErrorCode.UNKNOWN_ERROR);
         }
         
         // Validate username
         if (request.getUsername() == null || request.getUsername().trim().isEmpty()) {
-            throw new AuthenticationException(ErrorCode.USERNAME_INVALID, "Username is required");
+            throw new AuthenticationException(ErrorCode.USERNAME_INVALID);
         }
         
         // Validate password
         if (request.getPassword() == null || request.getPassword().trim().isEmpty()) {
-            throw new AuthenticationException(ErrorCode.PASSWORD_INVALID, "Password is required");
+            throw new AuthenticationException(ErrorCode.PASSWORD_INVALID);
         }
         
         // Find user by username
