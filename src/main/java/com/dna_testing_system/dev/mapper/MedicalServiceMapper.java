@@ -22,7 +22,7 @@ public interface MedicalServiceMapper {
 
     List<MedicalServiceResponse> toResponse(List<MedicalService> services);
     List<MedicalServiceFilterResponse> toResultFilter(List<MedicalService> services);
-    @Mapping(target = "serviceFeatures", source = "featureAssignments")
+    @Mapping(target = "serviceFeatures", source = "editFeatureAssignments")
     void updateMedicalService(MedicalServiceUpdateRequest updateRequest, @MappingTarget MedicalService medicalService);
 
     @Mapping(target = "featureId", source = "id")

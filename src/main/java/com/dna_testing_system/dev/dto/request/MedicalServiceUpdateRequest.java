@@ -50,5 +50,5 @@ public class MedicalServiceUpdateRequest {
 
     @NotEmpty(message = "Feature assignments cannot be empty")
     @Valid
-    List<FeatureAssignmentCreationRequest> featureAssignments;
+    List<FeatureAssignmentCreationRequest> editFeatureAssignments;
 }

@@ -27,6 +27,8 @@ public interface MedicalServiceManageService {
 
     ServiceTypeResponse createServiceType(ServiceTypeRequest request);
     List<ServiceFeatureResponse> getAllServiceFeatures();
+    void deleteTypeService(Long id);
+    void updateTypeService(Long id, ServiceTypeRequest request);
 
     ServiceFeatureResponse createServiceFeature(ServiceFeatureRequest request);
     void deleteServiceFeature(Long id);

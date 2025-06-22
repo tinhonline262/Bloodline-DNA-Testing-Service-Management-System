@@ -1,7 +1,11 @@
 package com.dna_testing_system.dev.security;
 
+import com.dna_testing_system.dev.config.CustomAuthenticationSuccessHandler;
+import com.dna_testing_system.dev.enums.RoleType;
 import com.dna_testing_system.dev.service.impl.UserDetailsServiceImpl;
 import com.dna_testing_system.dev.utils.PasswordUtil;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,22 +21,25 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfiguration {
 
-    private final UserDetailsServiceImpl userDetailsService;
+    UserDetailsServiceImpl userDetailsService;
+    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
         .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/", "/register", "/login", "/error", "/assets/**", "/api/**", "/manager/**").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/", "/register", "/login", "/error", "/assets/**", "/api/**").permitAll()
+                    .requestMatchers("/manager/**", "/manager/services/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
                 .anyRequest().authenticated()
             )
                 .csrf(csrf -> csrf.disable())
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/index", true)
+                    .successHandler(customAuthenticationSuccessHandler)
                 .permitAll()
             )
             .logout(logout -> logout

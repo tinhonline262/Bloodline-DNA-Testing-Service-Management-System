@@ -1,8 +1,15 @@
 package com.dna_testing_system.dev.config;
 
 import com.dna_testing_system.dev.entity.Role;
+import com.dna_testing_system.dev.entity.User;
+import com.dna_testing_system.dev.entity.UserProfile;
+import com.dna_testing_system.dev.entity.UserRole;
 import com.dna_testing_system.dev.enums.RoleType;
 import com.dna_testing_system.dev.repository.RoleRepository;
+import com.dna_testing_system.dev.repository.UserProfileRepository;
+import com.dna_testing_system.dev.repository.UserRepository;
+import com.dna_testing_system.dev.repository.UserRoleRepository;
+import com.dna_testing_system.dev.utils.PasswordUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,6 +24,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.awt.*;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Configuration
@@ -25,6 +34,9 @@ import java.net.URI;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigurer {
     RoleRepository roleRepository;
+    UserRepository userRepository;
+    UserRoleRepository userRoleRepository;
+    UserProfileRepository userProfileRepository;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -60,6 +72,7 @@ public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigure
 
     public void run(ApplicationArguments args) throws Exception {
         initRoleDatabase();
+        createManagerDefault();
         launchBrowser();
     }
 
@@ -77,6 +90,43 @@ public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigure
                     .isActive(true)
                     .build();
             roleRepository.save(role);
+        }
+    }
+
+    private void createManagerDefault() {
+        if (!userRepository.existsByUsername("manager")) {
+            Role role = roleRepository.findByRoleName(RoleType.MANAGER.name());
+
+            // Create and save the User entity with minimal information
+            User user = User.builder()
+                    .username("manager")
+                    .passwordHash(PasswordUtil.encode("manager"))
+                    .isActive(true)
+                    .userRoles(new HashSet<>())
+                    .build();
+
+            user = userRepository.save(user);
+
+            UserRole userRoleForCreate = UserRole.builder()
+                    .user(user)
+                    .role(role)
+                    .isActive(true)
+                    .build();
+            UserRole userRole = userRoleRepository.save(userRoleForCreate);
+            user.getUserRoles().add(userRole);
+            userRepository.save(user);
+
+            // Create and save minimal UserProfile
+            UserProfile userProfile = UserProfile.builder()
+                    .user(user)
+                    .firstName("MANAGER")
+                    .email("manager@email.com")
+                    .build();
+
+            userProfileRepository.save(userProfile);
+
+            user.setUserProfile(userProfile);
+            userRepository.save(user);
         }
     }
 

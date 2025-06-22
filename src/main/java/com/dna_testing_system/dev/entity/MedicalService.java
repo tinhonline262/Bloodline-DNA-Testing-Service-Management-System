@@ -1,7 +1,6 @@
 package com.dna_testing_system.dev.entity;
 
 import com.dna_testing_system.dev.enums.ServiceCategory;
-import com.dna_testing_system.dev.enums.DNATestType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -90,8 +89,4 @@ public class MedicalService {
 
     @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<ServiceFeature> serviceFeatures = new HashSet<>();
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "test_type", nullable = false, length = 100)
-    DNATestType testType;
 }

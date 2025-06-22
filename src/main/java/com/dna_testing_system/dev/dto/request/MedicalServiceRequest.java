@@ -1,6 +1,5 @@
 package com.dna_testing_system.dev.dto.request;
 
-import com.dna_testing_system.dev.enums.DNATestType;
 import com.dna_testing_system.dev.enums.ServiceCategory;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;

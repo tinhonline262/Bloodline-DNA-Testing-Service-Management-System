@@ -1,6 +1,5 @@
 package com.dna_testing_system.dev.dto.response;
 
-import com.dna_testing_system.dev.enums.DNATestType;
 import com.dna_testing_system.dev.enums.ServiceCategory;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;

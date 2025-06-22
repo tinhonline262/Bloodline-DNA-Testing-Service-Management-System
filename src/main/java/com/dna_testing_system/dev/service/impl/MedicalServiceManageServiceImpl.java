@@ -114,10 +114,13 @@ public class MedicalServiceManageServiceImpl implements MedicalServiceManageServ
         }
         try {
             medicalServiceMapper.updateMedicalService(request, medicalService);
-            medicalService.getServiceFeatures().clear();
+            if (medicalService.getServiceFeatures() == null)
+                medicalService.setServiceFeatures(new HashSet<>());
+            else
+                medicalService.getServiceFeatures().clear();
             //assign for new medical service
-            if (request.getFeatureAssignments() != null && !request.getFeatureAssignments().isEmpty()) {
-                for (FeatureAssignmentCreationRequest featureRequest : request.getFeatureAssignments()) {
+            if (request.getEditFeatureAssignments() != null && !request.getEditFeatureAssignments().isEmpty()) {
+                for (FeatureAssignmentCreationRequest featureRequest : request.getEditFeatureAssignments()) {
                     ServiceFeature feature = ServiceFeature.builder()
                             .service(medicalService)
                             .featureName(featureRequest.getFeatureName())
@@ -143,11 +146,12 @@ public class MedicalServiceManageServiceImpl implements MedicalServiceManageServ
     @Override
     @Transactional
     public ServiceTypeResponse createServiceType(ServiceTypeRequest request) {
-        if (serviceTypeRepository.existsByTypeName(request.getTypeName().name()))
+        request.setTypeName(request.getTypeName().toUpperCase());
+        if (serviceTypeRepository.existsByTypeName(request.getTypeName()))
             throw new MedicalServiceException(ErrorCode.SERVICE_TYPE_EXISTS);
         ServiceType serviceType = ServiceType.builder()
-                .typeName(request.getTypeName().name())
-                .isActive(true)
+                .typeName(request.getTypeName())
+                .isActive(request.getIsActive())
                 .build();
         serviceTypeRepository.save(serviceType);
         return serviceTypeMapper.toResponse(serviceType);
@@ -157,6 +161,24 @@ public class MedicalServiceManageServiceImpl implements MedicalServiceManageServ
     public List<ServiceFeatureResponse> getAllServiceFeatures() {
         List<ServiceFeature> serviceFeatureList = serviceFeatureRepository.findAll();
         return serviceFeatureMapper.toResponse(serviceFeatureList);
+    }
+
+    @Override
+    public void deleteTypeService(Long id) {
+        var serviceType = serviceTypeRepository.findById(id)
+                .orElseThrow(() -> new MedicalServiceException(ErrorCode.SERVICE_TYPE_NOT_EXISTS));
+
+        serviceTypeRepository.delete(serviceType);
+    }
+
+    @Override
+    public void updateTypeService(Long id, ServiceTypeRequest request) {
+        var serviceType = serviceTypeRepository.findById(id)
+                .orElseThrow(() -> new MedicalServiceException(ErrorCode.SERVICE_TYPE_NOT_EXISTS));
+        request.setTypeName(request.getTypeName().toUpperCase());
+
+        serviceTypeMapper.updateServiceType(request,serviceType);
+        serviceTypeRepository.save(serviceType);
     }
 
     @Override

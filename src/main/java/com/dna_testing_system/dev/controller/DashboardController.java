@@ -1,5 +1,10 @@
 package com.dna_testing_system.dev.controller;
 
+import com.dna_testing_system.dev.service.MedicalServiceManageService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,8 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Controller for all manager dashboard related pages
  */
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/manager")
-public class ManagerController {
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class DashboardController {
+
+    MedicalServiceManageService medicalServiceManageService;
 
     /**
      * Display the main dashboard page
@@ -40,15 +49,16 @@ public class ManagerController {
         model.addAttribute("pageTitle", "Test Results Management");
         // In a real application, you would add test results data here
         return "manager/results";
-    }
-
-    /**
+    }    /**
      * Display the services management page
      */
     @GetMapping("/services")
     public String services(Model model) {
         model.addAttribute("pageTitle", "Services Management");
-        // In a real application, you would add services data here
+        model.addAttribute("services", medicalServiceManageService.getAllServices());
+        model.addAttribute("serviceTypes", medicalServiceManageService.getAllServiceTypes());
+        model.addAttribute("serviceFeatures", medicalServiceManageService.getAllServiceFeatures());
+        model.addAttribute("service", medicalServiceManageService);
         return "manager/services";
     }
 

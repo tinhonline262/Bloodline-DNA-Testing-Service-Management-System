@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -27,4 +29,7 @@ public class ServiceType {
     @Builder.Default
     @Column(name = "is_active", nullable = false)
     Boolean isActive = true;
+
+    @OneToMany(mappedBy = "serviceType", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<MedicalService> medicalServices;
 }
