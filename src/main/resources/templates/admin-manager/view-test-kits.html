@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Test Kits List</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #fafbfc;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container, .form-container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px #e3e7ea;
+            padding: 32px 40px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1967d2;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .form-row, .form-group, .form-actions {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        input[type="text"], input[type="number"], input[type="date"], textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #b8c3d1;
+            border-radius: 6px;
+            font-size: 1em;
+            background: #f8fafc;
+            margin-bottom: 2px;
+            transition: border 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus, textarea:focus {
+            outline: none;
+            border-color: #1967d2;
+            background: #fff;
+        }
+
+        textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        button, input[type="submit"] {
+            background: #1967d2;
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-right: 10px;
+            transition: background 0.2s;
+        }
+
+        button[type="button"], a button {
+            background: #e3e7ea;
+            color: #1967d2;
+            border: 1px solid #b8c3d1;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background: #1251a3;
+        }
+
+        button[type="button"]:hover, a button:hover {
+            background: #c7d0db;
+            color: #1251a3;
+        }
+
+        .form-error {
+            color: #d60000;
+            font-size: 0.98em;
+            margin-top: 2px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 18px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            margin-top: 10px;
+            box-shadow: 0 2px 10px #f2f2f2;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e3e7ea;
+            font-size: 1em;
+        }
+
+        th {
+            background: #f2f6fa;
+            font-weight: 700;
+            color: #1967d2;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        tr:hover {
+            background: #e6f0fa;
+        }
+
+        a {
+            color: #1967d2;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.15s;
+        }
+
+        a:hover {
+            color: #1251a3;
+            text-decoration: underline;
+        }
+
+        .action-links a {
+            margin-right: 12px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .search-bar input[type="text"] {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+<h2>Test Kits</h2>
+<form th:action="@{/test-kits/search}" method="get">
+    <input type="text" name="searchQuery" placeholder="Search by kit name"/>
+    <button type="submit">Search</button>
+    <a th:href="@{/test-kits/create}"><button type="button">Add New Test Kit</button></a>
+</form>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Kit Name</th>
+        <th>Type</th>
+        <th>Sample</th>
+        <th>Base Price</th>
+        <th>Current Price</th>
+        <th>Quantity</th>
+        <th>Description</th>
+        <th>Expiry Date</th>
+        <th>Produced By</th>
+        <th>Available</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="kit : ${testKits}">
+        <td th:text="${kit.idKit}"></td>
+        <td th:text="${kit.kitName}"></td>
+        <td th:text="${kit.kitType}"></td>
+        <td th:text="${kit.sampleType}"></td>
+        <td th:text="${kit.basePrice}"></td>
+        <td th:text="${kit.currentPrice}"></td>
+        <td th:text="${kit.quantity}"></td>
+        <td th:text="${kit.kitDescription}"></td>
+        <td th:text="${kit.expiryDate}"></td>
+        <td th:text="${kit.producedBy}"></td>
+        <td th:text="${kit.isAvailable ? 'Yes' : 'No'}"></td>
+        <td th:text="${kit.createdAt}"></td>
+        <td th:text="${kit.updatedAt}"></td>
+        <td>
+            <a th:href="@{/test-kits/update(kitId=${kit.idKit})}">Edit</a> |
+            <a th:href="@{/test-kits/delete(kitId=${kit.idKit})}" onclick="return confirm('Are you sure?');">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
