@@ -1,35 +1,33 @@
 package com.dna_testing_system.dev.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-import java.awt.Desktop;
+import java.awt.*;
 import java.net.URI;
 
+@Slf4j
 @Configuration
+@Component
 public class ApplicationInitConfig implements ApplicationRunner {
-
-    private static final Logger log = LoggerFactory.getLogger(ApplicationInitConfig.class);
-
-    @Override
     public void run(ApplicationArguments args) throws Exception {
         launchBrowser();
     }
 
-    private void launchBrowser() throws Exception {
-        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            Desktop.getDesktop().browse(new URI("http://localhost:8080/index"));
-        } else {
+    private void launchBrowser() throws Exception{
+        if (Desktop.isDesktopSupported())
+            Desktop.getDesktop().browse(new URI("http://localhost:8080/v1/index"));
+        else {
             log.warn("Desktop is not supported, cannot launch Browser");
-            log.info("Starting to launch Browser with ProcessBuilder...");
+            log.info("Starting to launch Browser with OS Call System...");
             String os = System.getProperty("os.name").toLowerCase();
+            Runtime runtime = Runtime.getRuntime();
             if (os.contains("win")) {
                 // Windows
-                ProcessBuilder pb = new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", "http://localhost:8080/index");
-                pb.start();
+                runtime.exec("rundll32 url.dll,FileProtocolHandler " + "http://localhost:8080/v1/index");
             } else {
                 log.warn("Unsupported OS. Cannot open browser automatically.");
             }
