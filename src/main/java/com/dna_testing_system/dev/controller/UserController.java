@@ -47,20 +47,29 @@ public class UserController {
     public String updateProfile(@ModelAttribute("userEditProfile") UserProfileRequest userProfile, @RequestParam(value = "file",required = false) MultipartFile file) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        String uploadsDir = "uploads/"; // Specify your upload directory
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        Path path = Paths.get(uploadsDir + fileName);
+        UserProfileResponse existingProfile = userProfileService.getUserProfile(currentPrincipalName);
+        if(file.getOriginalFilename().equals("")) {
+            userProfile.setProfileImageUrl(existingProfile.getProfileImageUrl());
+        }
+        else{
+            String uploadsDir = "uploads/";
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path path = Paths.get(uploadsDir + fileName);
 
-        try{
-            Files.createDirectories(Paths.get(uploadsDir));
-            file.transferTo(path);
-        } catch (Exception e) {
-            e.printStackTrace();
+            try{
+                Files.createDirectories(Paths.get(uploadsDir));
+                file.transferTo(path);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String imageUrl = "/uploads/" + fileName;
+            userProfile.setProfileImageUrl(imageUrl);
         }
 
-        String imageUrl = "/uploads/" + fileName;
-
-        userProfile.setProfileImageUrl(imageUrl);
+        if(userProfile.getDateOfBirth() == null) {
+            userProfile.setDateOfBirth(existingProfile.getDateOfBirth());
+        }
         userProfileService.updateUserProfile(currentPrincipalName, userProfile);
         return "redirect:/profile";
     }
