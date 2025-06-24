@@ -55,8 +55,16 @@ public class BookingService {
             throw new IllegalArgumentException("Customer, service, collection method, or appointment date cannot be null");
         }
 
+        // Thêm kiểm tra validation cho email và phone
+        if (!customer.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new IllegalArgumentException("Email không hợp lệ");
+        }
+        if (!customer.getPhone().matches("[0-9]{10}")) {
+            throw new IllegalArgumentException("Số điện thoại phải có 10 chữ số");
+        }
+
         try {
-            logger.info("Saving booking for customer: {}", customer.getName());
+            logger.info("Saving booking for customer: {} at {}", customer.getName(), LocalDateTime.now());
             DnaService service = getServiceById(customer.getService().getId());
             if (service == null) {
                 logger.error("Service not found with id: {}", customer.getService().getId());
@@ -65,9 +73,15 @@ public class BookingService {
 
             Customer existingCustomer = customerRepository.findByPhone(customer.getPhone())
                     .orElseGet(() -> {
-                        Customer newCustomer = customerRepository.save(customer);
-                        logger.info("New customer saved with id: {}", newCustomer.getId());
-                        return newCustomer;
+                        Customer newCustomer = new Customer();
+                        newCustomer.setName(customer.getName());
+                        newCustomer.setEmail(customer.getEmail());
+                        newCustomer.setPhone(customer.getPhone());
+                        newCustomer.setMessage(customer.getMessage());
+                        newCustomer.setService(customer.getService());
+                        newCustomer.setCollectionMethod(customer.getCollectionMethod());
+                        newCustomer.setAppointmentDate(customer.getAppointmentDate());
+                        return customerRepository.save(newCustomer);
                     });
             logger.info("Customer found or saved with id: {}", existingCustomer.getId());
 
@@ -105,7 +119,7 @@ public class BookingService {
     }
 
     public List<DnaService> getAllServices() {
-        logger.info("Fetching all services");
+        logger.info("Fetching all services at {}", LocalDateTime.now());
         return dnaServiceRepository.findAll();
     }
 }

@@ -2,7 +2,6 @@ package com.dna_testing_system.dev.controller;
 
 import com.dna_testing_system.dev.entity.Customer;
 import com.dna_testing_system.dev.entity.DnaService;
-import com.dna_testing_system.dev.entity.Participant;
 import com.dna_testing_system.dev.enums.CollectionMethod;
 import com.dna_testing_system.dev.repository.ParticipantRepository;
 import com.dna_testing_system.dev.service.BookingService;

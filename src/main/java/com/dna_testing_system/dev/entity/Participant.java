@@ -1,6 +1,7 @@
 package com.dna_testing_system.dev.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "participants")
@@ -10,7 +11,7 @@ public class Participant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Name is required")
     private String name;
 
     @ManyToOne
