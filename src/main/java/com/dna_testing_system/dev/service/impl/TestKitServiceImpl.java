@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +61,8 @@ public class TestKitServiceImpl implements TestKitService {
     public void UpdateTestKit(Long kitId, TestKitRequest testKitRequest) {
         TestKit testKit = testKitRepository.findById(kitId)
                 .orElseThrow(() -> new RuntimeException("Test Kit not found with id: " + kitId));
+        LocalDateTime currentTime = LocalDateTime.now();
+        testKit.setUpdatedAt(currentTime);
         testKitMapper.updateEntityFromDto(testKitRequest, testKit);
         testKitRepository.save(testKit);
     }

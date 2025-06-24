@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -23,6 +24,7 @@ public class TestKitController {
 
     @GetMapping("/test-kits/create")
     public String showCreateTestKitForm(Model model) {
+        model.addAttribute("today", LocalDate.now());
         model.addAttribute("newTestKit", new TestKitRequest()); // Add an empty TestKitRequest object to the model
         return "admin-manager/create-test-kit"; // Return the view name for the create test kit form
     }
@@ -53,11 +55,16 @@ public class TestKitController {
     public String showUpdateTestKitForm(@RequestParam("kitId") Long kitId, Model model) {
         TestKitResponse testKit = testKitService.GetTestKitResponseById(kitId);
         model.addAttribute("testKit", testKit);
+        model.addAttribute("today", LocalDate.now());
         return "admin-manager/update-test-kit"; // Return the view name for the update form
     }
 
     @PostMapping("/test-kits/update")
     public String updateTestKit(@RequestParam("kitId") Long kitId, @ModelAttribute("testKitEdit") TestKitRequest testKitRequest) {
+
+        if (testKitRequest.getExpiryDate() == null) {
+            testKitRequest.setExpiryDate(testKitService.GetTestKitResponseById(kitId).getExpiryDate()); // Set expiry date to empty string if null
+        }
         testKitService.UpdateTestKit(kitId, testKitRequest);
         return "redirect:/test-kits"; // Redirect to the test kits page after updating
     }
