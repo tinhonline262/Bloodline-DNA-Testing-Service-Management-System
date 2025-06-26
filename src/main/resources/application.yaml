@@ -4,12 +4,16 @@ server:
 spring:
   application:
     name: dev
+  websocket:
+    sockjs:
+      enabled: true
+      client-library-url: https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js
   thymeleaf:
     cache: false
   datasource:
     url: "jdbc:mysql://localhost:3306/dna_testing_system"
-    username: an
-    password: napui@123
+    username: root
+    password: password
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,4 +23,5 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     springframework.web: DEBUG
+    springframework.web.socket: DEBUG
     springframework.security: DEBUG

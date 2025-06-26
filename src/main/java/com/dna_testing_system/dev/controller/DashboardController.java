@@ -1,10 +1,13 @@
 package com.dna_testing_system.dev.controller;
 
+import com.dna_testing_system.dev.entity.User;
 import com.dna_testing_system.dev.service.MedicalServiceManageService;
+import com.dna_testing_system.dev.service.NotificationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class DashboardController {
 
     MedicalServiceManageService medicalServiceManageService;
+    NotificationService notificationService;
 
     /**
      * Display the main dashboard page

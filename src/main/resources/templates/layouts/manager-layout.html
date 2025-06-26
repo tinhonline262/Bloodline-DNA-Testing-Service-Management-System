@@ -19,7 +19,7 @@
     <!-- Main Wrapper -->
     <div class="page">
         <!-- Header -->
-        <div th:replace="~{fragments/common/header :: header}"></div>
+        <div th:replace="~{fragments/manager/header :: header}"></div>
         <!-- End Header -->
 
         <!-- Sidebar -->
@@ -62,7 +62,7 @@
         <!-- End Main Content -->
 
         <!-- Footer -->
-        <div th:replace="~{fragments/common/footer :: footer}"></div>
+        <div th:replace="~{fragments/manager/footer :: footer}"></div>
         <!-- End Footer -->
     </div>
     <!-- End Main Wrapper -->
@@ -292,5 +292,8 @@
             }
         });
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 </body>
 </html>
