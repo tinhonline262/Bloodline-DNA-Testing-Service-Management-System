@@ -13,16 +13,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ServiceOrderResponse {
-    private Long id;
-    private String customerId;
-    private Long serviceId;
-    private String status;
+    Long id;
+    String customerId;
+    Long serviceId;
+    String status;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdDate;
+    LocalDateTime createdDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updatedDate;
+    LocalDateTime updatedDate;
 
-    // Nếu bạn có thêm các trường LocalDateTime khác trong DTO thì cũng nên thêm tương tự
+   
 }

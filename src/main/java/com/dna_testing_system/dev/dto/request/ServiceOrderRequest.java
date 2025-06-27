@@ -4,22 +4,28 @@ import com.dna_testing_system.dev.enums.CollectionType;
 import com.dna_testing_system.dev.enums.ServiceOrderStatus;
 import com.dna_testing_system.dev.enums.PaymentStatus;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ServiceOrderRequest {
-    private String customerId;
-    private Long serviceId;
-    private LocalDateTime appointmentDate;
-    private CollectionType collectionType;
-    private String collectionAddress;
-    private ServiceOrderStatus orderStatus;
-    private PaymentStatus paymentStatus;
-    private List<OrderParticipantRequest> participants;
+    String customerId;
+    String username;
+    Long serviceId;
+    String idMedicalService;
+    LocalDateTime appointmentDate;
+    CollectionType collectionType;
+    String collectionAddress;
+    String createdBy;
+    String idKit;
+    Integer quantityKit;
+    ServiceOrderStatus orderStatus;
+    PaymentStatus paymentStatus;
+    List<OrderParticipantRequest> participants;
 }
