@@ -4,7 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 /**
- * DTO for returning information about a feature assigned to a service
+ * DTO dùng để trả về thông tin gán đặc điểm của dịch vụ y tế.
  */
 @Getter
 @Setter
@@ -13,9 +13,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ServiceFeatureAssignmentResponse {
-
     Long featureId;
     String featureName;
     Boolean isAvailable;
-
 }

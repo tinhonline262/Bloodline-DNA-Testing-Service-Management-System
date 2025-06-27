@@ -1,14 +1,14 @@
 package com.dna_testing_system.dev.entity;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -21,26 +21,37 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "tbl_user_profiles")
 public class UserProfile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_profile_id", nullable = false)
-    Long profileId;
+    @Column(name = "profile_id", nullable = false)
+    Long id;
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id", nullable = false)
     User user;
 
+    @NotBlank
     @Size(max = 100)
-    @NotNull
     @Column(name = "first_name", nullable = false, length = 100)
     String firstName;
 
+    @NotBlank
     @Size(max = 100)
-    @NotNull
     @Column(name = "last_name", nullable = false, length = 100)
     String lastName;
+
+    @Email
+    @Size(max = 100)
+    @NotBlank
+    @Column(name = "email", nullable = false, unique = true)
+    String email;
+
+    @Size(max = 20)
+    @Column(name = "phone_number", length = 20)
+    String phoneNumber;
 
     @Column(name = "date_of_birth")
     LocalDate dateOfBirth;
@@ -49,21 +60,11 @@ public class UserProfile {
     @Column(name = "profile_image_url", length = 500)
     String profileImageUrl;
 
-    @Size(max = 100)
-    @NotNull
-    @Column(name = "email", nullable = false)
-    String email;
-
-    @Size(max = 10)
-    @Column(name = "phone_number", length = 20)
-    String phoneNumber;
-
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
-
 }

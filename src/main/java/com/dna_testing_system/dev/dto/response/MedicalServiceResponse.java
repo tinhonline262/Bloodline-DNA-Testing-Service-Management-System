@@ -16,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MedicalServiceResponse {
-
     Long id;
     String serviceName;
     ServiceCategory serviceCategory;
@@ -28,10 +27,12 @@ public class MedicalServiceResponse {
     BigDecimal currentPrice;
     Boolean isAvailable;
     String serviceDescription;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime createdAt;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime updatedAt;
-    List<ServiceFeatureAssignmentResponse> features;
 
+    List<ServiceFeatureAssignmentResponse> features;
 }

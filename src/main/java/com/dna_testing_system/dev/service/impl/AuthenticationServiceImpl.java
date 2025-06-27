@@ -9,7 +9,6 @@ import com.dna_testing_system.dev.entity.UserRole;
 import com.dna_testing_system.dev.enums.RoleType;
 import com.dna_testing_system.dev.exception.AuthenticationException;
 import com.dna_testing_system.dev.exception.ErrorCode;
-import com.dna_testing_system.dev.exception.ResourceNotFoundException;
 import com.dna_testing_system.dev.repository.RoleRepository;
 import com.dna_testing_system.dev.repository.UserProfileRepository;
 import com.dna_testing_system.dev.repository.UserRepository;
@@ -22,7 +21,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.HashSet;
 
 @Service

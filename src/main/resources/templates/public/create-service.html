@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tạo dịch vụ mới</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        body { background-color: #f8f9fa; font-family: Arial, sans-serif; }
+        .form-control, .form-select { border-radius: 0.5rem; }
+        .btn-success { background-color: #28a745; border-color: #28a745; border-radius: 0.5rem; }
+        .btn-success:hover { background-color: #218838; }
+        .btn-secondary { border-radius: 0.5rem; }
+    </style>
+</head>
+<body>
+<div class="container my-5">
+    <h1 class="mb-4">Tạo dịch vụ mới</h1>
+    <form th:action="@{/manager/services/add}" th:object="${serviceRequest}" method="post">
+        <div class="mb-3">
+            <label for="serviceName" class="form-label">Tên dịch vụ</label>
+            <input type="text" th:field="*{serviceName}" class="form-control" id="serviceName" required/>
+            <span th:if="${#fields.hasErrors('serviceName')}" class="text-danger" th:errors="*{serviceName}"></span>
+        </div>
+        <div class="mb-3">
+            <label for="serviceDescription" class="form-label">Mô tả</label>
+            <textarea th:field="*{serviceDescription}" class="form-control" id="serviceDescription"></textarea>
+            <span th:if="${#fields.hasErrors('serviceDescription')}" class="text-danger" th:errors="*{serviceDescription}"></span>
+        </div>
+        <div class="mb-3">
+            <label for="basePrice" class="form-label">Giá gốc</label>
+            <input type="number" step="0.01" th:field="*{basePrice}" class="form-control" id="basePrice" required/>
+            <span th:if="${#fields.hasErrors('basePrice')}" class="text-danger" th:errors="*{basePrice}"></span>
+        </div>
+        <div class="mb-3">
+            <label for="currentPrice" class="form-label">Giá hiện tại</label>
+            <input type="number" step="0.01" th:field="*{currentPrice}" class="form-control" id="currentPrice" required/>
+            <span th:if="${#fields.hasErrors('currentPrice')}" class="text-danger" th:errors="*{currentPrice}"></span>
+        </div>
+        <div class="mb-3">
+            <label for="serviceCategory" class="form-label">Loại dịch vụ</label>
+            <select th:field="*{serviceCategory}" class="form-select" id="serviceCategory" required>
+                <option value="">-- Chọn loại --</option>
+                <option th:each="category : ${T(com.dna_testing_system.dev.enums.ServiceCategory).values()}"
+                        th:value="${category}" th:text="${category.name()}"></option>
+            </select>
+            <span th:if="${#fields.hasErrors('serviceCategory')}" class="text-danger" th:errors="*{serviceCategory}"></span>
+        </div>
+        <div class="mb-3">
+            <label for="serviceTypeId" class="form-label">Loại dịch vụ phụ</label>
+            <select th:field="*{serviceTypeId}" class="form-select" id="serviceTypeId">
+                <option value="">-- Chọn loại --</option>
+                <option th:each="type : ${serviceTypes}" th:value="${type.id}" th:text="${type.typeName}"></option>
+            </select>
+            <span th:if="${#fields.hasErrors('serviceTypeId')}" class="text-danger" th:errors="*{serviceTypeId}"></span>
+        </div>
+        <div class="mb-3">
+            <label for="participants" class="form-label">Số người tham gia</label>
+            <input type="number" th:field="*{participants}" class="form-control" id="participants" min="1" required/>
+            <span th:if="${#fields.hasErrors('participants')}" class="text-danger" th:errors="*{participants}"></span>
+        </div>
+        <div class="mb-3">
+            <label for="executionTimeDays" class="form-label">Thời gian thực hiện (ngày)</label>
+            <input type="number" th:field="*{executionTimeDays}" class="form-control" id="executionTimeDays" min="1" required/>
+            <span th:if="${#fields.hasErrors('executionTimeDays')}" class="text-danger" th:errors="*{executionTimeDays}"></span>
+        </div>
+        <div class="mb-3">
+            <label for="isAvailable" class="form-label">Có sẵn</label>
+            <input type="checkbox" th:field="*{isAvailable}" id="isAvailable"/>
+        </div>
+        <div class="mb-3">
+            <label for="isBestValue" class="form-label">Giá trị tốt nhất</label>
+            <input type="checkbox" th:field="*{isBestValue}" id="isBestValue"/>
+        </div>
+        <button type="submit" class="btn btn-success">Tạo dịch vụ</button>
+        <a href="/manager/services/list" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

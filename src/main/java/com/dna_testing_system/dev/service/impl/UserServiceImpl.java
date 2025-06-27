@@ -17,44 +17,44 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class UserServiceImpl implements UserService {
+public abstract class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
     UserProfileRepository userProfileRepository;
     UserMapper userMapper;
 
     @Override
-    public User getUserById(String userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_EXISTS));
+    public Optional<User> getUserById(String userId) {
+        return Optional.ofNullable(userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_EXISTS)));
     }
 
-    @Override
     @Transactional
-    public User updateProfile(String userId, UpdateProfileRequest request) {
-        User user = getUserById(userId);
-        
+    @Override
+    public Optional<User> updateProfile(String userId, UpdateProfileRequest request) {
+        User user = getUserById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_EXISTS)); // Lấy User từ Optional
+
         UserProfile profile = user.getUserProfile();
-        
+
         if (profile == null) {
-            // Create new profile if it doesn't exist
             profile = userMapper.toUserProfile(request, user);
         } else {
-            // Update existing profile using mapper
             userMapper.updateUserProfileFromDto(request, profile);
         }
-        
+
         userProfileRepository.save(profile);
-        user.setUserProfile(profile);
+        user.setUserProfile(profile); // Cập nhật User
         log.info("User Profile Updated Successfully");
-        return user;
+        return Optional.of(user); // Trả về Optional<User> với user đã cập nhật
     }
-    
+
     @Override
     public UserResponse toUserResponse(User user) {
         return userMapper.toResponse(user);

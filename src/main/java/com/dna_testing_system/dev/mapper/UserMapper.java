@@ -5,21 +5,13 @@ import com.dna_testing_system.dev.dto.request.UpdateProfileRequest;
 import com.dna_testing_system.dev.dto.response.UserResponse;
 import com.dna_testing_system.dev.entity.User;
 import com.dna_testing_system.dev.entity.UserProfile;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
-import java.util.List;
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
+
     User toEntity(RegisterRequest request);
 
-    /**
-     * Maps User entity to UserResponse DTO, including fields from UserProfile
-     * @param user The user entity to map
-     * @return UserResponse DTO with user and profile information
-     */
     @Mapping(target = "userId", source = "id")
     @Mapping(target = "username", source = "username")
     @Mapping(target = "isActive", source = "isActive")
@@ -33,21 +25,19 @@ public interface UserMapper {
     @Mapping(target = "message", ignore = true)
     UserResponse toResponse(User user);
 
-    /**
-     * Maps UpdateProfileRequest to UserProfile entity, updating only non-null fields
-     * @param request The update profile request
-     * @param userProfile The target UserProfile entity to update
-     */
     void updateUserProfileFromDto(UpdateProfileRequest request, @MappingTarget UserProfile userProfile);
 
-    /**
-     * Maps UpdateProfileRequest to a new UserProfile entity
-     * @param request The update profile request
-     * @param user The user entity that owns this profile
-     * @return A new UserProfile entity
-     */
-    @Mapping(target = "profileId", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "createdAt", ignore = true),
+            @Mapping(target = "updatedAt", ignore = true),
+            @Mapping(target = "user", source = "user"),
+            @Mapping(target = "firstName", source = "request.firstName"),
+            @Mapping(target = "lastName", source = "request.lastName"),
+            @Mapping(target = "email", source = "request.email"),
+            @Mapping(target = "phoneNumber", source = "request.phoneNumber"),
+            @Mapping(target = "profileImageUrl", source = "request.profileImageUrl"),
+            @Mapping(target = "dateOfBirth", source = "request.dateOfBirth")
+    })
     UserProfile toUserProfile(UpdateProfileRequest request, User user);
 }
