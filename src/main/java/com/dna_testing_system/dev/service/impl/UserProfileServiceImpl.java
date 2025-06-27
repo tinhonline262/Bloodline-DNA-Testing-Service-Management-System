@@ -2,7 +2,6 @@ package com.dna_testing_system.dev.service.impl;
 
 import com.dna_testing_system.dev.dto.request.UserProfileRequest;
 import com.dna_testing_system.dev.dto.response.UserProfileResponse;
-import com.dna_testing_system.dev.dto.response.UserResponse;
 import com.dna_testing_system.dev.entity.User;
 import com.dna_testing_system.dev.entity.UserProfile;
 import com.dna_testing_system.dev.exception.ErrorCode;

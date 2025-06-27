@@ -5,6 +5,9 @@ import lombok.experimental.FieldDefaults;
 
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * DTO dùng để nhận yêu cầu tạo gán đặc điểm cho dịch vụ y tế.
+ */
 @Getter
 @Setter
 @Builder
@@ -12,9 +15,15 @@ import jakarta.validation.constraints.NotNull;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FeatureAssignmentCreationRequest {
-    @NotNull(message = "Feature ID must not be null")
-    String featureName;
-    
+    /**
+     * Tên đặc điểm, không được null.
+     */
+    @NotNull(message = "Feature name must not be null")
+    private String featureName;
+
+    /**
+     * Trạng thái khả dụng của đặc điểm, không được null.
+     */
     @NotNull(message = "Availability status must be specified")
-    Boolean isAvailable;
+    private Boolean isAvailable;
 }

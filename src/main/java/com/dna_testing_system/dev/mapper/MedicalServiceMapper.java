@@ -31,9 +31,8 @@ public interface MedicalServiceMapper {
     ServiceFeatureAssignmentResponse toServiceFeatureAssignmentResponse(ServiceFeature feature);
 
     List<ServiceFeatureAssignmentResponse> toServiceFeatureAssignmentResponseList(Set<ServiceFeature> features);
-    // Convert from Request to Entity, ignoring the serviceType and features that need special handling
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "serviceType", ignore = true) 
+    @Mapping(target = "serviceType", ignore = true)
     @Mapping(target = "serviceFeatures", ignore = true)
     @Mapping(target = "serviceOrders", ignore = true)
     @Mapping(target = "customerFeedbacks", ignore = true)

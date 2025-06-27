@@ -1,8 +1,9 @@
 package com.dna_testing_system.dev.controller;
 
-import com.dna_testing_system.dev.entity.DnaService;
+import com.dna_testing_system.dev.dto.request.ServiceOrderRequest;
+import com.dna_testing_system.dev.entity.MedicalService;
 import com.dna_testing_system.dev.service.ServiceService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,15 +14,16 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/v1/services")
+@RequiredArgsConstructor
 public class ServiceDetailController {
 
-    @Autowired
-    private ServiceService serviceService;
+    private final ServiceService serviceService;
 
     @GetMapping("/{id}")
     public String showServiceDetail(@PathVariable Long id, Model model) {
-        Optional<DnaService> service = serviceService.getServiceById(id);
-        model.addAttribute("service", service.orElse(new DnaService()));
+        Optional<MedicalService> service = serviceService.getServiceById(id);
+        model.addAttribute("service", service.orElseGet(MedicalService::new));
+        model.addAttribute("orderRequest", new ServiceOrderRequest()); // Thêm orderRequest
         return "service-detail";
     }
 }

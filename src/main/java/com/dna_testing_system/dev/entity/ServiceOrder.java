@@ -1,3 +1,4 @@
+
 package com.dna_testing_system.dev.entity;
 
 import com.dna_testing_system.dev.enums.CollectionType;
@@ -8,26 +9,24 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "tbl_service_orders")
 public class ServiceOrder {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", nullable = false)
@@ -43,8 +42,8 @@ public class ServiceOrder {
     @JoinColumn(name = "service_id", nullable = false)
     MedicalService service;
 
-    @Column(name = "appointment_date")
-    LocalDate appointmentDate;
+    @Column(name = "appointment_date", nullable = false)
+    LocalDateTime appointmentDate;
 
     @Enumerated(EnumType.STRING)
     @Size(max = 50)
@@ -56,13 +55,13 @@ public class ServiceOrder {
     @Column(name = "collection_address", length = 500)
     String collectionAddress;
 
-    @Builder.Default
+    @Enumerated(EnumType.STRING)
     @Size(max = 50)
     @NotNull
     @Column(name = "order_status", nullable = false, length = 50)
     ServiceOrderStatus orderStatus = ServiceOrderStatus.PENDING;
 
-    @Builder.Default
+    @Enumerated(EnumType.STRING)
     @Size(max = 50)
     @NotNull
     @Column(name = "payment_status", nullable = false, length = 50)
@@ -94,21 +93,27 @@ public class ServiceOrder {
     @Column(name = "updated_by")
     String updatedBy;
 
+    @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<OrderKit> orderKits = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<OrderParticipant> orderParticipants = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     Set<SampleCollection> sampleCollections = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     Set<Payment> payments = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     Set<TestResult> testResults = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     Set<Notification> notifications = new HashSet<>();
 }

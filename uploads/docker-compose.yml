@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: springboot-dna
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dna_booking_db
+      SPRING_DATASOURCE_USERNAME: ThuyTien
+      SPRING_DATASOURCE_PASSWORD: 38632347tT@
+    networks:
+      - backend
+
+  mysql:
+    image: mysql:8
+    container_name: mysql-dna-v2
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: dna_booking_db
+      MYSQL_USER: ThuyTien
+      MYSQL_PASSWORD: 38632347tT@
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
+
+volumes:
+  mysql_data:
+
+networks:
+  backend:

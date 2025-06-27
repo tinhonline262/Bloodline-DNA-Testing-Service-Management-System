@@ -30,32 +30,30 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MedicalServiceManageServiceImpl implements MedicalServiceManageService {
 
-    ServiceTypeRepository serviceTypeRepository;
-    ServiceTypeMapper serviceTypeMapper;
-    ServiceFeatureMapper  serviceFeatureMapper;
-    ServiceFeatureRepository serviceFeatureRepository;
-    MedicalServiceMapper medicalServiceMapper;
-    MedicalServiceRepository medicalServiceRepository;
+    private final ServiceTypeRepository serviceTypeRepository;
+    private final ServiceTypeMapper serviceTypeMapper;
+    private final ServiceFeatureMapper serviceFeatureMapper;
+    private final ServiceFeatureRepository serviceFeatureRepository;
+    private final MedicalServiceMapper medicalServiceMapper;
+    private final MedicalServiceRepository medicalServiceRepository;
 
     @Override
     @Transactional
     public MedicalServiceResponse createService(MedicalServiceRequest request) {
-        // Find service type
         ServiceType serviceType = serviceTypeRepository.findById(request.getServiceTypeId())
                 .orElseThrow(() -> new MedicalServiceException(ErrorCode.SERVICE_TYPE_NOT_EXISTS));
 
-        // Create new service using the mapper
         MedicalService service = medicalServiceMapper.toEntity(request);
         service.setServiceType(serviceType);
 
-        // Save service
         MedicalService savedService = medicalServiceRepository.save(service);
-        if (savedService.getServiceFeatures() == null)
+        if (savedService.getServiceFeatures() == null) {
             savedService.setServiceFeatures(new HashSet<>());
-        // Create service features
+        }
+
         if (request.getFeatureAssignments() != null && !request.getFeatureAssignments().isEmpty()) {
             for (FeatureAssignmentCreationRequest featureRequest : request.getFeatureAssignments()) {
                 ServiceFeature feature = ServiceFeature.builder()
@@ -68,10 +66,8 @@ public class MedicalServiceManageServiceImpl implements MedicalServiceManageServ
             }
         }
 
-        // Refresh service to get updated features
         MedicalService refreshedService = medicalServiceRepository.findById(savedService.getId())
                 .orElseThrow(() -> new MedicalServiceException(ErrorCode.MEDICAL_SERVICE_NOT_EXISTS));
-//        refreshedService.getServiceFeatures().addAll(savedService.getServiceFeatures());
         return medicalServiceMapper.toResponse(refreshedService);
     }
 
@@ -98,29 +94,36 @@ public class MedicalServiceManageServiceImpl implements MedicalServiceManageServ
     public void deleteService(Long id) {
         MedicalService service = medicalServiceRepository.findById(id)
                 .orElseThrow(() -> new MedicalServiceException(ErrorCode.MEDICAL_SERVICE_NOT_EXISTS));
-
-        // Delete service (with cascade delete for features)
         medicalServiceRepository.delete(service);
     }
 
     @Override
     @Transactional
     public void updateService(Long id, MedicalServiceUpdateRequest request) {
-        var medicalService = medicalServiceRepository.findById(id)
-                .orElseThrow(() ->  new MedicalServiceException(ErrorCode.MEDICAL_SERVICE_NOT_EXISTS));
-        //delete service feature
-        for (var feature : medicalService.getServiceFeatures()) {
-            deleteServiceFeature(feature.getId());
-        }
-        try {
-            medicalServiceMapper.updateMedicalService(request, medicalService);
-            if (medicalService.getServiceFeatures() == null)
+        MedicalService medicalService = medicalServiceRepository.findById(id)
+                .orElseThrow(() -> new MedicalServiceException(ErrorCode.MEDICAL_SERVICE_NOT_EXISTS));
+
+        // Chỉ xóa các ServiceFeature không còn trong danh sách mới
+        if (request.getEditFeatureAssignments() != null && !request.getEditFeatureAssignments().isEmpty()) {
+            var existingFeatures = new HashSet<>(medicalService.getServiceFeatures());
+            for (FeatureAssignmentCreationRequest newFeature : request.getEditFeatureAssignments()) {
+                existingFeatures.removeIf(feature ->
+                        feature.getFeatureName().equals(newFeature.getFeatureName()) &&
+                                feature.getIsAvailable().equals(newFeature.getIsAvailable())
+                );
+            }
+            for (ServiceFeature featureToDelete : existingFeatures) {
+                deleteServiceFeature(featureToDelete.getId());
+            }
+
+            // Thêm hoặc cập nhật các feature mới
+            if (medicalService.getServiceFeatures() == null) {
                 medicalService.setServiceFeatures(new HashSet<>());
-            else
-                medicalService.getServiceFeatures().clear();
-            //assign for new medical service
-            if (request.getEditFeatureAssignments() != null && !request.getEditFeatureAssignments().isEmpty()) {
-                for (FeatureAssignmentCreationRequest featureRequest : request.getEditFeatureAssignments()) {
+            }
+            for (FeatureAssignmentCreationRequest featureRequest : request.getEditFeatureAssignments()) {
+                boolean exists = medicalService.getServiceFeatures().stream()
+                        .anyMatch(f -> f.getFeatureName().equals(featureRequest.getFeatureName()));
+                if (!exists) {
                     ServiceFeature feature = ServiceFeature.builder()
                             .service(medicalService)
                             .featureName(featureRequest.getFeatureName())
@@ -130,11 +133,12 @@ public class MedicalServiceManageServiceImpl implements MedicalServiceManageServ
                     medicalService.getServiceFeatures().add(feature);
                 }
             }
-            medicalServiceRepository.save(medicalService);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new MedicalServiceException(ErrorCode.UNKNOWN_ERROR);
+        } else {
+            medicalService.getServiceFeatures().clear();
         }
+
+        medicalServiceMapper.updateMedicalService(request, medicalService);
+        medicalServiceRepository.save(medicalService);
     }
 
     @Override
@@ -147,8 +151,9 @@ public class MedicalServiceManageServiceImpl implements MedicalServiceManageServ
     @Transactional
     public ServiceTypeResponse createServiceType(ServiceTypeRequest request) {
         request.setTypeName(request.getTypeName().toUpperCase());
-        if (serviceTypeRepository.existsByTypeName(request.getTypeName()))
+        if (serviceTypeRepository.existsByTypeName(request.getTypeName())) {
             throw new MedicalServiceException(ErrorCode.SERVICE_TYPE_EXISTS);
+        }
         ServiceType serviceType = ServiceType.builder()
                 .typeName(request.getTypeName())
                 .isActive(request.getIsActive())
@@ -156,6 +161,7 @@ public class MedicalServiceManageServiceImpl implements MedicalServiceManageServ
         serviceTypeRepository.save(serviceType);
         return serviceTypeMapper.toResponse(serviceType);
     }
+
     @Override
     @Transactional
     public List<ServiceFeatureResponse> getAllServiceFeatures() {
@@ -165,19 +171,17 @@ public class MedicalServiceManageServiceImpl implements MedicalServiceManageServ
 
     @Override
     public void deleteTypeService(Long id) {
-        var serviceType = serviceTypeRepository.findById(id)
+        ServiceType serviceType = serviceTypeRepository.findById(id)
                 .orElseThrow(() -> new MedicalServiceException(ErrorCode.SERVICE_TYPE_NOT_EXISTS));
-
         serviceTypeRepository.delete(serviceType);
     }
 
     @Override
     public void updateTypeService(Long id, ServiceTypeRequest request) {
-        var serviceType = serviceTypeRepository.findById(id)
+        ServiceType serviceType = serviceTypeRepository.findById(id)
                 .orElseThrow(() -> new MedicalServiceException(ErrorCode.SERVICE_TYPE_NOT_EXISTS));
         request.setTypeName(request.getTypeName().toUpperCase());
-
-        serviceTypeMapper.updateServiceType(request,serviceType);
+        serviceTypeMapper.updateServiceType(request, serviceType);
         serviceTypeRepository.save(serviceType);
     }
 
@@ -194,7 +198,7 @@ public class MedicalServiceManageServiceImpl implements MedicalServiceManageServ
 
     @Override
     public void deleteServiceFeature(Long id) {
-        var serviceFeature = serviceFeatureRepository.findById(id)
+        ServiceFeature serviceFeature = serviceFeatureRepository.findById(id)
                 .orElseThrow(() -> new MedicalServiceException(ErrorCode.SERVICE_FEATURE_NOT_EXISTS));
         serviceFeatureRepository.delete(serviceFeature);
     }
