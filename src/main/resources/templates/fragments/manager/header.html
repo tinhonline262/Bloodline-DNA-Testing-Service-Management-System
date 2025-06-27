@@ -339,7 +339,7 @@
                     console.log('Username: [[${#authentication.name}]]');
 
                     // Subscribe to user-specific notifications
-                    stompClient.subscribe('/user/queue/notifications', function(notification) {
+                    stompClient.subscribe('/user/993a6ee5-a20c-4d63-9d37-dba5cb6bfbbf/queue/notifications', function(notification) {
                         const notificationData = JSON.parse(notification.body);
                         console.log('Received notification data', notificationData);
                         handleNewNotification(notificationData);

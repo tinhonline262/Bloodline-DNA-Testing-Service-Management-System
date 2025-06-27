@@ -21,7 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 public class NotificationConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry configuration) {
-        configuration.enableSimpleBroker("/user");
+        configuration.enableSimpleBroker("/user", "/queue", "/topic");
         configuration.setApplicationDestinationPrefixes("/app");
         configuration.setUserDestinationPrefix("/user");
     }

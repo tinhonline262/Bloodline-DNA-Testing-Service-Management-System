@@ -50,17 +50,17 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendNotification(Notification notification) {
-//        String userId = notification.getRecipientUser().getId();
-//        String destination = "/user/" + userId + "/queue/notifications";
-//        log.info("Sending WS notification to {} with payload: {}", userId, notification);
-//
-//        messagingTemplate.convertAndSend(
-//                destination
-//                , notification);
-        String username = notification.getRecipientUser().getUsername();
-        String destination = "/queue/notifications";
-        log.info("Sending WS notification to {} with payload: {}", username, notification);
-        messagingTemplate.convertAndSendToUser(username, destination, notification);
+        String userId = notification.getRecipientUser().getId();
+        String destination = "/user/" + userId + "/queue/notifications";
+        log.info("Sending WS notification to {} with payload: {}", userId, notification);
+
+        messagingTemplate.convertAndSend(
+                destination
+                , notification);
+//        String username = notification.getRecipientUser().getUsername();
+//        String destination = "/queue/notifications";
+//        log.info("Sending WS notification to {} with payload: {}", username, notification);
+//        messagingTemplate.convertAndSendToUser(username, destination, notification);
     }
 
     @Override
