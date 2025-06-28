@@ -34,7 +34,6 @@ public class OrderKitController {
     @GetMapping("/order-kit")
     public String orderKit(@RequestParam("kitTestId") Long kitTestId, Model model) {
         OrderTestKitRequest request = new OrderTestKitRequest();
-        Order
         request.setKitTestId(kitTestId);
         model.addAttribute("orderTestKitRequest", request);
         return "OrderKit/order-kit"; // Assuming you have a Thymeleaf template named "order-kit.html"
