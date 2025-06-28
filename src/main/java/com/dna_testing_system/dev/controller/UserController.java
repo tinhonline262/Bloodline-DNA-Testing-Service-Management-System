@@ -36,17 +36,23 @@ public class UserController {
         return "user/profile";
     }
 
-    @GetMapping("/profile/update")  // URL sẽ là /user/profile/update
+    @GetMapping("/profile/update")
     public String showUpdateProfileForm(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        UserProfileResponse userProfile = userProfileService.getUserProfile(currentPrincipalName);
-        model.addAttribute("userEditProfile", userProfile);
-        return "user/edit-profile";
+        UserProfileResponse userProfileData = userProfileService.getUserProfile(currentPrincipalName);
+
+        // Dữ liệu cũ chỉ có 1 dòng này
+        model.addAttribute("userEditProfile", userProfileData);
+
+        model.addAttribute("userProfile", userProfileData);
+
+        return "user/edit-profile"; //
     }
     @PostMapping("/profile/update")
     public String updateProfile(@ModelAttribute("userEditProfile") UserProfileRequest userProfile,
-                                @RequestParam(value = "file", required = false) MultipartFile file) {
+                                @RequestParam(value = "file", required = false) MultipartFile file,
+                                Model model) { // Thêm Model
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         UserProfileResponse existingProfile = userProfileService.getUserProfile(currentPrincipalName);
@@ -77,11 +83,19 @@ public class UserController {
         }
 
         userProfileService.updateUserProfile(currentPrincipalName, userProfile);
+
+        // Refresh lại thông tin user cho header
+        UserProfileResponse updatedProfile = userProfileService.getUserProfile(currentPrincipalName);
+        model.addAttribute("userProfile", updatedProfile);
+
         return "redirect:/user/profile";
     }
-    @GetMapping({"/layouts/user-layout", "/dashboard"})
-    public String userLayout() {
-        return "layouts/user-layout";
+    @GetMapping("/user/dashboard")
+    public String dashboard(Model model) {
+        model.addAttribute("pageTitle", "Dashboard - Trang chủ");
+        model.addAttribute("breadcrumbActive", "Dashboard");
+        model.addAttribute("currentPage", "dashboard"); // Để đánh dấu mục menu active
+        return "user/dashboard"; // Trả về template dashboard.html
     }
 
 }

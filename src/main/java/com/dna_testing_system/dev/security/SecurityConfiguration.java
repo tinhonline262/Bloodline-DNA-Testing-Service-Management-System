@@ -28,16 +28,15 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/", "/register", "/login", "/error", "/assets/**",
-                                "/uploads/**",
-                                "/layouts/**"
+                                "/uploads/**"
+                                // XÓA BỎ "/layouts/**" KHỎI ĐÂY
                         ).permitAll()
 
-                        .requestMatchers("/user/**").authenticated() // Cho phép tất cả /user/* với authentication
+                        .requestMatchers("/user/**").authenticated()
                         .anyRequest().permitAll()
                 )
-                // SỬA: Bật lại CSRF thay vì disable
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/register") // Nếu có form register không cần CSRF
+                        .ignoringRequestMatchers("/register")
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -57,7 +56,14 @@ public class SecurityConfiguration {
                 )
                 .exceptionHandling(exceptions -> exceptions
                         .accessDeniedPage("/access-denied")
+                )
+                // --- BẮT ĐẦU PHẦN THÊM MỚI ---
+                // Thêm cấu hình headers để kiểm soát cache, giúp trình duyệt hoạt động đúng
+                .headers(headers -> headers
+                        .cacheControl(cache -> {}) // Kích hoạt quản lý Cache-Control mặc định
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin()) // Chống clickjacking
                 );
+        // --- KẾT THÚC PHẦN THÊM MỚI ---
 
         return http.build();
     }

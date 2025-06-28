@@ -1,27 +1,44 @@
-
 package com.dna_testing_system.dev.controller;
 
+import com.dna_testing_system.dev.dto.response.UserProfileResponse;
+import com.dna_testing_system.dev.service.UserProfileService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HomeController {
 
-//    @GetMapping("/")
-//    public String home() {
-//        return "redirect:/index";
-//    }
+    UserProfileService userProfileService;
 
     @GetMapping("/")
     public String index() {
         return "index";
     }
-    @GetMapping("/user/home") // <--- Dòng này xử lý yêu cầu GET đến /user/home
-    public String userHomePage() {
-        return "user/home"; // Thymeleaf view tên user/home.html
+
+    @GetMapping("/user/home")
+    public String userHomePage(Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() &&
+                !authentication.getName().equals("anonymousUser")) {
+
+            String currentPrincipalName = authentication.getName();
+            UserProfileResponse userProfile = userProfileService.getUserProfile(currentPrincipalName);
+            model.addAttribute("userProfile", userProfile);
+        }
+
+        return "user/home";
     }
-    @GetMapping("/layouts/user-layout")
-    public String userLayout() {
-        return "layouts/user-layout";
-    }
+
+
+
+
 }
