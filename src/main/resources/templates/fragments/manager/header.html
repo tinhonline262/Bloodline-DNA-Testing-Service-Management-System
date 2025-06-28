@@ -182,7 +182,7 @@
                     <div>
                         <hr class="dropdown-divider">
                     </div>
-                    <ul class="list-unstyled mb-0" id="header-notification-scroll">
+                    <ul class="list-unstyled mb-0 notification-scroll" id="header-notification-scroll">
                         <li th:each="noti : ${notifications}" class="dropdown-item px-3">
                             <div class="d-flex">
             <span class="avatar avatar-md me-2 avatar-rounded flex-shrink-0 bg-info">
@@ -190,10 +190,17 @@
             </span>
                                 <div class="ms-3">
                                     <a th:href="@{/manager/notifications}">
-                                        <h5 class="notification-label text-dark mb-1" th:text="${noti.subject}">Tiêu
-                                            đề</h5>
+                                        <h5 class="notification-label text-dark mb-1" th:text="${noti.subject}">Tiêu đề</h5>
                                     </a>
-                                    <div class="notification-subtext" th:text="${noti.messageContent}">Nội dung</div>
+                                    <div class="notification-subtext mb-1" th:text="${noti.messageContent}">Nội dung</div>
+                                    <div class="notification-time" th:text="${#temporals.format(noti.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                        27/06/2025 14:30
+                                    </div>
+                                </div>
+                                <div class="ms-auto d-flex flex-column align-items-end">
+                                    <a th:href="@{/manager/notifications}" class="mt-1">
+                                        <i class="las la-angle-right text-end text-muted icon"></i>
+                                    </a>
                                 </div>
                             </div>
                         </li>
@@ -339,7 +346,7 @@
                     console.log('Username: [[${#authentication.name}]]');
 
                     // Subscribe to user-specific notifications
-                    stompClient.subscribe('/user/993a6ee5-a20c-4d63-9d37-dba5cb6bfbbf/queue/notifications', function(notification) {
+                    stompClient.subscribe('/user/[[${#authentication.name}]]/queue/notifications', function(notification) {
                         const notificationData = JSON.parse(notification.body);
                         console.log('Received notification data', notificationData);
                         handleNewNotification(notificationData);
@@ -395,6 +402,9 @@
                             <h5 class="notification-label text-dark mb-1">${notification.subject}</h5>
                         </a>
                         <div class="notification-subtext">${notification.messageContent}</div>
+                        <div class="notification-time" th:text="${#temporals.format(noti.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                        27/06/2025 14:30
+                                    </div>
                         <small class="text-muted">Just now</small>
                     </div>
                 </div>

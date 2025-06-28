@@ -44,13 +44,11 @@ public class SampleCollection {
     LocalDateTime collectionDate;
 
     @Enumerated(EnumType.STRING)
-    @Size(max = 50)
     @NotNull
     @Column(name = "sample_quality", nullable = false, length = 50)
     SampleQuality sampleQuality;
 
     @Enumerated(EnumType.STRING)
-    @Size(max = 50)
     @NotNull
     @Column(name = "collection_status", nullable = false, length = 50)
     CollectionStatus collectionStatus = CollectionStatus.PENDING;
@@ -63,4 +61,6 @@ public class SampleCollection {
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
 
+    @Column(name = "assigned_at")
+    LocalDateTime assignAt;
 }

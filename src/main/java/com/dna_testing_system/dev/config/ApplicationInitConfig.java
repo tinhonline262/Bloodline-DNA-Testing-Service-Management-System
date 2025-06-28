@@ -38,6 +38,12 @@ public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigure
     UserRoleRepository userRoleRepository;
     UserProfileRepository userProfileRepository;
 
+    public void run(ApplicationArguments args) throws Exception {
+        initRoleDatabase();
+        createManagerDefault();
+        createStaffDefault();
+        launchBrowser();
+    }
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // Cấu hình chi tiết hơn cho static resources
@@ -70,11 +76,6 @@ public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigure
         registry.addViewController("/index").setViewName("index");
     }
 
-    public void run(ApplicationArguments args) throws Exception {
-        initRoleDatabase();
-        createManagerDefault();
-        launchBrowser();
-    }
 
     private void initRoleDatabase() {
         for (RoleType roleType : RoleType.values()) {
@@ -90,6 +91,45 @@ public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigure
                     .isActive(true)
                     .build();
             roleRepository.save(role);
+        }
+    }
+    private void createStaffDefault() {
+        if (!userRepository.existsByUsername("staff1")) {
+            Role role = roleRepository.findByRoleName(RoleType.STAFF.name());
+
+            // Create and save the User entity with minimal information
+            User user = User.builder()
+                    .username("staff1")
+                    .passwordHash(PasswordUtil.encode("staff"))
+                    .isActive(true)
+                    .userRoles(new HashSet<>())
+                    .build();
+
+            user = userRepository.save(user);
+
+            UserRole userRoleForCreate = UserRole.builder()
+                    .user(user)
+                    .role(role)
+                    .isActive(true)
+                    .build();
+            UserRole userRole = userRoleRepository.save(userRoleForCreate);
+            user.getUserRoles().add(userRole);
+            userRepository.save(user);
+
+            // Create and save minimal UserProfile
+            UserProfile userProfile = UserProfile.builder()
+                    .user(user)
+                    .firstName("New")
+                    .lastName("STAFF")
+                    .email("staff@email.com")
+                    .phoneNumber("1309103213")
+                    .profileImageUrl("ajsdhfjahsasdf")
+                    .build();
+
+            userProfileRepository.save(userProfile);
+
+            user.setUserProfile(userProfile);
+            userRepository.save(user);
         }
     }
 

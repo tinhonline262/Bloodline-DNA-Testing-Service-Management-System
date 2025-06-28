@@ -36,6 +36,7 @@ public class User {
 
     @Size(max = 255)
     @NotNull
+    @JsonIgnore
     @Column(name = "password_hash", nullable = false)
     String passwordHash;
 
