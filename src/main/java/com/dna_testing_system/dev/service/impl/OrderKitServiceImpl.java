@@ -5,6 +5,7 @@ import com.dna_testing_system.dev.dto.response.OrderTestKitResponse;
 import com.dna_testing_system.dev.entity.OrderKit;
 import com.dna_testing_system.dev.entity.TestKit;
 import com.dna_testing_system.dev.entity.User;
+import com.dna_testing_system.dev.enums.KitStatus;
 import com.dna_testing_system.dev.mapper.OrderTestKitMapper;
 import com.dna_testing_system.dev.repository.OrderTestKitRepository;
 import com.dna_testing_system.dev.repository.TestKitRepository;
@@ -30,13 +31,16 @@ public class OrderKitServiceImpl implements OrderKitService {
     @Transactional
     public void createOrder(OrderTestKitRequest orderTestKitRequest) {
         OrderKit orderKit = orderTestKitMapper.toOrderKit(orderTestKitRequest);
-        TestKit testKit = testKitRepository.getOne(orderKit.getId());
+        TestKit testKit = testKitRepository.getById(orderTestKitRequest.getKitTestId());
         if (testKit == null) {
             throw new IllegalArgumentException("Test kit not found for ID: " + orderKit.getId());
         }
         orderKit.setUnitPrice(testKit.getCurrentPrice());
         orderKit.setTotalPrice(orderKit.getUnitPrice().multiply(BigDecimal.valueOf(orderKit.getQuantityOrdered().longValue())));
         // Save the orderKit to the database (repository save method would be called here)
+        orderKit.setKit(testKit);
+        KitStatus kitStatus = KitStatus.ORDERED;
+        orderKit.setKitStatus(kitStatus);
         orderKitRepository.save(orderKit);
         // Optionally, you might want to update the stock of the kit after ordering
         testKit.setQuantityInStock(
