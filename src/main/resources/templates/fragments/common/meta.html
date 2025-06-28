@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<head xmlns:th="http://www.thymeleaf.org" th:fragment="common-meta">
+    <!-- Meta Data -->
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title th:text="${title != null} ? ${title} + ' - Bloodline DNA Testing' : 'Bloodline DNA Testing'">Bloodline DNA
+        Testing</title>
+    <meta name="Description" content="Bloodline DNA Testing Service Management System">
+    <meta name="Author" content="Bloodline DNA Testing">
+    <meta name="keywords"
+          content="dna testing, paternity test, relationship testing, ancestry, genetic testing, bloodline">
 
-</body>
-</html>
+    <!-- Favicon -->
+    <link rel="icon" th:href="@{/assets/images/brand-logos/favicon.ico}" type="image/x-icon">
+
+    <!-- Choices JS -->
+    <script th:src="@{/assets/libs/choices.js/public/assets/scripts/choices.min.js}"></script>
+
+    <!-- Main Theme Js -->
+    <script th:src="@{/assets/js/main.js}"></script>
+
+    <!-- Bootstrap Css -->
+    <link id="style" th:href="@{/assets/libs/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Style Css -->
+    <link th:href="@{/assets/css/styles.min.css}" rel="stylesheet">
+
+    <!-- Icons Css -->
+    <link th:href="@{/assets/css/icons.css}" rel="stylesheet">
+
+    <!-- Node Waves Css -->
+    <link th:href="@{/assets/libs/node-waves/waves.min.css}" rel="stylesheet">
+
+    <!-- Simplebar Css -->
+    <link th:href="@{/assets/libs/simplebar/simplebar.min.css}" rel="stylesheet">
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" th:href="@{/assets/libs/flatpickr/flatpickr.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/libs/@simonwep/pickr/themes/nano.min.css}">
+
+    <!-- Choices Css -->
+    <link rel="stylesheet" th:href="@{/assets/libs/choices.js/public/assets/styles/choices.min.css}">
+
+    <!-- Jsvector Maps -->
+    <link rel="stylesheet" th:href="@{/assets/libs/jsvectormap/css/jsvectormap.min.css}">
+</head>
