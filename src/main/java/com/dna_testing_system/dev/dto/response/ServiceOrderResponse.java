@@ -33,6 +33,7 @@ public class ServiceOrderResponse {
     String phoneNumber;
     String serviceName;
     String serviceType;
+    String testType;
     String serviceCategory;
     Integer participants;
     Integer executionTimeDays;

@@ -1,0 +1,318 @@
+<html
+        th:replace="~{layouts/manager-layout :: layout(~{::#content}, ~{::#page-scripts}, 'New Orders Management', null, null)}"
+        xmlns:th="http://www.thymeleaf.org">
+
+<div id="content">
+  <!-- Page Header -->
+  <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+    <h1 class="page-title fw-semibold fs-18 mb-0">New Orders Management</h1>
+    <div class="ms-md-1 ms-0">
+      <nav>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="#">Manager</a></li>
+          <li class="breadcrumb-item active" aria-current="page">New Orders</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="d-flex align-items-center justify-content-center mb-2">
+            <div class="avatar bg-primary-transparent rounded-circle me-3">
+              <i class="ri-file-list-3-line fs-16"></i>
+            </div>
+            <div>
+              <h6 class="card-title text-muted mb-1">New Orders</h6>
+              <h4 class="mb-0 text-primary" id="new-orders-count">0</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="d-flex align-items-center justify-content-center mb-2">
+            <div class="avatar bg-info-transparent rounded-circle me-3">
+              <i class="ri-user-star-line fs-16"></i>
+            </div>
+            <div>
+              <h6 class="card-title text-muted mb-1">Available Staff</h6>
+              <h4 class="mb-0 text-info" id="available-staff-count">0</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="d-flex align-items-center justify-content-center mb-2">
+            <div class="avatar bg-success-transparent rounded-circle me-3">
+              <i class="ri-checkbox-circle-line fs-16"></i>
+            </div>
+            <div>
+              <h6 class="card-title text-muted mb-1">Assigned Today</h6>
+              <h4 class="mb-0 text-success" id="assigned-today-count">0</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="d-flex align-items-center justify-content-center mb-2">
+            <div class="avatar bg-warning-transparent rounded-circle me-3">
+              <i class="ri-time-line fs-16"></i>
+            </div>
+            <div>
+              <h6 class="card-title text-muted mb-1">Pending Assignment</h6>
+              <h4 class="mb-0 text-warning" id="pending-assignment-count">0</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Orders Table -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card custom-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="ri-notification-badge-line me-2"></i>New Orders Assignment
+          </div>
+          <div class="ms-auto">
+            <button class="btn btn-sm btn-outline-primary me-2" onclick="refreshNewOrders()">
+              <i class="ri-refresh-line me-1"></i> Refresh
+            </button>
+            <button class="btn btn-sm btn-primary" onclick="loadAvailableStaff()">
+              <i class="ri-user-add-line me-1"></i> Reload Staff
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <!-- Search and Filter Bar -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search by Order ID, Customer name..." id="searchNewOrders">
+                <button class="btn btn-outline-secondary" type="button">
+                  <i class="ri-search-line"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="testTypeFilter">
+                <option value="">All Test Types</option>
+                <option value="Paternity Test">Paternity Test</option>
+                <option value="Ancestry Test">Ancestry Test</option>
+                <option value="Health Test">Health Test</option>
+                <option value="Relationship Test">Relationship Test</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="priorityFilter">
+                <option value="">All Priorities</option>
+                <option value="high">High Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="low">Low Priority</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Orders Table -->
+          <div class="table-responsive">
+            <table class="table text-nowrap table-bordered table-hover align-middle" id="newOrdersTable">
+              <thead class="table-light">
+              <tr>
+                <th scope="col">Order Details</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Test Type</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Order Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Assignment</th>
+                <th scope="col">Actions</th>
+              </tr>
+              </thead>
+              <tbody id="newOrdersTableBody">
+              <!-- Dynamic content will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div id="emptyState" class="text-center py-5" style="display: none;">
+            <div class="display-1 text-muted mb-3">
+              <i class="ri-inbox-line"></i>
+            </div>
+            <h5 class="text-muted">No New Orders Found</h5>
+            <p class="text-muted mb-0">All orders have been assigned or there are no new orders at this time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Staff Assignment Modal -->
+  <div class="modal fade" id="staffAssignmentModal" tabindex="-1" aria-labelledby="staffAssignmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staffAssignmentModalLabel">
+            <i class="ri-user-settings-line me-2"></i>Assign Staff to Order
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Order Information -->
+          <div class="card mb-4">
+            <div class="card-header bg-light">
+              <h6 class="mb-0">
+                <i class="ri-file-info-line me-2"></i>Order Information
+              </h6>
+            </div>
+            <div class="card-body" id="orderInfoSection">
+              <!-- Order details will be populated here -->
+            </div>
+          </div>
+
+          <!-- Assignment Type Selection -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Assignment Type <span class="text-danger">*</span></label>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-check form-check-lg">
+                  <input class="form-check-input" type="radio" name="assignmentType"
+                         id="sampleCollection" value="sample-collection" checked>
+                  <label class="form-check-label fw-semibold" for="sampleCollection">
+                    <i class="ri-test-tube-line me-2 text-primary"></i>Sample Collection
+                  </label>
+                  <div class="form-text">Assign staff to collect DNA samples from customers</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check form-check-lg">
+                  <input class="form-check-input" type="radio" name="assignmentType"
+                         id="resultAnalysis" value="result-analysis">
+                  <label class="form-check-label fw-semibold" for="resultAnalysis">
+                    <i class="ri-file-chart-line me-2 text-success"></i>Result Analysis
+                  </label>
+                  <div class="form-text">Assign staff to analyze results and prepare reports</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Staff Selection -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Select Available Staff <span class="text-danger">*</span></label>
+            <div id="staffSelectionContainer" class="row">
+              <!-- Staff cards will be populated here -->
+            </div>
+            <div id="noStaffAvailable" class="alert alert-warning" style="display: none;">
+              <i class="ri-alert-line me-2"></i>No staff available for assignment at this time.
+            </div>
+          </div>
+
+          <!-- Assignment Notes -->
+          <div class="mb-3">
+            <label for="assignmentNotes" class="form-label fw-semibold">Assignment Notes (Optional)</label>
+            <textarea class="form-control" id="assignmentNotes" rows="3"
+                      placeholder="Add any special instructions or notes for the assigned staff..."></textarea>
+          </div>
+
+          <!-- Hidden Form Data -->
+          <input type="hidden" id="selectedOrderId" name="orderId">
+          <input type="hidden" id="selectedStaffId" name="staffId">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="ri-close-line me-1"></i>Cancel
+          </button>
+          <button type="button" class="btn btn-primary" id="confirmAssignmentBtn" onclick="confirmStaffAssignment()">
+            <i class="ri-user-add-line me-1"></i>Assign Staff
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Details Modal -->
+  <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="orderDetailsModalLabel">
+            <i class="ri-file-list-3-line me-2"></i>Order Details
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="orderDetailsContent">
+          <!-- Order details will be loaded here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="ri-close-line me-1"></i>Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block id="page-scripts">
+  <th:block th:replace="~{fragments/common/scripts :: scripts}"></th:block>
+  <script th:src="@{/assets/js/new-orders-management.js}"></script>
+  <script>
+    // Additional functions for new orders management
+    function refreshNewOrders() {
+      if (window.newOrdersManager) {
+        window.newOrdersManager.loadNewOrders();
+        window.newOrdersManager.updateStatistics();
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Refreshed!',
+          text: 'New orders data has been refreshed.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
+    }
+
+    function loadAvailableStaff() {
+      if (window.newOrdersManager) {
+        window.newOrdersManager.loadAvailableStaff();
+
+        Swal.fire({
+          icon: 'info',
+          title: 'Staff List Updated!',
+          text: 'Available staff list has been reloaded.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
+    }
+
+    // Initialize new orders management when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize tooltips
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+
+      console.log('New Orders management page loaded');
+    });
+  </script>
+</th:block>
+
+</html>

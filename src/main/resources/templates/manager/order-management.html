@@ -1,0 +1,381 @@
+<html
+        th:replace="~{layouts/manager-layout :: layout(~{::#content}, ~{::#page-scripts}, 'Order Management', null, null)}"
+        xmlns:th="http://www.thymeleaf.org">
+
+<div id="content">
+  <!-- Order Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-md-2">
+      <div class="card">
+        <div class="card-body text-center">
+          <h6 class="card-title text-muted">All Orders</h6>
+          <h4 class="mb-0 text-primary" id="all-count">156</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card">
+        <div class="card-body text-center">
+          <h6 class="card-title text-muted">Pending</h6>
+          <h4 class="mb-0 text-warning" id="pending-count">23</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card">
+        <div class="card-body text-center">
+          <h6 class="card-title text-muted">In Progress</h6>
+          <h4 class="mb-0 text-info" id="progress-count">45</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card">
+        <div class="card-body text-center">
+          <h6 class="card-title text-muted">Result Available</h6>
+          <h4 class="mb-0 text-success" id="result-count">67</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card">
+        <div class="card-body text-center">
+          <h6 class="card-title text-muted">Completed</h6>
+          <h4 class="mb-0 text-success" id="completed-count">18</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card">
+        <div class="card-body text-center">
+          <h6 class="card-title text-muted">Cancelled</h6>
+          <h4 class="mb-0 text-danger" id="cancelled-count">3</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Management Table -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card custom-card">
+        <div class="card-header">
+          <div class="card-title">DNA Testing Orders</div>
+          <div class="ms-auto">
+            <button class="btn btn-sm btn-outline-secondary me-2" onclick="refreshOrders()">
+              <i class="ri-refresh-line me-1"></i> Refresh
+            </button>
+            <div class="btn-group" role="group">
+              <button class="btn btn-sm btn-outline-primary" id="exportBtn">
+                <i class="ri-download-line me-1"></i> Export
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <!-- Horizontal Navigation Tabs -->
+          <div class="order-tabs-container">
+            <ul class="nav nav-tabs order-nav-tabs" id="orderTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="all-tab" data-bs-toggle="tab"
+                        data-status="all" type="button" role="tab">
+                  All Orders
+                  <span class="badge bg-secondary ms-2">156</span>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pending-tab" data-bs-toggle="tab"
+                        data-status="pending" type="button" role="tab">
+                  Pending
+                  <span class="badge bg-warning ms-2">23</span>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="progress-tab" data-bs-toggle="tab"
+                        data-status="in-progress" type="button" role="tab">
+                  In Progress
+                  <span class="badge bg-info ms-2">45</span>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="result-tab" data-bs-toggle="tab"
+                        data-status="result-available" type="button" role="tab">
+                  Result Available
+                  <span class="badge bg-success ms-2">67</span>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="completed-tab" data-bs-toggle="tab"
+                        data-status="completed" type="button" role="tab">
+                  Completed
+                  <span class="badge bg-success ms-2">18</span>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="cancelled-tab" data-bs-toggle="tab"
+                        data-status="cancelled" type="button" role="tab">
+                  Cancelled
+                  <span class="badge bg-danger ms-2">3</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Content Area -->
+          <div class="order-content-area p-4">
+            <!-- Search and Filter Bar -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Search orders by ID, customer name..." id="searchInput">
+                  <button class="btn btn-outline-secondary" type="button">
+                    <i class="ri-search-line"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <select class="form-select" id="dateFilter">
+                  <option>All Time</option>
+                  <option>Today</option>
+                  <option>This Week</option>
+                  <option>This Month</option>
+                  <option>Custom Range</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <select class="form-select" id="testTypeFilter">
+                  <option>All Test Types</option>
+                  <option>Paternity Test</option>
+                  <option>Ancestry Test</option>
+                  <option>Health Test</option>
+                  <option>Relationship Test</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="table-responsive">
+              <table class="table text-nowrap table-bordered table-hover align-middle" id="ordersTable">
+                <thead>
+                <tr>
+                  <th>
+                    <input type="checkbox" class="form-check-input" id="selectAll">
+                  </th>
+                  <th scope="col">Order ID</th>
+                  <th scope="col">Customer</th>
+                  <th scope="col">Test Type</th>
+                  <th scope="col">Order Date</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Priority</th>
+                  <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                <!-- Dynamic content will be loaded here by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <div class="showing-entries">
+                Showing <span id="showing-start">1</span> to <span id="showing-end">10</span>
+                of <span id="total-entries">156</span> entries
+              </div>
+              <nav>
+                <ul class="pagination mb-0" id="pagination">
+                  <!-- Pagination will be generated by JavaScript -->
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Details Modal -->
+  <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="orderDetailsModalLabel">
+            <i class="ri-file-list-3-line me-2"></i>Order Details
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="orderDetailsContent">
+          <!-- Order details will be loaded here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="ri-close-line me-1"></i>Close
+          </button>
+          <button type="button" class="btn btn-primary" id="updateOrderBtn">
+            <i class="ri-edit-line me-1"></i>Update Status
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Order Status Modal -->
+  <div class="modal fade" id="updateOrderStatusModal" tabindex="-1" aria-labelledby="updateOrderStatusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateOrderStatusModalLabel">
+            <i class="ri-edit-line me-2"></i>Update Order Status
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="updateOrderStatusForm">
+            <input type="hidden" id="updateOrderId" name="orderId">
+
+            <div class="mb-3">
+              <label for="currentOrderInfo" class="form-label fw-semibold">Current Order</label>
+              <div class="alert alert-info" id="currentOrderInfo">
+                <!-- Order info will be populated here -->
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="newOrderStatus" class="form-label fw-semibold">
+                New Status <span class="text-danger">*</span>
+              </label>
+              <select class="form-select form-select-lg" id="newOrderStatus" name="status" required>
+                <option value="">Select new status</option>
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="result-available">Result Available</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <div class="invalid-feedback">Please select a new status</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="statusUpdateNotes" class="form-label fw-semibold">Notes (Optional)</label>
+              <textarea class="form-control" id="statusUpdateNotes" name="notes" rows="3"
+                        placeholder="Add any notes about this status update..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="ri-close-line me-1"></i>Cancel
+          </button>
+          <button type="button" class="btn btn-primary" onclick="submitOrderStatusUpdate()">
+            <i class="ri-save-line me-1"></i>Update Status
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block id="page-scripts">
+  <th:block th:replace="~{fragments/common/scripts :: scripts}"></th:block>
+  <script th:src="@{/assets/js/manager-orders.js}"></script>
+  <script>
+    // Additional order management functions
+    function refreshOrders() {
+      if (window.orderManager) {
+        window.orderManager.loadSampleData();
+        window.orderManager.renderOrders();
+        window.orderManager.updateCounts();
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Refreshed!',
+          text: 'Orders data has been refreshed.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
+    }
+
+    function submitOrderStatusUpdate() {
+      const form = document.getElementById('updateOrderStatusForm');
+
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Validation Error',
+          text: 'Please fill in all required fields correctly.'
+        });
+        return;
+      }
+
+      const orderId = document.getElementById('updateOrderId').value;
+      const newStatus = document.getElementById('newOrderStatus').value;
+      const notes = document.getElementById('statusUpdateNotes').value;
+
+      // Show loading state
+      const submitBtn = document.querySelector('button[onclick="submitOrderStatusUpdate()"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="ri-loader-2-line me-1"></i>Updating...';
+      submitBtn.disabled = true;
+
+      // Show loading dialog
+      Swal.fire({
+        title: 'Updating Order Status...',
+        text: 'Please wait while we update the order status.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      });
+
+      // Simulate API call (replace with actual implementation)
+      setTimeout(() => {
+        // Update the order in the OrderManager
+        if (window.orderManager) {
+          const order = window.orderManager.orders.find(o => o.id === orderId);
+          if (order) {
+            order.status = newStatus;
+            window.orderManager.renderOrders();
+            window.orderManager.updateCounts();
+          }
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Order status updated successfully!',
+          showConfirmButton: true,
+          confirmButtonText: 'OK'
+        }).then(() => {
+          // Close modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('updateOrderStatusModal'));
+          if (modal) modal.hide();
+
+          // Reset form
+          form.reset();
+          form.classList.remove('was-validated');
+        });
+      }, 1500);
+
+      // Restore button after delay
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }, 1500);
+    }
+
+    // Initialize order management when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize tooltips
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+
+      console.log('Order management page loaded');
+    });
+  </script>
+</th:block>
+
+</html>

@@ -3,7 +3,6 @@ package com.dna_testing_system.dev.service.impl;
 import com.dna_testing_system.dev.dto.request.StaffAvailableRequest;
 import com.dna_testing_system.dev.dto.response.ServiceOrderResponse;
 import com.dna_testing_system.dev.dto.response.StaffAvailableResponse;
-import com.dna_testing_system.dev.entity.Role;
 import com.dna_testing_system.dev.entity.SampleCollection;
 import com.dna_testing_system.dev.entity.ServiceOrder;
 import com.dna_testing_system.dev.entity.User;

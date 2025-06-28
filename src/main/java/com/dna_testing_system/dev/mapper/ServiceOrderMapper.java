@@ -26,6 +26,7 @@ public interface ServiceOrderMapper {
     @Mapping(source = "orderKits", target = "orderKits")
     @Mapping(source = "orderParticipants", target = "orderParticipants")
     @Mapping(source = "sampleCollections", target = "sampleCollections")
+    @Mapping(source = "service.")
     ServiceOrderResponse toDto(ServiceOrder order);
 
     default String getFullName(User user) {
