@@ -20877,3 +20877,14 @@ a:hover {
 
 /* End::Transform */
 /* End:: typography */
+
+
+.profile-static {
+    background: white !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+    color: #333 !important; /* Thêm dòng này */
+}
+
+.profile-static * {
+    color: #333 !important; /* Áp dụng cho tất cả elements con */
+}
