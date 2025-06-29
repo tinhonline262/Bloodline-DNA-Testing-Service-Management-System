@@ -57,6 +57,7 @@ public class UserController {
         String currentPrincipalName = authentication.getName();
         UserProfileResponse existingProfile = userProfileService.getUserProfile(currentPrincipalName);
 
+
         // Xử lý file upload
         if (file != null && !file.getOriginalFilename().equals("")) {
             String uploadsDir = "uploads/";
@@ -64,6 +65,7 @@ public class UserController {
             Path path = Paths.get(uploadsDir + fileName);
 
             try {
+
                 Files.createDirectories(Paths.get(uploadsDir));
                 file.transferTo(path);
             } catch (Exception e) {
@@ -72,6 +74,7 @@ public class UserController {
 
             String imageUrl = "/uploads/" + fileName;
             userProfile.setProfileImageUrl(imageUrl);
+
         } else {
             // Giữ nguyên ảnh cũ nếu không upload ảnh mới
             userProfile.setProfileImageUrl(existingProfile.getProfileImageUrl());
@@ -81,6 +84,7 @@ public class UserController {
         if (userProfile.getDateOfBirth() == null) {
             userProfile.setDateOfBirth(existingProfile.getDateOfBirth());
         }
+
 
         userProfileService.updateUserProfile(currentPrincipalName, userProfile);
 

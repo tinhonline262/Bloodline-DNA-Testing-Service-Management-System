@@ -1,7 +1,11 @@
 package com.dna_testing_system.dev.security;
 
+import com.dna_testing_system.dev.config.CustomAuthenticationSuccessHandler;
+import com.dna_testing_system.dev.enums.RoleType;
 import com.dna_testing_system.dev.service.impl.UserDetailsServiceImpl;
 import com.dna_testing_system.dev.utils.PasswordUtil;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfiguration {
+
 
     private final UserDetailsServiceImpl userDetailsService;
     @Bean
@@ -64,6 +70,7 @@ public class SecurityConfiguration {
                         .frameOptions(frameOptions -> frameOptions.sameOrigin()) // Chống clickjacking
                 );
         // --- KẾT THÚC PHẦN THÊM MỚI ---
+
 
         return http.build();
     }
