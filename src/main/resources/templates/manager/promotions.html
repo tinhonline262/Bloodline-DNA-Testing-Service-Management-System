@@ -5,30 +5,20 @@
     <title>Quản lý Voucher</title>
     <link rel="stylesheet" th:href="@{/assets/libs/bootstrap/css/bootstrap.min.css}">
     <script th:src="@{/assets/libs/bootstrap/js/bootstrap.bundle.min.js}"></script>
-    <style>
-        body {
-            background-color: #f8fcff;
-        }
-        .table-primary {
-            background-color: #e3f2fd !important;
-        }
-        .btn-outline-primary {
-            color: #0d6efd;
-            border-color: #0d6efd;
-        }
-        .btn-outline-primary:hover {
-            background-color: #0d6efd;
-            color: #fff;
-        }
-    </style>
 </head>
 <body>
-<div class="container mt-5">
+    <div class="container mt-3">
     <h2 class="mb-4">Danh sách Voucher</h2>
 
-    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#createVoucherModal">
-        Thêm voucher mới
-    </button>
+    <div class="d-flex align-items-center">
+        <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#createVoucherModal">
+            Thêm voucher mới
+        </button>
+
+        <button type="button" class="btn btn-danger mb-3 ms-3">
+            <a th:href="@{/manager/services}" class="text-decoration-none text-white">Close</a>
+        </button>
+    </div>
 
     <div class="table-responsive">
         <table class="table table-hover table-bordered align-middle shadow-sm">
@@ -60,11 +50,11 @@
                 <td th:text="${voucher.totalUsageLimit != null ? voucher.totalUsageLimit : '-'}"></td>
                 <td th:text="${#temporals.format(voucher.startDate, 'dd/MM/yyyy HH:mm')}"></td>
                 <td th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy HH:mm')}"></td>
-                <td>
+                <td class="text-center">
                     <span th:text="${voucher.isActive} ? 'Đang hoạt động' : 'Ngưng' "
                           th:classappend="${voucher.isActive} ? 'badge bg-success' : 'badge bg-secondary'"></span>
                 </td>
-                <td class="text-center">
+                <td class="text-center flex-nowrap" style="min-width: 150px; max-width: 150px;">
                     <button type="button" class="btn btn-sm btn-outline-primary me-1"
                             th:attr="data-bs-toggle='modal', data-bs-target='#editVoucherModal__' + ${voucher.id}">
                         Sửa
@@ -82,7 +72,7 @@
 </div>
 
 <!-- MODAL TẠO MỚI VOUCHER -->
-<div class="modal fade" id="createVoucherModal" tabindex="-1" aria-labelledby="createVoucherModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createVoucherModal" tabindex="-1" aria-labelledby="createVoucherModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form th:action="@{/manager/promotions/create}" method="post">
@@ -158,7 +148,7 @@
 </div>
 
 <!-- MODALS CHỈNH SỬA VOUCHER -->
-<div th:each="voucher : ${promotions}">
+    <div th:each="voucher : ${promotions}">
     <div class="modal fade" th:id="'editVoucherModal__' + ${voucher.id}" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
