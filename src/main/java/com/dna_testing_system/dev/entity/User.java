@@ -8,11 +8,9 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -67,4 +65,8 @@ public class User {
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     Set<ContentPost> contentPosts = new HashSet<>();
+
+    public String getFullName() {
+        return "";
+    }
 }

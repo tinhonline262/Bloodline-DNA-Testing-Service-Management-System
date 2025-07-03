@@ -19,49 +19,87 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequestMapping("/user") // Thêm base path
 public class UserController {
 
     UserProfileService userProfileService;
-    @GetMapping("/profile")
+
+    @GetMapping("/profile")  // URL sẽ là /user/profile
     public String getProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         UserProfileResponse userProfile = userProfileService.getUserProfile(currentPrincipalName);
         model.addAttribute("userProfile", userProfile);
-        return "profile"; // Return the view name for the profile page
+        return "user/profile";
     }
 
     @GetMapping("/profile/update")
     public String showUpdateProfileForm(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        UserProfileResponse userProfile = userProfileService.getUserProfile(currentPrincipalName);
-        model.addAttribute("userEditProfile",userProfile);
-        return "edit-profile"; // Return the view name for the update profile page
+        UserProfileResponse userProfileData = userProfileService.getUserProfile(currentPrincipalName);
+
+        // Dữ liệu cũ chỉ có 1 dòng này
+        model.addAttribute("userEditProfile", userProfileData);
+
+        model.addAttribute("userProfile", userProfileData);
+
+        return "user/edit-profile"; //
     }
     @PostMapping("/profile/update")
-    public String updateProfile(@ModelAttribute("userEditProfile") UserProfileRequest userProfile, @RequestParam(value = "file",required = false) MultipartFile file) {
+    public String updateProfile(@ModelAttribute("userEditProfile") UserProfileRequest userProfile,
+                                @RequestParam(value = "file", required = false) MultipartFile file,
+                                Model model) { // Thêm Model
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        String uploadsDir = "uploads/"; // Specify your upload directory
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        Path path = Paths.get(uploadsDir + fileName);
+        UserProfileResponse existingProfile = userProfileService.getUserProfile(currentPrincipalName);
 
-        try{
-            Files.createDirectories(Paths.get(uploadsDir));
-            file.transferTo(path);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        // Xử lý file upload
+        if (file != null && !file.getOriginalFilename().equals("")) {
+            String uploadsDir = "uploads/";
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path path = Paths.get(uploadsDir + fileName);
+
+            try {
+
+                Files.createDirectories(Paths.get(uploadsDir));
+                file.transferTo(path);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String imageUrl = "/uploads/" + fileName;
+            userProfile.setProfileImageUrl(imageUrl);
+
+        } else {
+            // Giữ nguyên ảnh cũ nếu không upload ảnh mới
+            userProfile.setProfileImageUrl(existingProfile.getProfileImageUrl());
         }
 
-        String imageUrl = "/uploads/" + fileName;
+        // Giữ nguyên dateOfBirth nếu không có thay đổi
+        if (userProfile.getDateOfBirth() == null) {
+            userProfile.setDateOfBirth(existingProfile.getDateOfBirth());
+        }
 
-        userProfile.setProfileImageUrl(imageUrl);
+
         userProfileService.updateUserProfile(currentPrincipalName, userProfile);
-        return "redirect:/profile";
+
+        // Refresh lại thông tin user cho header
+        UserProfileResponse updatedProfile = userProfileService.getUserProfile(currentPrincipalName);
+        model.addAttribute("userProfile", updatedProfile);
+
+        return "redirect:/user/profile";
     }
+    @GetMapping("/user/dashboard")
+    public String dashboard(Model model) {
+        model.addAttribute("pageTitle", "Dashboard - Trang chủ");
+        model.addAttribute("breadcrumbActive", "Dashboard");
+        model.addAttribute("currentPage", "dashboard"); // Để đánh dấu mục menu active
+        return "user/dashboard"; // Trả về template dashboard.html
+    }
+
 }

@@ -30,33 +30,49 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-        .authenticationProvider(authenticationProvider())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/", "/register", "/login", "/error", "/assets/**", "/api/**", "/ws/**").permitAll()
-                    .requestMatchers("/manager/**", "/manager/services/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
-                .anyRequest().authenticated()
-            )
-                .csrf(csrf -> csrf.disable())
-            .formLogin(form -> form
-                .loginPage("/login")
-                    .successHandler(customAuthenticationSuccessHandler)
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
-            )
-            .rememberMe(remember -> remember
-                .key("uniqueAndSecretKey")
-                .tokenValiditySeconds(86400) // 1 day
-            )
-            .exceptionHandling(exceptions -> exceptions
-                .accessDeniedPage("/access-denied")
-            );
-            
+                .authenticationProvider(authenticationProvider())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/css/**", "/js/**", "/images/**", "/webjars/**",
+                                "/", "/register", "/login", "/error", "/assets/**",
+                                "/uploads/**",  "/api/**", "/ws/**"
+                                // XÓA BỎ "/layouts/**" KHỎI ĐÂY
+                        ).permitAll()
+                        .requestMatchers("/manager/**", "/manager/services/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
+                        .requestMatchers("/user/**").authenticated()
+                        .anyRequest().permitAll()
+                )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/register")
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/user/home", true)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
+                .rememberMe(remember -> remember
+                        .key("uniqueAndSecretKey")
+                        .tokenValiditySeconds(86400)
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .accessDeniedPage("/access-denied")
+                )
+                // --- BẮT ĐẦU PHẦN THÊM MỚI ---
+                // Thêm cấu hình headers để kiểm soát cache, giúp trình duyệt hoạt động đúng
+                .headers(headers -> headers
+                        .cacheControl(cache -> {}) // Kích hoạt quản lý Cache-Control mặc định
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin()) // Chống clickjacking
+                );
+        // --- KẾT THÚC PHẦN THÊM MỚI ---
+
+
         return http.build();
     }
     

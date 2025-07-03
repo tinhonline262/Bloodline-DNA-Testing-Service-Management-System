@@ -1,6 +1,5 @@
 package com.dna_testing_system.dev.repository;
 
-import com.dna_testing_system.dev.dto.response.StaffAvailableResponse;
 import com.dna_testing_system.dev.entity.SampleCollection;
 import org.springframework.data.jpa.repository.JpaRepository;
 

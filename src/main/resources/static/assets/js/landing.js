@@ -84,7 +84,9 @@ for (const [theme, config] of nanoThemes) {
     });
   });
 
-  themeContainerPrimary.appendChild(button);
+if (themeContainerPrimary && button) {
+    themeContainerPrimary.appendChild(button);
+}
 }
 nanoButtons[0].click();
 /* for theme primary */
