@@ -12,4 +12,7 @@ public interface TestKitService {
     void UpdateTestKit(Long kitId, TestKitRequest testKitRequest);
     void DeleteTestKit(Long kitId);
     TestKitResponse GetTestKitResponseById(Long kitId);
+
+    //fix;
+    List<TestKitResponse> searchTestKits(String searchQuery);
 }
