@@ -7,9 +7,9 @@ spring:
   thymeleaf:
     cache: false
   datasource:
-    url: "jdbc:mysql://localhost:3306/dna_testing_system"
-    username: an
-    password: napui@123
+    url: "jdbc:mysql://localhost:3306/dna_booking_db"
+    username: ThuyTien
+    password: 38632347tT@
   jpa:
     hibernate:
       ddl-auto: update

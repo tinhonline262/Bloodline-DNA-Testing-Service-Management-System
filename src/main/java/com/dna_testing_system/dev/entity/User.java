@@ -64,4 +64,8 @@ public class User {
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     Set<ContentPost> contentPosts = new HashSet<>();
+
+    public String getFullName() {
+        return "";
+    }
 }
