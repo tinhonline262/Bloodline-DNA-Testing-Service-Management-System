@@ -2,6 +2,7 @@ package com.dna_testing_system.dev.entity;
 
 import com.dna_testing_system.dev.enums.CollectionStatus;
 import com.dna_testing_system.dev.enums.SampleQuality;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,11 +32,13 @@ public class SampleCollection {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
     @JoinColumn(name = "order_id", nullable = false)
     ServiceOrder order;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
     @JoinColumn(name = "staff_id", nullable = false)
     User staff;
 

@@ -27,34 +27,22 @@ public class ServiceController {
 
     MedicalServiceManageService medicalServiceManageService;
 
-    /**
-     * Get all services
-     */
     @GetMapping("/list")
     public ResponseEntity<List<MedicalServiceResponse>> getAllServices() {
         return ResponseEntity.ok(medicalServiceManageService.getAllServices());
     }
 
-    /**
-     * Get a service by ID
-     */
     @GetMapping("/{id}")
     public ResponseEntity<MedicalServiceResponse> getServiceById(@PathVariable Long id) {
         return ResponseEntity.ok(medicalServiceManageService.getServiceById(id));
     }
 
-    /**
-     * Create a new service
-     */
     @PostMapping("/add")
     public String createService(@ModelAttribute MedicalServiceRequest request, RedirectAttributes redirectAttributes) {
         medicalServiceManageService.createService(request);
         return "redirect:/manager/services";
     }
 
-    /**
-     * Update a service
-     */
     @PutMapping("/{id}")
     public String updateService(
             @PathVariable Long id,
@@ -74,18 +62,12 @@ public class ServiceController {
         return ResponseEntity.ok("ok");
     }
 
-    /**
-     * Delete a service
-     */
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> deleteService(@PathVariable Long id) {
         medicalServiceManageService.deleteService(id);
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Search services by name
-     */
     @GetMapping("/search")
     public ResponseEntity<?> searchServices(@RequestParam String query) {
         return ResponseEntity.ok(medicalServiceManageService.searchServiceByNameContaining(query));

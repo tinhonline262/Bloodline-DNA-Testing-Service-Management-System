@@ -131,6 +131,43 @@ public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigure
             user.setUserProfile(userProfile);
             userRepository.save(user);
         }
+        if (!userRepository.existsByUsername("staff2")) {
+            Role role = roleRepository.findByRoleName(RoleType.STAFF.name());
+
+            // Create and save the User entity with minimal information
+            User user = User.builder()
+                    .username("staff2")
+                    .passwordHash(PasswordUtil.encode("staff2"))
+                    .isActive(true)
+                    .userRoles(new HashSet<>())
+                    .build();
+
+            user = userRepository.save(user);
+
+            UserRole userRoleForCreate = UserRole.builder()
+                    .user(user)
+                    .role(role)
+                    .isActive(true)
+                    .build();
+            UserRole userRole = userRoleRepository.save(userRoleForCreate);
+            user.getUserRoles().add(userRole);
+            userRepository.save(user);
+
+            // Create and save minimal UserProfile
+            UserProfile userProfile = UserProfile.builder()
+                    .user(user)
+                    .firstName("New")
+                    .lastName("STAFF")
+                    .email("staff2@email.com")
+                    .phoneNumber("1309103213")
+                    .profileImageUrl("ajsdhfjahsasdf")
+                    .build();
+
+            userProfileRepository.save(userProfile);
+
+            user.setUserProfile(userProfile);
+            userRepository.save(user);
+        }
     }
 
     private void createManagerDefault() {

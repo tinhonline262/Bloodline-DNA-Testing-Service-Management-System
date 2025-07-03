@@ -72,6 +72,37 @@ public class EmailSenderImpl implements EmailSender {
     }
 
     @Override
+    public boolean sendTestAssignmentNotification(ServiceOrder order, TestResult testResult, User staffMember) {
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("order", order);
+        templateModel.put("testResult", testResult);
+        templateModel.put("staffMember", staffMember);
+        templateModel.put("timestamp", new Date());
+        templateModel.put("baseUrl", baseUrl);
+
+
+        return sendEmailWithTemplate(
+                staffMember.getUserProfile().getEmail(),
+                "New DNA Test Assignment: Order #" + order.getId(),
+                "test-result-assignment-notification",
+                templateModel
+        );
+    }
+
+    @Override
+    public boolean sendOrderStatusUpdateNotification(ServiceOrder order, String recipient) {
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("order", order);
+        templateModel.put("timestamp", new Date());
+        templateModel.put("baseUrl", baseUrl);
+
+        String subject = "Order Status Update - Order #" + order.getId();
+        String template = "order-status-update-notification";
+
+        return sendEmailWithTemplate(recipient, subject, template, templateModel);
+    }
+
+    @Override
     public boolean sendResultAvailableNotification(TestResult testResult, String recipient) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("testResult", testResult);

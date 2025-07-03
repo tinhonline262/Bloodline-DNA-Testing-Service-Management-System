@@ -33,7 +33,6 @@ public class ServiceOrderResponse {
     String phoneNumber;
     String serviceName;
     String serviceType;
-    String testType;
     String serviceCategory;
     Integer participants;
     Integer executionTimeDays;
@@ -46,6 +45,18 @@ public class ServiceOrderResponse {
     BigDecimal discountAmount;
     BigDecimal finalAmount;
     LocalDateTime createdAt;
+    String collectionStaffName;
+    String collectionStaffEmail;
+    String collectionStaffPhone;
+    String analysisStaffName;
+    String analysisStaffEmail;
+    String analysisStaffPhone;
+    String testingResultStatus;
+    String testingResultSummary;
+    String detailedResults;
+    RawTestData rawData;
+    String testingResultAnalyzedBy;
+    LocalDateTime testingResultAnalysisDate;
     Set<OrderKit> orderKits;
     Set<OrderParticipant> orderParticipants;
     Set<SampleCollection> sampleCollections;
