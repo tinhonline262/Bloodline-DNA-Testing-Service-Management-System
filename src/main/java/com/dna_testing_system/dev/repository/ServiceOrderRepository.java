@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ServiceOrderRepository extends JpaRepository<ServiceOrder, Long> {
+    // Define custom query methods if needed
 }
