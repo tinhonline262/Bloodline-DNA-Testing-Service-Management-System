@@ -2,6 +2,7 @@ package com.dna_testing_system.dev.entity;
 
 import com.dna_testing_system.dev.enums.CollectionStatus;
 import com.dna_testing_system.dev.enums.SampleQuality;
+import com.dna_testing_system.dev.enums.SampleType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -52,6 +53,10 @@ public class SampleCollection {
     @NotNull
     @Column(name = "collection_status", nullable = false, length = 50)
     CollectionStatus collectionStatus = CollectionStatus.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sample_type", nullable = false, length = 50)
+    SampleType sampleType;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)

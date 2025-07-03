@@ -47,7 +47,8 @@ public class SecurityConfiguration {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/user/home", true)
+//                        .defaultSuccessUrl("/user/home", true)
+                                .successHandler(customAuthenticationSuccessHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout
