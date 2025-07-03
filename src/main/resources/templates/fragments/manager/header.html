@@ -1,10 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
+<header class="app-header sticky" id="header" th:fragment="header">
+    <div class="container-fluid p-0">
+        <div class="main-header">
+            <nav class="main-menu-container nav nav-pills horizontal-nav">
+                <div class="landing-logo-container">
+                    <div class="horizontal-logo">
+                        <a href="index.html" class="header-logo">
+                            <img src="../assets/images/brand-logos/bloodline-logo-white.png" alt="logo"
+                                 class="desktop-logo">
+                            <img src="../assets/images/brand-logos/bloodline-logo-white.png" alt="logo"
+                                 class="desktop-white">
+                        </a>
+                    </div>
+                </div>
+
+                <ul class="main-menu horizontal-menu">
+                    <li class="slide">
+                        <a class="side-menu__item" href="#dashboard">
+                            <span class="side-menu__label">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="slide">
+                        <a href="#user-management" class="side-menu__item">
+                            <span class="side-menu__label">User Management</span>
+                        </a>
+                    </li>
+                    <li class="slide">
+                        <a href="#appointments" class="side-menu__item">
+                            <span class="side-menu__label">Appointments</span>
+                        </a>
+                    </li>
+                    <li class="slide">
+                        <a href="#reports" class="side-menu__item">
+                            <span class="side-menu__label">Reports</span>
+                        </a>
+                    </li>
+                    <li class="slide">
+                        <a href="#staff-management" class="side-menu__item">
+                            <span class="side-menu__label">Staff Management</span>
+                        </a>
+                    </li>
+                    <li class="slide">
+                        <a href="#content-management" class="side-menu__item">
+                            <span class="side-menu__label">Content Management</span>
+                        </a>
+                    </li>
+                    <li class="slide">
+                        <a href="#system-settings" class="side-menu__item">
+                            <span class="side-menu__label">System Settings</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="header-profile-section">
+                    <div class="header-element headerProfile-dropdown">
+                        <a href="javascript:void(0);" class="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            <img th:if="${managerProfile != null and managerProfile.profileImageUrl != null and !#strings.isEmpty(managerProfile.profileImageUrl)}"
+                                 th:src="@{${managerProfile.profileImageUrl}}"
+                                 alt="Profile Image"
+                                 width="37"
+                                 height="37"
+                                 class="rounded-circle">
+
+                            <img th:if="${managerProfile == null or managerProfile.profileImageUrl == null or #strings.isEmpty(managerProfile.profileImageUrl)}"
+                                 th:src="@{/images/default-manager-avatar.png}"
+                                 alt="Default Manager Avatar"
+                                 width="37"
+                                 height="37"
+                                 class="rounded-circle">
+                        </a>
+
+                        <ul class="main-header-dropdown dropdown-menu pt-0 header-profile-dropdown dropdown-menu-end main-profile-menu" aria-labelledby="mainHeaderProfile">
+                            <li>
+                                <div class="main-header-profile bg-primary menu-header-content text-fixed-white">
+                                    <div class="my-auto">
+                                        <h6 class="mb-0 lh-1 text-fixed-white">Manager Name</h6>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex" th:href="@{/manager/profile}">
+                                    <i class="bx bx-user-circle fs-18 me-2 op-7"></i>Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex" th:href="@{/manager/profile/update}">
+                                    <i class="bx bx-cog fs-18 me-2 op-7"></i>Edit Profile
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item d-flex border-block-end" th:href="@{/manager/dashboard}"><i class="bx bx-tachometer fs-18 me-2 op-7"></i>Dashboard</a></li>
+                            <li><a class="dropdown-item d-flex" th:href="@{/manager/notifications}"><i class="bx bx-bell fs-18 me-2 op-7"></i>Notifications</a></li>
+                            <li><a class="dropdown-item d-flex" th:href="@{/manager/messages}"><i class="bx bx-envelope fs-18 me-2 op-7"></i>Messages</a></li>
+                            <li><a class="dropdown-item d-flex border-block-end" th:href="@{/manager/settings}"><i class="bx bx-slider-alt fs-18 me-2 op-7"></i>Account Settings</a></li>
+                            <li><a class="dropdown-item d-flex" th:href="@{/manager/logout}"><i class="bx bx-log-out fs-18 me-2 op-7"></i>Sign Out</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>
 
 </body>
 </html>
