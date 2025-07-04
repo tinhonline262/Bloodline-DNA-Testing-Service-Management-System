@@ -15,6 +15,9 @@ public enum ErrorCode {
     SERVICE_TYPE_NOT_EXISTS("Service type is not exists"),
     SERVICE_FEATURE_NOT_EXISTS("Service feature is not exists"),
     MEDICAL_SERVICE_NOT_EXISTS("Medical service is not exists"),
+    INVALID_STAFF_ASSIGNMENT("Staff assignment is invalid"),
+    ASSIGNMENT_FAILED("Failed to complete dual task assignment"),
+    INVALID_STATUS_TRANSITION("Invalid status transition"),
     UNKNOWN_ERROR("Unknown error!");
 
 
