@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Đặt bộ kit xét nghiệm</title>
+    <title>Thông tin người tham gia</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -62,17 +62,35 @@
 </head>
 <body>
 <div class="container">
-    <h1>Đặt bộ kit xét nghiệm</h1>
-    <form th:action="@{/order-kit}" th:object="${orderTestKitRequest}" method="post">
-        <input type="hidden" th:field="*{orderId}" />
-        <input type="hidden" th:field="*{kitTestId}" />
+    <h1>Thông tin người tham gia</h1>
+    <form th:action="@{/user/participant-information}" method="post">
+        <input type="hidden" name="orderId" th:value="${orderId}" />
         <div class="form-group">
-            <label>Số lượng kit:</label>
-            <input type="number" min="1" th:field="*{quantityOrdered}" th:max="${maxQuantity}" required/>
+            <label>Họ:</label>
+            <input type="text" th:name="firstName" required th:value="${participantRequest.firstName}"/>
         </div>
-        <button type="submit" class="button">Đặt kit</button>
-        <button class="button"><a th:href="@{'/detail'(orderId=${orderTestKitRequest.orderId})}">Detail Ordering</a></button>
+        <div class="form-group">
+            <label>Tên:</label>
+            <input type="text" th:name="lastName" required th:value="${participantRequest.lastName}"/>
+        </div>
+        <div class="form-group">
+            <label>Giới tính:</label>
+            <select th:name="gender" required>
+                <option value="Nam" th:selected="${participantRequest.gender == 'Nam'}">Nam</option>
+                <option value="Nữ" th:selected="${participantRequest.gender == 'Nữ'}">Nữ</option>
+                <option value="Khác" th:selected="${participantRequest.gender == 'Khác'}">Khác</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Ngày sinh:</label>
+            <input type="date" th:name="birthDate" th:value="${participantRequest.birthDate}" th:max="${today}" required/>
+        </div>
+        <button type="submit" class="button">Lưu thông tin</button>
     </form>
+    <div th:if="${message != null}" class="success-message">
+        <p th:text="${message}"></p>
+        <a th:href="@{'/list-kit'(orderId=${orderId})}">Danh sách kit</a>
+    </div>
 </div>
 </body>
 </html>

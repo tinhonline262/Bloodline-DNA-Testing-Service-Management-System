@@ -2,8 +2,11 @@ package com.dna_testing_system.dev.controller;
 
 
 import com.dna_testing_system.dev.dto.request.UserProfileRequest;
+import com.dna_testing_system.dev.dto.response.OrderParticipantResponse;
+import com.dna_testing_system.dev.dto.response.OrderTestKitResponse;
+import com.dna_testing_system.dev.dto.response.ServiceOrderByCustomerResponse;
 import com.dna_testing_system.dev.dto.response.UserProfileResponse;
-import com.dna_testing_system.dev.service.UserProfileService;
+import com.dna_testing_system.dev.service.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,6 +29,12 @@ import java.util.List;
 public class UserController {
 
     UserProfileService userProfileService;
+    OrderService orderService;
+    OrderKitService orderKitService;
+    OrderParticipantService orderParticipantService;
+    MedicalServiceManageService medicalService;
+    TestKitService testKitService;
+
     @GetMapping("/profile")
     public String getProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -72,5 +81,25 @@ public class UserController {
         }
         userProfileService.updateUserProfile(currentPrincipalName, userProfile);
         return "redirect:/profile";
+    }
+
+    @GetMapping("/order-history")
+    public String getOrderHistory(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        List<ServiceOrderByCustomerResponse> orders = orderService.getAllOrdersByCustomerId(currentPrincipalName);
+        model.addAttribute("orders", orders);
+        return "order-history"; // Return the view name for the order history page
+    }
+
+    @GetMapping("/order-history/details")
+    public String getOrderDetails(@RequestParam("orderId") Long orderId, Model model) {
+        ServiceOrderByCustomerResponse orderDetails = orderService.getOrderById(orderId);
+        List<OrderTestKitResponse> orderTestKits = orderKitService.getOrderById(orderId);
+        List<OrderParticipantResponse> orderParticipants = orderParticipantService.getAllParticipantsByOrderId(orderId);
+        model.addAttribute("orderParticipants", orderParticipants);
+        model.addAttribute("orderTestKits", orderTestKits);
+        model.addAttribute("orderDetails", orderDetails);
+        return "order-details"; // Return the view name for the order details page
     }
 }

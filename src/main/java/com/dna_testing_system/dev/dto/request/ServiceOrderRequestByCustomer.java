@@ -12,15 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ServiceOrderRequest {
+public class ServiceOrderRequestByCustomer {
     String username;
-    String idMedicalService;
+    Long idMedicalService;
     LocalDate appointmentDate;
     CollectionType collectionType;
     String collectionAddress;
-    String createdBy;
-    String idKit;
-    Integer quantityKit;
-    List<ParticipantRequest> participants;
-
 }

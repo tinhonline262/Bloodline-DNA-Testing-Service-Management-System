@@ -47,7 +47,7 @@ public class ServiceOrder {
     LocalDate appointmentDate;
 
     @Enumerated(EnumType.STRING)
-    @Size(max = 50)
+    //@Size(max = 50)
     @NotNull
     @Column(name = "collection_type", nullable = false, length = 50)
     CollectionType collectionType;
@@ -57,13 +57,13 @@ public class ServiceOrder {
     String collectionAddress;
 
     @Builder.Default
-    @Size(max = 50)
+    //@Size(max = 50)
     @NotNull
     @Column(name = "order_status", nullable = false, length = 50)
     ServiceOrderStatus orderStatus = ServiceOrderStatus.PENDING;
 
     @Builder.Default
-    @Size(max = 50)
+    //@Size(max = 50)
     @NotNull
     @Column(name = "payment_status", nullable = false, length = 50)
     PaymentStatus paymentStatus = PaymentStatus.PENDING;

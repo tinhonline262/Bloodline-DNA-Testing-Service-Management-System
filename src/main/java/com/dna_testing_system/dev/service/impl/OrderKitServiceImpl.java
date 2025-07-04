@@ -3,14 +3,17 @@ package com.dna_testing_system.dev.service.impl;
 import com.dna_testing_system.dev.dto.request.OrderTestKitRequest;
 import com.dna_testing_system.dev.dto.response.OrderTestKitResponse;
 import com.dna_testing_system.dev.entity.OrderKit;
+import com.dna_testing_system.dev.entity.ServiceOrder;
 import com.dna_testing_system.dev.entity.TestKit;
 import com.dna_testing_system.dev.entity.User;
 import com.dna_testing_system.dev.enums.KitStatus;
 import com.dna_testing_system.dev.mapper.OrderTestKitMapper;
+import com.dna_testing_system.dev.repository.OrderServiceRepository;
 import com.dna_testing_system.dev.repository.OrderTestKitRepository;
 import com.dna_testing_system.dev.repository.TestKitRepository;
 import com.dna_testing_system.dev.repository.UserRepository;
 import com.dna_testing_system.dev.service.OrderKitService;
+import com.dna_testing_system.dev.service.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -26,12 +30,17 @@ public class OrderKitServiceImpl implements OrderKitService {
     OrderTestKitMapper orderTestKitMapper;
     OrderTestKitRepository orderKitRepository;
     TestKitRepository testKitRepository;
+    OrderServiceRepository orderServiceRepository;
 
     @Override
     @Transactional
-    public void createOrder(OrderTestKitRequest orderTestKitRequest) {
+    public void createOrder(Long orderId, OrderTestKitRequest orderTestKitRequest) {
+        ServiceOrder serviceOrder = orderServiceRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
         OrderKit orderKit = orderTestKitMapper.toOrderKit(orderTestKitRequest);
-        TestKit testKit = testKitRepository.getById(orderTestKitRequest.getKitTestId());
+        Long idKit = orderTestKitRequest.getKitTestId();
+        TestKit testKit = testKitRepository.findById(idKit)
+                .orElseThrow(() -> new RuntimeException("Test Kit not found with id: " + idKit));;
         if (testKit == null) {
             throw new IllegalArgumentException("Test kit not found for ID: " + orderKit.getId());
         }
@@ -41,10 +50,15 @@ public class OrderKitServiceImpl implements OrderKitService {
         orderKit.setKit(testKit);
         KitStatus kitStatus = KitStatus.ORDERED;
         orderKit.setKitStatus(kitStatus);
+        orderKit.setOrder(serviceOrder);
         orderKitRepository.save(orderKit);
         // Optionally, you might want to update the stock of the kit after ordering
         testKit.setQuantityInStock(
                 testKit.getQuantityInStock() - orderKit.getQuantityOrdered());
+        if( testKit.getQuantityInStock() <= 0) {
+            testKit.setIsAvailable(false);
+        }
+        orderKit.setOrder(serviceOrder);
         testKitRepository.save(testKit);
     }
 
@@ -79,10 +93,22 @@ public class OrderKitServiceImpl implements OrderKitService {
     }
 
     @Override
-    public OrderTestKitResponse getOrderById(Long orderId) {
-        OrderKit orderKit = orderKitRepository.findById(orderId)
+    @Transactional
+    public List<OrderTestKitResponse> getOrderById(Long orderId) {
+        List<OrderTestKitResponse> orderTestKitResponses = new ArrayList<>();
+        ServiceOrder serviceOrder = orderServiceRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
-        return orderTestKitMapper.toOrderTestKitResponse(orderKit);
+        serviceOrder.getOrderKits().forEach(orderKit -> {
+                OrderTestKitResponse response = orderTestKitMapper.toOrderTestKitResponse(orderKit);
+                TestKit testKit = orderKit.getKit();
+                if (response != null) {
+                    response.setKitName(testKit.getKitName());
+                    response.setKitType(testKit.getKitType());
+                    response.setSampleType(testKit.getSampleType());
+                    orderTestKitResponses.add(response);
+                }
+        });
+        return orderTestKitResponses;
     }
 
     @Override

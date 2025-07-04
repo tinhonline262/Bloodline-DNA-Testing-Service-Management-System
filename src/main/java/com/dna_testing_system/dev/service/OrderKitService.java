@@ -6,9 +6,9 @@ import com.dna_testing_system.dev.dto.response.OrderTestKitResponse;
 import java.util.List;
 
 public interface OrderKitService {
-    void createOrder(OrderTestKitRequest orderTestKitRequest);
+    void createOrder(Long orderId,OrderTestKitRequest orderTestKitRequest);
     void deleteOrder(Long orderId);
     void updateOrder(Long orderId, OrderTestKitRequest orderTestKitRequest);
-    OrderTestKitResponse getOrderById(Long orderId);
+    List<OrderTestKitResponse> getOrderById(Long orderId);
     List<OrderTestKitResponse> getAllOrders();
 }
