@@ -1,17 +1,21 @@
 package com.dna_testing_system.dev.controller;
 
 import com.dna_testing_system.dev.dto.request.StaffAvailableRequest;
+import com.dna_testing_system.dev.dto.response.UserProfileResponse;
 import com.dna_testing_system.dev.service.OrderTaskManagementService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -24,8 +28,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/manager")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ManagerOrderController {
+public class ManagerOrderController extends BaseController {
     OrderTaskManagementService orderTaskManagementService;
+
 
     @PostMapping("/order-management/update-status")
     public String updateOrderStatus(@RequestParam Long orderId,
@@ -45,6 +50,14 @@ public class ManagerOrderController {
 
     @GetMapping("/order-management")
     public String orderManagement(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() &&
+                !authentication.getName().equals("anonymousUser")) {
+
+            String currentPrincipalName = authentication.getName();
+            UserProfileResponse userProfile = userProfileService.getUserProfile(currentPrincipalName);
+            model.addAttribute("userProfile", userProfile);
+        }
         try {
             var orders = orderTaskManagementService.getServiceOrders();
             model.addAttribute("orders", orders);
@@ -73,6 +86,14 @@ public class ManagerOrderController {
     public String newOrders(Model model) {
         model.addAttribute("pageTitle", "New Orders Management");
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() &&
+                !authentication.getName().equals("anonymousUser")) {
+
+            String currentPrincipalName = authentication.getName();
+            UserProfileResponse userProfile = userProfileService.getUserProfile(currentPrincipalName);
+            model.addAttribute("userProfile", userProfile);
+        }
         // Load new orders (unassigned orders with PENDING status)
         var newOrders = orderTaskManagementService.getNewOrders();
 
