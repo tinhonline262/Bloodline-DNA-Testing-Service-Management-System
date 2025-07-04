@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                                 // XÓA BỎ "/layouts/**" KHỎI ĐÂY
                         ).permitAll()
                         .requestMatchers("/manager/**", "/manager/services/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
+                        .requestMatchers("/admin/**").hasAnyRole(RoleType.ADMIN.name())
                         .requestMatchers("/user/**").authenticated()
                         .anyRequest().permitAll()
                 )
