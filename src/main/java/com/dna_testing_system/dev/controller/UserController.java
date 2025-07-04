@@ -122,7 +122,6 @@ public class UserController {
         model.addAttribute("orderDetails", orderDetails);
         return "order-details"; // Return the view name for the order details page
     }
-}
     @GetMapping("/user/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("pageTitle", "Dashboard - Trang chủ");
@@ -131,4 +130,6 @@ public class UserController {
         return "user/dashboard"; // Trả về template dashboard.html
     }
 }
+
+
 
