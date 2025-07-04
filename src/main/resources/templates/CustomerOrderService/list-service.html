@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách dịch vụ y tế</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 10px;
+            padding: 32px 24px;
+            box-shadow: 0 2px 16px rgba(60, 72, 88, 0.08);
+        }
+        h1, h2 {
+            color: #2664ad;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        table th, table td {
+            border: 1px solid #dde2e7;
+            padding: 10px 8px;
+            text-align: left;
+        }
+        table th {
+            background: #e6f0fa;
+            color: #245b88;
+        }
+        tr:nth-child(even) {
+            background: #f5f8fb;
+        }
+        .button {
+            background: #2664ad;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+        .button:hover {
+            background: #184375;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Danh sách dịch vụ y tế</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Tên dịch vụ</th>
+            <th>Mô tả</th>
+            <th>Giá</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="service : ${medicalServices}" th:if="${service.isAvailable}">
+            <td th:text="${service.serviceName}">Tên dịch vụ</td>
+            <td th:text="${service.serviceDescription}">Mô tả</td>
+            <td th:text="${#numbers.formatDecimal(service.currentPrice, 0, 'COMMA', 0, 'POINT')}"></td>
+            <td>
+                <a th:href="@{'/user/order-service'(medicalServiceId=${service.id})}" class="button">Đặt dịch vụ</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

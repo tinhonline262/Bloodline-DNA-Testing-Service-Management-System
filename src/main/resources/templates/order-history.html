@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lịch sử đơn hàng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f6f6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 32px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        h2, h3 {
+            color: #2b3c4e;
+            margin-bottom: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        th, td {
+            padding: 10px 14px;
+            border: 1px solid #d0d0d0;
+            text-align: left;
+        }
+        th {
+            background: #e1e8ee;
+        }
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        .btn-detail, .btn-back {
+            display: inline-block;
+            padding: 6px 18px;
+            background: #2b8ce6;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .btn-detail:hover, .btn-back:hover {
+            background: #1665b8;
+        }
+        .order-info p {
+            margin: 6px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Lịch sử đơn hàng</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Mã đơn</th>
+            <th>Dịch vụ</th>
+            <th>Ngày hẹn</th>
+            <th>Loại lấy mẫu</th>
+            <th>Địa chỉ lấy mẫu</th>
+            <th>Số tiền</th>
+            <th>Status</th>
+            <th>Chi tiết</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.idServiceOrder}"></td>
+            <td th:text="${order.medicalServiceName}"></td>
+            <td th:text="${order.appointmentDate}"></td>
+            <td th:text="${order.collectionType}"></td>
+            <td th:text="${order.collectionAddress}"></td>
+            <td th:text="${order.finalAmount}"></td>
+            <td th:text="${order.orderStatus}"></td>
+            <td>
+                <a th:href="@{/order-history/details(orderId=${order.idServiceOrder})}" class="btn-detail">Xem</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
