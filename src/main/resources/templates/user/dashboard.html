@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/user-layout :: layout (~{::body/content()}, 'Dashboard - Trang chủ', 'Dashboard')}">
+<head>
+    <title>Dashboard - Trang chủ</title>
+</head>
+<body>
+<div class="container-fluid p-0">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 bg-primary text-white">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <img src="https://via.placeholder.com/64" alt="user avatar" width="64" height="64" class="rounded-circle border border-white border-3">
+                        </div>
+                        <div>
+                            <h4 class="mb-1">Chào mừng, User Name</h4>
+                            <p class="mb-0 opacity-75">Chúc bạn một ngày làm việc hiệu quả!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+            <div class="card stats-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3"><span class="avatar bg-primary-transparent"><i class="ri-file-list-line"></i></span></div>
+                        <div class="flex-1">
+                            <h6 class="mb-1 text-muted">Yêu cầu đã gửi</h6>
+                            <h4 class="mb-0 fw-semibold">15</h4>
+                            <small class="text-muted">Tổng số yêu cầu</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+            <div class="card stats-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3"><span class="avatar bg-warning-transparent"><i class="ri-timer-line"></i></span></div>
+                        <div class="flex-1">
+                            <h6 class="mb-1 text-muted">Đang xử lý</h6>
+                            <h4 class="mb-0 fw-semibold">3</h4>
+                            <small class="text-muted">Yêu cầu đang thực hiện</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+            <div class="card stats-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3"><span class="avatar bg-info-transparent"><i class="ri-calendar-check-line"></i></span></div>
+                        <div class="flex-1">
+                            <h6 class="mb-1 text-muted">Lịch hẹn sắp tới</h6>
+                            <h4 class="mb-0 fw-semibold">1</h4>
+                            <small class="text-muted">Trong 7 ngày tới</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+            <div class="card stats-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3"><span class="avatar bg-success-transparent"><i class="ri-file-check-line"></i></span></div>
+                        <div class="flex-1">
+                            <h6 class="mb-1 text-muted">Kết quả có sẵn</h6>
+                            <h4 class="mb-0 fw-semibold">5</h4>
+                            <small class="text-muted">Chưa tải xuống</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Yêu cầu xét nghiệm gần đây</h5>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Xem tất cả <i class="ri-arrow-right-line"></i></a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Mã yêu cầu</th><th>Ngày gửi</th><th>Loại xét nghiệm</th><th>Trạng thái</th><th>Hành động</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><span class="fw-semibold text-primary">XN001</span></td>
+                                <td>23/06/2025</td>
+                                <td><i class="ri-test-tube-line text-muted me-2"></i>Xét nghiệm máu tổng quát</td>
+                                <td><span class="badge bg-success">Hoàn thành</span></td>
+                                <td><button class="btn btn-sm btn-outline-primary"><i class="ri-eye-line"></i> Xem</button></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-semibold text-primary">XN002</span></td>
+                                <td>24/06/2025</td>
+                                <td><i class="ri-test-tube-line text-muted me-2"></i>Xét nghiệm nước tiểu</td>
+                                <td><span class="badge bg-warning">Đang xử lý</span></td>
+                                <td><button class="btn btn-sm btn-outline-primary"><i class="ri-eye-line"></i> Xem</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="card mb-4">
+                <div class="card-header"><h6 class="card-title mb-0">Thao tác nhanh</h6></div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="#" class="btn btn-primary"><i class="ri-add-line me-2"></i>Tạo yêu cầu mới</a>
+                        <a href="#" class="btn btn-outline-info"><i class="ri-calendar-line me-2"></i>Xem lịch hẹn</a>
+                        <a href="#" class="btn btn-outline-success"><i class="ri-file-download-line me-2"></i>Tải kết quả</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header"><h6 class="card-title mb-0">Lịch hẹn sắp tới</h6></div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h6 class="timeline-title">Xét nghiệm máu</h6>
+                                <p class="timeline-text mb-1">Phòng Lab - Tầng 2</p>
+                                <small class="text-muted"><i class="ri-calendar-line"></i> 25/06/2025 - 08:30</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h6 class="timeline-title">Tư vấn kết quả</h6>
+                                <p class="timeline-text mb-1">Phòng khám A1</p>
+                                <small class="text-muted"><i class="ri-calendar-line"></i> 28/06/2025 - 10:00</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments/public/last-footer :: last-footer"></div>
+
+</body>
+</html>

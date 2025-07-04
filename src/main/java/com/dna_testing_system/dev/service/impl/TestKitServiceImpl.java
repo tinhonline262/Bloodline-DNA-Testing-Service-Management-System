@@ -82,4 +82,31 @@ public class TestKitServiceImpl implements TestKitService {
                 .orElseThrow(() -> new RuntimeException("Test Kit not found with id: " + kitId));
         return testKitMapper.toResponse(testKit);
     }
+
+    @Override
+    public List<TestKitResponse> searchTestKits(String searchQuery) {
+        List<TestKit> testKits = testKitRepository.findAll();
+        List<TestKitResponse> testKitResponses = new ArrayList<>();
+
+        String searchTerm = searchQuery.toLowerCase().trim();
+
+        for (TestKit testKit : testKits) {
+            boolean match = false;
+
+
+            if (testKit.getKitName() != null &&
+                    testKit.getKitName().toLowerCase().contains(searchTerm)) {
+                match = true;
+            }
+
+            //field entity
+
+            if (match) {
+                TestKitResponse response = testKitMapper.toResponse(testKit);
+                testKitResponses.add(response);
+            }
+        }
+
+        return testKitResponses;
+    }
 }
