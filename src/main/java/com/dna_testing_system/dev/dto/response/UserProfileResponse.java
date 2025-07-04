@@ -32,4 +32,13 @@ public class UserProfileResponse {
     private LocalDateTime createdAt;
 
     private String message;
+
+    public String getFullName() {
+
+        if (firstName != null && !firstName.isEmpty() && lastName != null && !lastName.isEmpty()) {
+            return firstName + " " + lastName;
+        }
+
+        return username;
+    }
 }

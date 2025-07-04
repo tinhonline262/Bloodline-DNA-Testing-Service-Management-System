@@ -5,6 +5,7 @@ import com.dna_testing_system.dev.enums.RoleType;
 import com.dna_testing_system.dev.service.impl.UserDetailsServiceImpl;
 import com.dna_testing_system.dev.utils.PasswordUtil;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +16,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -30,16 +29,24 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-        .authenticationProvider(authenticationProvider())
+            .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/", "/register", "/login", "/error", "/assets/**", "/api/**").permitAll()
-                    .requestMatchers("/manager/**", "/manager/services/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
-                .anyRequest().authenticated()
+                .requestMatchers(
+                        "/css/**", "/js/**", "/images/**", "/webjars/**",
+                        "/", "/register", "/login", "/error", "/assets/**",
+                        "/uploads/**", "/api/**"
+                ).permitAll()
+                .requestMatchers("/manager/**", "/manager/services/**")
+                    .hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
+                .requestMatchers("/user/**").authenticated()
+                .anyRequest().permitAll()
             )
-                .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/register") // linh hoạt hơn disable hoàn toàn
+            )
             .formLogin(form -> form
                 .loginPage("/login")
-                    .successHandler(customAuthenticationSuccessHandler)
+                .successHandler(customAuthenticationSuccessHandler) // dùng successHandler nếu có custom logic
                 .permitAll()
             )
             .logout(logout -> logout
@@ -51,15 +58,19 @@ public class SecurityConfiguration {
             )
             .rememberMe(remember -> remember
                 .key("uniqueAndSecretKey")
-                .tokenValiditySeconds(86400) // 1 day
+                .tokenValiditySeconds(86400)
             )
             .exceptionHandling(exceptions -> exceptions
                 .accessDeniedPage("/access-denied")
+            )
+            .headers(headers -> headers
+                .cacheControl(cache -> {})
+                .frameOptions(frameOptions -> frameOptions.sameOrigin())
             );
-            
+
         return http.build();
     }
-    
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -67,7 +78,7 @@ public class SecurityConfiguration {
         authProvider.setPasswordEncoder(PasswordUtil.getPasswordEncoder());
         return authProvider;
     }
-    
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();

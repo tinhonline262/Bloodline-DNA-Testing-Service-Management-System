@@ -1,5 +1,6 @@
 <!-- Common Scripts Fragment -->
-<th:block th:fragment="scripts">
+<th:block th:fragment="scripts" xmlns:th="http://www.thymeleaf.org">
+
     <!-- Popper JS -->
     <script th:src="@{/assets/libs/@popperjs/core/umd/popper.min.js}"></script>
 
@@ -40,7 +41,9 @@
 
     <!-- Custom JS -->
     <script th:src="@{/assets/js/custom.js}" defer></script>
+
     <!-- Sweetalerts JS -->
     <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
     <script src="/assets/js/sweet-alerts.js"></script>
-</th:block>>
+
+</th:block>

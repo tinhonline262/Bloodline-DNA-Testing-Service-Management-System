@@ -72,7 +72,7 @@ public class AuthenticationController {
     public String showLoginForm(Model model) {
         // Redirect to home if user is already authenticated
         if (isAuthenticated()) {
-            return "redirect:/index";
+            return "redirect:/user/home";
         }
         model.addAttribute("authRequest", new AuthenticationRequest());
         return "signin";
