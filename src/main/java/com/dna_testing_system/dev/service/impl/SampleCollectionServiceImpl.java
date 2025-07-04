@@ -7,7 +7,7 @@ import com.dna_testing_system.dev.entity.ServiceOrder;
 import com.dna_testing_system.dev.entity.User;
 import com.dna_testing_system.dev.mapper.SampleCollectionMapper;
 import com.dna_testing_system.dev.repository.SampleCollectionRepository;
-import com.dna_testing_system.dev.repository.ServiceOrderRepository;
+import com.dna_testing_system.dev.repository.OrderServiceRepository;
 import com.dna_testing_system.dev.repository.UserRepository;
 import com.dna_testing_system.dev.service.SampleCollectionService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class SampleCollectionServiceImpl implements SampleCollectionService {
 
     private final SampleCollectionRepository sampleCollectionRepository;
     private final SampleCollectionMapper sampleCollectionMapper;
-    private final ServiceOrderRepository serviceOrderRepository;
+    private final OrderServiceRepository serviceOrderRepository;
     private final UserRepository userRepository;
 
     @Override

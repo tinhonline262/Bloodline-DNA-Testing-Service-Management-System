@@ -1,17 +1,19 @@
-package com.dna_testing_system.dev.dto.request;
+package com.dna_testing_system.dev.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+@Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ParticipantRequest {
+public class OrderParticipantResponse {
     String firstName;
     String lastName;
     String gender;
-    LocalDate birthDate;
+    LocalDate dateBirth;
 }
