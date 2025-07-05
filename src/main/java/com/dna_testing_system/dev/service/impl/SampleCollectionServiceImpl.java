@@ -7,7 +7,7 @@ import com.dna_testing_system.dev.entity.ServiceOrder;
 import com.dna_testing_system.dev.entity.User;
 import com.dna_testing_system.dev.mapper.SampleCollectionMapper;
 import com.dna_testing_system.dev.repository.SampleCollectionRepository;
-import com.dna_testing_system.dev.repository.ServiceOrderRepository;
+import com.dna_testing_system.dev.repository.OrderServiceRepository;
 import com.dna_testing_system.dev.repository.UserRepository;
 import com.dna_testing_system.dev.service.SampleCollectionService;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +22,12 @@ public class SampleCollectionServiceImpl implements SampleCollectionService {
 
     private final SampleCollectionRepository sampleCollectionRepository;
     private final SampleCollectionMapper sampleCollectionMapper;
-    private final ServiceOrderRepository serviceOrderRepository;
+    private final OrderServiceRepository orderServiceRepository;
     private final UserRepository userRepository;
 
     @Override
     public SampleCollectionResponse create(SampleCollectionRequest request) {
-        ServiceOrder order = serviceOrderRepository.findById(request.getOrderId())
+        ServiceOrder order = orderServiceRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         User staff = userRepository.findById(String.valueOf(request.getStaffId()))
                 .orElseThrow(() -> new RuntimeException("Staff not found"));

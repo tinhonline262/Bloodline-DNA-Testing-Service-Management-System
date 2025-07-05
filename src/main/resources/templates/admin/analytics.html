@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html th:replace="~{layouts/admin-layout :: layout(~{::#content}, ~{::script}, 'Advanced Analytics', ~{::breadcrumbs}, ~{::actionButtons})}"
+<html
+    th:replace="~{layouts/admin-layout :: layout(~{::#content}, ~{::script}, 'Advanced Analytics', ~{::breadcrumbs}, ~{::actionButtons})}"
     xmlns:th="http://www.thymeleaf.org" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="light"
     data-menu-styles="light" loader="disable" data-vertical-style="overlay" class="mdl-js"
     data-toggled="icon-overlay-close">
@@ -40,7 +41,7 @@
                                 <h4 class="mb-0" th:text="${analytics.totalRevenue ?: '$0'}">$0</h4>
                                 <p class="mb-0">Total Revenue</p>
                                 <small class="opacity-75">
-                                    <i class="ri-arrow-up-line"></i> 
+                                    <i class="ri-arrow-up-line"></i>
                                     <span th:text="${analytics.revenueGrowth ?: '0%'}">12%</span> vs last period
                                 </small>
                             </div>
@@ -49,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card bg-gradient-success text-white">
                     <div class="card-body">
@@ -58,7 +59,7 @@
                                 <h4 class="mb-0" th:text="${analytics.totalOrders ?: '0'}">0</h4>
                                 <p class="mb-0">Total Orders</p>
                                 <small class="opacity-75">
-                                    <i class="ri-arrow-up-line"></i> 
+                                    <i class="ri-arrow-up-line"></i>
                                     <span th:text="${analytics.ordersGrowth ?: '0%'}">8%</span> vs last period
                                 </small>
                             </div>
@@ -67,7 +68,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card bg-gradient-info text-white">
                     <div class="card-body">
@@ -76,7 +77,7 @@
                                 <h4 class="mb-0" th:text="${analytics.activeUsers ?: '0'}">0</h4>
                                 <p class="mb-0">Active Users</p>
                                 <small class="opacity-75">
-                                    <i class="ri-arrow-up-line"></i> 
+                                    <i class="ri-arrow-up-line"></i>
                                     <span th:text="${analytics.usersGrowth ?: '0%'}">15%</span> vs last period
                                 </small>
                             </div>
@@ -85,7 +86,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card bg-gradient-warning text-white">
                     <div class="card-body">
@@ -94,7 +95,7 @@
                                 <h4 class="mb-0" th:text="${analytics.avgOrderValue ?: '$0'}">$0</h4>
                                 <p class="mb-0">Avg Order Value</p>
                                 <small class="opacity-75">
-                                    <i class="ri-arrow-up-line"></i> 
+                                    <i class="ri-arrow-up-line"></i>
                                     <span th:text="${analytics.aovGrowth ?: '0%'}">5%</span> vs last period
                                 </small>
                             </div>
@@ -189,49 +190,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr th:each="service : ${topServices}">
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <div class="badge bg-primary me-2" style="width: 8px; height: 8px;"></div>
-                                                Paternity Test
+                                                <div class="badge bg-primary me-2" style="width: 8px; height: 8px;">
+                                                </div>
+                                                <span th:text="${service.serviceName}">Paternity Test</span>
                                             </div>
                                         </td>
-                                        <td>1,234</td>
-                                        <td>$123,400</td>
+                                        <td th:text="${service.orderCount}">1,234</td>
+                                        <td
+                                            th:text="'$' + ${#numbers.formatDecimal(service.revenue, 0, 'COMMA', 2, 'POINT')}">
+                                            $123,400</td>
                                         <td><span class="text-success">+12%</span></td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="badge bg-success me-2" style="width: 8px; height: 8px;"></div>
-                                                Ancestry Test
-                                            </div>
-                                        </td>
-                                        <td>987</td>
-                                        <td>$98,700</td>
-                                        <td><span class="text-success">+8%</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="badge bg-info me-2" style="width: 8px; height: 8px;"></div>
-                                                Sibling Test
-                                            </div>
-                                        </td>
-                                        <td>654</td>
-                                        <td>$65,400</td>
-                                        <td><span class="text-success">+15%</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="badge bg-warning me-2" style="width: 8px; height: 8px;"></div>
-                                                Health Test
-                                            </div>
-                                        </td>
-                                        <td>432</td>
-                                        <td>$43,200</td>
-                                        <td><span class="text-danger">-3%</span></td>
+                                    <tr th:if="${topServices == null or topServices.empty}">
+                                        <td colspan="4" class="text-center">No data available</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -258,49 +232,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr th:each="geo : ${geographicData}">
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="/assets/images/flags/vn.png" alt="VN" class="me-2" style="width: 20px;">
-                                                Vietnam
+                                                <div class="badge bg-primary me-2" style="width: 8px; height: 8px;">
+                                                </div>
+                                                <span th:text="${geo.region}">Region</span>
                                             </div>
                                         </td>
-                                        <td>5,432</td>
-                                        <td>2,345</td>
-                                        <td>$234,500</td>
+                                        <td>1,200</td>
+                                        <td th:text="${geo.orderCount}">2,345</td>
+                                        <td
+                                            th:text="'$' + ${#numbers.formatDecimal(geo.revenue, 0, 'COMMA', 2, 'POINT')}">
+                                            $234,500</td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img src="/assets/images/flags/us.png" alt="US" class="me-2" style="width: 20px;">
-                                                United States
-                                            </div>
-                                        </td>
-                                        <td>3,210</td>
-                                        <td>1,876</td>
-                                        <td>$187,600</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img src="/assets/images/flags/uk.png" alt="UK" class="me-2" style="width: 20px;">
-                                                United Kingdom
-                                            </div>
-                                        </td>
-                                        <td>1,987</td>
-                                        <td>1,234</td>
-                                        <td>$123,400</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img src="/assets/images/flags/ca.png" alt="CA" class="me-2" style="width: 20px;">
-                                                Canada
-                                            </div>
-                                        </td>
-                                        <td>1,543</td>
-                                        <td>987</td>
-                                        <td>$98,700</td>
+                                    <tr th:if="${geographicData == null or geographicData.empty}">
+                                        <td colspan="4" class="text-center">No data available</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -352,36 +299,46 @@
 
     <!-- Chart.js for charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             initializeCharts();
             startRealTimeUpdates();
         });
 
         function initializeCharts() {
-            createRevenueChart();
-            createOrderStatusChart();
-            createUserActivityChart();
-            createServicePerformanceChart();
+            // Use the data provided by the server if available
+            const revenueChartData = /*[[${revenueChartData}]]*/ null;
+            const orderStatusChartData = /*[[${orderStatusChartData}]]*/ null;
+            const userActivityChartData = /*[[${userActivityChartData}]]*/ null;
+            const servicePerformanceChartData = /*[[${servicePerformanceChartData}]]*/ null;
+
+            createRevenueChart(revenueChartData);
+            createOrderStatusChart(orderStatusChartData);
+            createUserActivityChart(userActivityChartData);
+            createServicePerformanceChart(servicePerformanceChartData);
             createSystemGauges();
         }
 
-        function createRevenueChart() {
+        function createRevenueChart(serverData) {
             const ctx = document.getElementById('revenueChart').getContext('2d');
+
+            // Use server data if available, otherwise use default data
+            const chartData = serverData ? JSON.parse(serverData) : {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [12000, 19000, 15000, 25000, 22000, 30000, 35000, 32000, 40000, 38000, 45000, 50000],
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            };
+
             new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    datasets: [{
-                        label: 'Revenue',
-                        data: [12000, 19000, 15000, 25000, 22000, 30000, 35000, 32000, 40000, 38000, 45000, 50000],
-                        borderColor: 'rgb(75, 192, 192)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
+                data: chartData,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -394,7 +351,7 @@
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                callback: function(value) {
+                                callback: function (value) {
                                     return '$' + value.toLocaleString();
                                 }
                             }
@@ -404,22 +361,26 @@
             });
         }
 
-        function createOrderStatusChart() {
+        function createOrderStatusChart(serverData) {
             const ctx = document.getElementById('orderStatusChart').getContext('2d');
+
+            // Use server data if available, otherwise use default data
+            const chartData = serverData ? JSON.parse(serverData) : {
+                labels: ['Completed', 'Processing', 'Pending', 'Cancelled'],
+                datasets: [{
+                    data: [65, 20, 10, 5],
+                    backgroundColor: [
+                        '#28a745',
+                        '#17a2b8',
+                        '#ffc107',
+                        '#dc3545'
+                    ]
+                }]
+            };
+
             new Chart(ctx, {
                 type: 'doughnut',
-                data: {
-                    labels: ['Completed', 'Processing', 'Pending', 'Cancelled'],
-                    datasets: [{
-                        data: [65, 20, 10, 5],
-                        backgroundColor: [
-                            '#28a745',
-                            '#17a2b8',
-                            '#ffc107',
-                            '#dc3545'
-                        ]
-                    }]
-                },
+                data: chartData,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -432,18 +393,22 @@
             });
         }
 
-        function createUserActivityChart() {
+        function createUserActivityChart(serverData) {
             const ctx = document.getElementById('userActivityChart').getContext('2d');
+
+            // Use server data if available, otherwise use default data
+            const chartData = serverData ? JSON.parse(serverData) : {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Active Users',
+                    data: [1200, 1900, 1500, 1700, 2100, 1800, 1400],
+                    backgroundColor: 'rgba(54, 162, 235, 0.8)'
+                }]
+            };
+
             new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Active Users',
-                        data: [1200, 1900, 1500, 1700, 2100, 1800, 1400],
-                        backgroundColor: 'rgba(54, 162, 235, 0.8)'
-                    }]
-                },
+                data: chartData,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -461,20 +426,24 @@
             });
         }
 
-        function createServicePerformanceChart() {
+        function createServicePerformanceChart(serverData) {
             const ctx = document.getElementById('servicePerformanceChart').getContext('2d');
+
+            // Use server data if available, otherwise use default data
+            const chartData = serverData ? JSON.parse(serverData) : {
+                labels: ['Paternity', 'Ancestry', 'Sibling', 'Health', 'Maternity'],
+                datasets: [{
+                    label: 'Performance Score',
+                    data: [90, 85, 88, 75, 92],
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    pointBackgroundColor: 'rgb(255, 99, 132)'
+                }]
+            };
+
             new Chart(ctx, {
                 type: 'radar',
-                data: {
-                    labels: ['Paternity', 'Ancestry', 'Sibling', 'Health', 'Maternity'],
-                    datasets: [{
-                        label: 'Performance Score',
-                        data: [90, 85, 88, 75, 92],
-                        borderColor: 'rgb(255, 99, 132)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        pointBackgroundColor: 'rgb(255, 99, 132)'
-                    }]
-                },
+                data: chartData,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -489,10 +458,18 @@
         }
 
         function createSystemGauges() {
-            createGauge('cpuGauge', 25, 'CPU');
-            createGauge('memoryGauge', 65, 'Memory');
-            createGauge('diskGauge', 78, 'Disk');
-            createGauge('networkGauge', 35, 'Network');
+            // Get system metrics data from the model if available
+            const systemMetrics = /*[[${systemMetrics}]]*/ null;
+
+            const cpuUsage = systemMetrics ? systemMetrics.cpuUsage : 25;
+            const memoryUsage = systemMetrics ? systemMetrics.memoryUsage : 65;
+            const diskUsage = systemMetrics ? systemMetrics.diskUsage : 78;
+            const networkUsage = systemMetrics ? systemMetrics.networkUsage : 35;
+
+            createGauge('cpuGauge', cpuUsage, 'CPU');
+            createGauge('memoryGauge', memoryUsage, 'Memory');
+            createGauge('diskGauge', diskUsage, 'Disk');
+            createGauge('networkGauge', networkUsage, 'Network');
         }
 
         function createGauge(canvasId, value, label) {
@@ -523,21 +500,21 @@
                 },
                 plugins: [{
                     id: 'gaugeText',
-                    beforeDraw: function(chart) {
+                    beforeDraw: function (chart) {
                         const width = chart.width;
                         const height = chart.height;
                         const ctx = chart.ctx;
-                        
+
                         ctx.restore();
                         const fontSize = (height / 80).toFixed(2);
                         ctx.font = fontSize + "em sans-serif";
                         ctx.textBaseline = "middle";
                         ctx.fillStyle = "#333";
-                        
+
                         const text = value + "%";
                         const textX = Math.round((width - ctx.measureText(text).width) / 2);
                         const textY = height / 2;
-                        
+
                         ctx.fillText(text, textX, textY);
                         ctx.save();
                     }
@@ -547,15 +524,15 @@
 
         function startRealTimeUpdates() {
             // Update system metrics every 10 seconds
-            setInterval(function() {
+            setInterval(function () {
                 updateSystemMetrics();
             }, 10000);
         }
 
         function updateSystemMetrics() {
-            // In a real application, this would fetch real-time data from the server
+            // In a real application, this would fetch real-time data from the server via AJAX
             console.log('Updating system metrics...');
-            
+
             // Simulate metric updates
             const metrics = {
                 cpu: Math.floor(Math.random() * 30) + 15,
@@ -563,15 +540,22 @@
                 disk: Math.floor(Math.random() * 20) + 70,
                 network: Math.floor(Math.random() * 50) + 15
             };
-            
+
             // Update gauge charts would go here
             // For demo purposes, we'll just log the values
             console.log('New metrics:', metrics);
         }
 
         function exportAnalytics() {
+            // Get current period
+            const urlParams = new URLSearchParams(window.location.search);
+            const period = urlParams.get('period') || 'month';
+
             // In a real application, this would generate and download a report
-            alert('Analytics report export feature would be implemented here.');
+            alert('Exporting analytics report for period: ' + period);
+
+            // This would be an AJAX call to a server endpoint that generates and returns a report file
+            // window.location.href = '/admin/analytics/export?period=' + period;
         }
     </script>
 
@@ -579,27 +563,28 @@
         .bg-gradient-primary {
             background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
         }
-        
+
         .bg-gradient-success {
             background: linear-gradient(45deg, #11998e 0%, #38ef7d 100%);
         }
-        
+
         .bg-gradient-info {
             background: linear-gradient(45deg, #3182ce 0%, #63b3ed 100%);
         }
-        
+
         .bg-gradient-warning {
             background: linear-gradient(45deg, #ed8936 0%, #fbb040 100%);
         }
-        
+
         .table-responsive {
             max-height: 400px;
         }
-        
+
         .card {
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
             border: 1px solid rgba(0, 0, 0, 0.125);
         }
     </style>
 </body>
+
 </html>
