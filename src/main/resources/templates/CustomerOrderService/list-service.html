@@ -1,82 +1,391 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách dịch vụ y tế</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-blue: #0162e8;
+            --primary-blue-light: #4a8bff;
+            --primary-blue-dark: #0147c7;
+            --bg-light: #f8fafc;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+        }
+
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f7f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(1, 98, 232, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Loại bỏ hiệu ứng động cho header */
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            /* animation: float 6s ease-in-out infinite; */ /* Đã loại bỏ */
+        }
+
+        /* Loại bỏ keyframes */
+        /*
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        */
+
+        .header-section h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
             margin: 0;
-            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
         }
-        .container {
-            max-width: 700px;
-            margin: 40px auto;
-            background: #fff;
-            border-radius: 10px;
-            padding: 32px 24px;
-            box-shadow: 0 2px 16px rgba(60, 72, 88, 0.08);
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            backdrop-filter: blur(10px);
         }
-        h1, h2 {
-            color: #2664ad;
-            margin-bottom: 24px;
+
+        .header-subtitle {
+            margin-top: 0.8rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .services-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        .services-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.8rem;
+            /* transition: all 0.3s ease; */ /* Đã loại bỏ */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Loại bỏ hiệu ứng trước card */
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-blue-light));
+            /* transform: scaleX(0); */ /* Đã loại bỏ */
+            /* transition: transform 0.3s ease; */ /* Đã loại bỏ */
+        }
+
+        /* Loại bỏ hiệu ứng hover cho service-card */
+        /*
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border-color: var(--primary-blue);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+        */
+
+        .service-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .service-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            flex: 1;
+        }
+
+        .service-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            margin-left: 1rem;
+        }
+
+        .service-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .service-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .price-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-order {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            /* transition: all 0.3s ease; */ /* Đã loại bỏ */
+            font-size: 0.95rem;
+        }
+
+        /* Loại bỏ hiệu ứng hover cho nút */
+        /*
+        .btn-order:hover {
+            background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(1, 98, 232, 0.3);
+            color: white;
+        }
+
+        .btn-order:active {
+            transform: translateY(0);
+        }
+        */
+
+        .status-badge {
+            background: var(--success-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .stats-bar {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .stat-item {
             text-align: center;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 24px;
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
         }
-        table th, table td {
-            border: 1px solid #dde2e7;
-            padding: 10px 8px;
-            text-align: left;
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
         }
-        table th {
-            background: #e6f0fa;
-            color: #245b88;
+
+        .service-badge {
+            background: rgba(1, 98, 232, 0.1);
+            color: var(--primary-blue);
+            padding: 0.25rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
         }
-        tr:nth-child(even) {
-            background: #f5f8fb;
-        }
-        .button {
-            background: #2664ad;
-            color: #fff;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background 0.18s;
-        }
-        .button:hover {
-            background: #184375;
+
+        @media (max-width: 768px) {
+            .header-section h1 {
+                font-size: 1.8rem;
+            }
+            .service-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            .btn-order {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Danh sách dịch vụ y tế</h1>
-    <table>
-        <thead>
-        <tr>
-            <th>Tên dịch vụ</th>
-            <th>Mô tả</th>
-            <th>Giá</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="service : ${medicalServices}" th:if="${service.isAvailable}">
-            <td th:text="${service.serviceName}">Tên dịch vụ</td>
-            <td th:text="${service.serviceDescription}">Mô tả</td>
-            <td th:text="${#numbers.formatDecimal(service.currentPrice, 0, 'COMMA', 0, 'POINT')}"></td>
-            <td>
-                <a th:href="@{'/user/order-service'(medicalServiceId=${service.id})}" class="button">Đặt dịch vụ</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<div class="main-container">
+    <div class="header-section">
+        <h1>
+            <div class="header-icon">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            Danh sách dịch vụ y tế
+        </h1>
+        <div class="header-subtitle">
+            Chọn dịch vụ xét nghiệm phù hợp với nhu cầu của bạn
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number" th:text="${#lists.size(medicalServices)}">0</div>
+            <div class="stat-label">Dịch vụ</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Hỗ trợ</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Tin cậy</div>
+        </div>
+    </div>
+
+    <div class="services-container">
+        <div class="services-grid">
+            <div class="service-card" th:each="service : ${medicalServices}" th:if="${service.isAvailable}">
+                <div class="status-badge">
+                    <i class="fas fa-check-circle"></i>
+                    Có sẵn
+                </div>
+
+                <div class="service-header">
+                    <h3 class="service-title" th:text="${service.serviceName}">Tên dịch vụ</h3>
+                    <div class="service-icon">
+                        <i class="fas fa-dna"></i>
+                    </div>
+                </div>
+
+                <div class="service-description" th:text="${service.serviceDescription}">
+                    Mô tả dịch vụ
+                </div>
+
+                <div class="service-footer">
+                    <div class="service-price">
+                        <div>
+                            <div class="price-label">Giá dịch vụ</div>
+                            <span th:text="${#numbers.formatDecimal(service.currentPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                            <span class="service-badge">VNĐ</span>
+                        </div>
+                    </div>
+
+                    <a th:href="@{'/user/order-service'(medicalServiceId=${service.id})}" class="btn-order">
+                        <i class="fas fa-shopping-cart"></i>
+                        Đặt dịch vụ
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-state" th:if="${#lists.isEmpty(medicalServices)}">
+            <i class="fas fa-inbox"></i>
+            <h3>Chưa có dịch vụ nào</h3>
+            <p>Hiện tại chưa có dịch vụ y tế nào khả dụng. Vui lòng quay lại sau.</p>
+        </div>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
