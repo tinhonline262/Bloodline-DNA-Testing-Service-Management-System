@@ -36,15 +36,16 @@ public class SecurityConfiguration {
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/", "/register", "/login", "/error", "/assets/**",
                                 "/uploads/**",  "/api/**", "/ws/**"
-                                // XÓA BỎ "/layouts/**" KHỎI ĐÂY
                         ).permitAll()
-                        .requestMatchers("/manager/**", "/manager/services/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
+                        .requestMatchers("/manager/**", "/manager/services/**", "/manager/service-types/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
+                        .requestMatchers("/admin/**").hasAnyRole(RoleType.ADMIN.name())
                         .requestMatchers("/user/**").authenticated()
                         .anyRequest().permitAll()
                 )
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/register")
-                )
+//                .csrf(csrf -> csrf
+//                        .ignoringRequestMatchers("/register")
+//                )
+                .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form
                         .loginPage("/login")
 //                        .defaultSuccessUrl("/user/home", true)
