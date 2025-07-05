@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi tiết đơn hàng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f6f6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 32px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        h2, h3 {
+            color: #2b3c4e;
+            margin-bottom: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        th, td {
+            padding: 10px 14px;
+            border: 1px solid #d0d0d0;
+            text-align: left;
+        }
+        th {
+            background: #e1e8ee;
+        }
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        .btn-detail, .btn-back {
+            display: inline-block;
+            padding: 6px 18px;
+            background: #2b8ce6;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .btn-detail:hover, .btn-back:hover {
+            background: #1665b8;
+        }
+        .order-info p {
+            margin: 6px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Chi tiết đơn hàng</h2>
+    <div class="order-info">
+        <p><strong>Mã đơn:</strong> <span th:text="${orderDetails.idServiceOrder}"></span></p>
+        <p><strong>Dịch vụ:</strong> <span th:text="${orderDetails.medicalServiceName}"></span></p>
+        <p><strong>Ngày hẹn:</strong> <span th:text="${orderDetails.appointmentDate}"></span></p>
+        <p><strong>Loại lấy mẫu:</strong> <span th:text="${orderDetails.collectionType}"></span></p>
+        <p><strong>Địa chỉ lấy mẫu:</strong> <span th:text="${orderDetails.collectionAddress}"></span></p>
+        <p><strong>Tổng tiền:</strong> <span th:text="${orderDetails.finalAmount}"></span></p>
+        <p><strong>Trạng thái:</strong> <span th:text="${orderDetails.orderStatus}"></span></p>
+    </div>
+    <h3>Danh sách kit xét nghiệm</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Tên kit</th>
+            <th>Loại kit</th>
+            <th>Loại mẫu</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="kit : ${orderTestKits}">
+            <td th:text="${kit.kitName}"></td>
+            <td th:text="${kit.kitType}"></td>
+            <td th:text="${kit.sampleType}"></td>
+            <td th:text="${kit.quantityOrdered}"></td>
+            <td th:text="${kit.unitPrice}"></td>
+            <td th:text="${kit.totalPrice}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <h3>Danh sách người tham gia</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Họ</th>
+            <th>Tên</th>
+            <th>Giới tính</th>
+            <th>Ngày sinh</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="participant : ${orderParticipants}">
+            <td th:text="${participant.lastName}"></td>
+            <td th:text="${participant.firstName}"></td>
+            <td th:text="${participant.gender}"></td>
+            <td th:text="${participant.dateBirth}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/order-history" class="btn-back">Quay lại lịch sử đơn</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thông tin người tham gia</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 10px;
+            padding: 32px 24px;
+            box-shadow: 0 2px 16px rgba(60, 72, 88, 0.08);
+        }
+        h1, h2 {
+            color: #2664ad;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .button {
+            background: #2664ad;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+        .button:hover {
+            background: #184375;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: inline-block;
+            width: 150px;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select {
+            padding: 6px 10px;
+            width: 60%;
+            border: 1px solid #bbc5d5;
+            border-radius: 4px;
+        }
+        .success-message {
+            margin-top: 20px;
+            color: #2e8b57;
+            background: #eafbe5;
+            border: 1px solid #b3e6b3;
+            padding: 12px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Thông tin người tham gia</h1>
+    <form th:action="@{/user/participant-information}" method="post">
+        <input type="hidden" name="orderId" th:value="${orderId}" />
+        <div class="form-group">
+            <label>Họ:</label>
+            <input type="text" th:name="firstName" required th:value="${participantRequest.firstName}"/>
+        </div>
+        <div class="form-group">
+            <label>Tên:</label>
+            <input type="text" th:name="lastName" required th:value="${participantRequest.lastName}"/>
+        </div>
+        <div class="form-group">
+            <label>Giới tính:</label>
+            <select th:name="gender" required>
+                <option value="Nam" th:selected="${participantRequest.gender == 'Nam'}">Nam</option>
+                <option value="Nữ" th:selected="${participantRequest.gender == 'Nữ'}">Nữ</option>
+                <option value="Khác" th:selected="${participantRequest.gender == 'Khác'}">Khác</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Ngày sinh:</label>
+            <input type="date" th:name="birthDate" th:value="${participantRequest.birthDate}" th:max="${today}" required/>
+        </div>
+        <button type="submit" class="button">Lưu thông tin</button>
+    </form>
+    <div th:if="${message != null}" class="success-message">
+        <p th:text="${message}"></p>
+        <a th:href="@{'/list-kit'(orderId=${orderId})}">Danh sách kit</a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,7 +1,11 @@
 package com.dna_testing_system.dev.security;
 
+import com.dna_testing_system.dev.config.CustomAuthenticationSuccessHandler;
+import com.dna_testing_system.dev.enums.RoleType;
 import com.dna_testing_system.dev.service.impl.UserDetailsServiceImpl;
 import com.dna_testing_system.dev.utils.PasswordUtil;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,9 +21,12 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfiguration {
 
-    private final UserDetailsServiceImpl userDetailsService;
+    UserDetailsServiceImpl userDetailsService;
+    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -28,10 +35,10 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/", "/register", "/login", "/error", "/assets/**",
-                                "/uploads/**"
+                                "/uploads/**",  "/api/**", "/ws/**"
                                 // XÓA BỎ "/layouts/**" KHỎI ĐÂY
                         ).permitAll()
-
+                        .requestMatchers("/manager/**", "/manager/services/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
                         .requestMatchers("/user/**").authenticated()
                         .anyRequest().permitAll()
                 )
@@ -40,7 +47,8 @@ public class SecurityConfiguration {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/user/home", true)
+//                        .defaultSuccessUrl("/user/home", true)
+                                .successHandler(customAuthenticationSuccessHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -65,9 +73,10 @@ public class SecurityConfiguration {
                 );
         // --- KẾT THÚC PHẦN THÊM MỚI ---
 
+
         return http.build();
     }
-
+    
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -75,7 +84,7 @@ public class SecurityConfiguration {
         authProvider.setPasswordEncoder(PasswordUtil.getPasswordEncoder());
         return authProvider;
     }
-
+    
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();

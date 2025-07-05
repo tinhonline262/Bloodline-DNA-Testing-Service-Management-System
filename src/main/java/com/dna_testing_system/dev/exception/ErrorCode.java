@@ -11,6 +11,13 @@ public enum ErrorCode {
     EMAIL_EXISTS("Email is exists, please use other email address"),
     USER_NOT_EXISTS("User is not exists"),
     PASSWORD_INVALID("Password must be least 8 characters"),
+    SERVICE_TYPE_EXISTS("Service type already exists"),
+    SERVICE_TYPE_NOT_EXISTS("Service type is not exists"),
+    SERVICE_FEATURE_NOT_EXISTS("Service feature is not exists"),
+    MEDICAL_SERVICE_NOT_EXISTS("Medical service is not exists"),
+    INVALID_STAFF_ASSIGNMENT("Staff assignment is invalid"),
+    ASSIGNMENT_FAILED("Failed to complete dual task assignment"),
+    INVALID_STATUS_TRANSITION("Invalid status transition"),
     UNKNOWN_ERROR("Unknown error!");
 
 

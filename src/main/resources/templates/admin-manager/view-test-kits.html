@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common/meta :: common-meta"></head>
+
+<body>
+<div th:replace="fragments/manager/header :: header"></div>
+<!--<div th:replace="fragments/common/header :: header"></div>-->
+<div class="header-section">
+
+
+    <div class="container">
+        <div class="header-content">
+            <div class="header-brand">
+                <div class="header-icon">
+                    <i class="bi bi-shield-fill-check"></i>
+                </div>
+                <div>
+                    <h1 class="header-title">DNA Laboratory Suite</h1>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="main-container">
+
+    <div class="control-panel">
+        <div class="control-header">
+            <h3 class="control-title">
+                <i class="bi bi-sliders"></i>
+                Search & Management Controls
+            </h3>
+        </div>
+        <div class="control-body">
+            <form th:action="@{/test-kits/search}" method="get">
+                <div class="search-group">
+                    <label for="searchQuery" class="search-label">
+                        <i class="bi bi-search me-2"></i>Search Test Kits Database
+                    </label>
+                    <div class="search-input-wrapper">
+                        <input type="text"
+                               class="search-input"
+                               id="searchQuery"
+                               name="searchQuery"
+                               placeholder="Enter kit name, type, sample type, or manufacturer...">
+                        <i class="bi bi-search search-icon"></i>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn-custom btn-primary-custom">
+                        <i class="bi bi-search"></i>
+                        Search Database
+                    </button>
+                    <a th:href="@{/test-kits/create}" class="btn-custom btn-secondary-custom">
+                        <i class="bi bi-plus-circle"></i>
+                        Add New Kit
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="data-section">
+        <div class="data-header">
+            <h2 class="data-title">
+                <i class="bi bi-database"></i>
+                Test Kits Inventory Database
+            </h2>
+          
+        </div>
+
+        <div class="table-container">
+            <table class="table-custom">
+                <thead>
+                <tr>
+                    <th>Kit ID</th>
+                    <th>Kit Information</th>
+                    <th>Pricing</th>
+                    <th>Stock Level</th>
+                    <th>Expiry Date</th>
+                    <th>Manufacturer</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="kit : ${testKits}">
+                    <td>
+                        <span class="id-badge" th:text="${kit.id}"></span>
+                    </td>
+                    <td>
+                        <div class="kit-info">
+                            <div class="kit-name" th:text="${kit.kitName}"></div>
+                            <div class="kit-detail">
+                                <i class="bi bi-tag-fill"></i>
+                                <span th:text="${kit.kitType}"></span>
+                            </div>
+                            <div class="kit-detail">
+                                <i class="bi bi-droplet-fill"></i>
+                                <span th:text="${kit.sampleType}"></span>
+                            </div>
+                            <div class="kit-description" th:if="${kit.kitDescription}" th:text="${kit.kitDescription}"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="price-container">
+                            <div class="price-current" th:text="'$' + ${kit.currentPrice}"></div>
+                            <div class="price-old" th:if="${kit.basePrice != kit.currentPrice}" th:text="'$' + ${kit.basePrice}"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="quantity-badge" th:text="${kit.quantityInStock} + ' units'"></span>
+                    </td>
+                    <td>
+                        <div class="expiry-date" th:text="${kit.expiryDate}"></div>
+                    </td>
+                    <td>
+                        <div class="manufacturer-info" th:text="${kit.producedBy}"></div>
+                    </td>
+                    <td>
+                            <span class="status-badge"
+                                  th:classappend="${kit.isAvailable ? 'status-available' : 'status-unavailable'}">
+                                <i class="bi" th:class="${kit.isAvailable ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}"></i>
+                                <span th:text="${kit.isAvailable ? 'Available' : 'Out of Stock'}"></span>
+                            </span>
+                    </td>
+                    <td>
+                        <div class="action-group">
+                            <a th:href="@{/test-kits/update(kitId=${kit.id})}" class="action-btn action-edit">
+                                <i class="bi bi-pencil-square"></i>
+                                Edit
+                            </a>
+                            <a th:href="@{/test-kits/delete(kitId=${kit.id})}"
+                               class="action-btn action-delete"
+                               onclick="return confirm('Are you sure you want to delete this test kit?');">
+                                <i class="bi bi-trash3"></i>
+                                Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments/public/last-footer :: last-footer"></div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.querySelector('form[th\\:action*="/test-kits/search"]');
+        const searchButton = searchForm.querySelector('button[type="submit"]');
+        const searchInput = searchForm.querySelector('#searchQuery');
+
+        searchForm.addEventListener('submit', function() {
+            searchButton.innerHTML = '<i class="bi bi-hourglass-split"></i> Searching...';
+            searchButton.disabled = true;
+            searchForm.classList.add('loading-state');
+        });
+
+        searchInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                this.style.paddingLeft = '3rem';
+            }
+        });
+
+        const deleteButtons = document.querySelectorAll('.action-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const kitName = this.closest('tr').querySelector('.kit-name').textContent;
+
+                if (confirm(`Are you sure you want to delete the test kit "${kitName}"?\n\nThis action cannot be undone.`)) {
+                    window.location.href = this.href;
+                }
+            });
+        });
+
+        const tableContainer = document.querySelector('.table-container');
+        if (tableContainer) {
+            tableContainer.addEventListener('scroll', function() {
+                const scrollPercent = (this.scrollLeft / (this.scrollWidth - this.clientWidth)) * 100;
+
+            });
+        }
+
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        searchInput.focus();
+    });
+</script>
+</body>
+</html>
