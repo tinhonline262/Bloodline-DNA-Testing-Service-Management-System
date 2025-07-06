@@ -8,6 +8,7 @@ public enum ErrorCode {
     USERNAME_INVALID( "Username must be least 3 characters"),
     NOT_FOUND( "Not Found"),
     USER_EXISTS("User is exists"),
+    RESOURCE_NOT_FOUND("Resource not found"),
     EMAIL_EXISTS("Email is exists, please use other email address"),
     USER_NOT_EXISTS("User is not exists"),
     PASSWORD_INVALID("Password must be least 8 characters"),
@@ -18,6 +19,8 @@ public enum ErrorCode {
     INVALID_STAFF_ASSIGNMENT("Staff assignment is invalid"),
     ASSIGNMENT_FAILED("Failed to complete dual task assignment"),
     INVALID_STATUS_TRANSITION("Invalid status transition"),
+    MANIPULATION_SYSTEM_REPORT_FAILED("Operating system report failed"),
+    VALIDATE_ENUMERATION_FAILED("Validation enum failed"),
     UNKNOWN_ERROR("Unknown error!");
 
 

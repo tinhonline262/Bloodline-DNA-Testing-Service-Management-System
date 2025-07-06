@@ -3,6 +3,7 @@ package com.dna_testing_system.dev.controller;
 import com.dna_testing_system.dev.dto.request.UserProfileRequest;
 import com.dna_testing_system.dev.dto.response.MedicalServiceResponse;
 import com.dna_testing_system.dev.dto.response.ServiceOrderResponse;
+import com.dna_testing_system.dev.dto.response.SystemReportResponse;
 import com.dna_testing_system.dev.dto.response.UserProfileResponse;
 import com.dna_testing_system.dev.entity.Role;
 import com.dna_testing_system.dev.entity.User;
@@ -13,6 +14,7 @@ import com.dna_testing_system.dev.repository.UserRepository;
 import com.dna_testing_system.dev.repository.UserRoleRepository;
 import com.dna_testing_system.dev.service.MedicalServiceManageService;
 import com.dna_testing_system.dev.service.OrderTaskManagementService;
+import com.dna_testing_system.dev.service.SystemReportService;
 import com.dna_testing_system.dev.service.UserProfileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -60,6 +62,7 @@ public class AdminDashboardController extends BaseController {
 
     MedicalServiceManageService medicalServiceManageService;
     OrderTaskManagementService orderTaskManagementService;
+    SystemReportService systemReportService;
     UserProfileService userProfileService;
     UserRepository userRepository;
     private final RoleRepository roleRepository;
