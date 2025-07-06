@@ -3,6 +3,7 @@ package com.dna_testing_system.dev.controller;
 
 import com.dna_testing_system.dev.dto.request.UserProfileRequest;
 import com.dna_testing_system.dev.dto.response.UserProfileResponse;
+import com.dna_testing_system.dev.service.ContentPostService;
 import com.dna_testing_system.dev.service.UserProfileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -100,6 +102,15 @@ public class UserController {
         model.addAttribute("breadcrumbActive", "Dashboard");
         model.addAttribute("currentPage", "dashboard"); // Để đánh dấu mục menu active
         return "user/dashboard"; // Trả về template dashboard.html
+    }
+
+    // Blog for user
+    ContentPostService contentPostService;
+    // Hien thi danh sach bai viet dang co
+    @GetMapping(value = "/posts")
+    public String showPostList(Model model) {
+        model.addAttribute("posts", contentPostService.getAllPosts());
+        return "/user/blog";
     }
 
 }

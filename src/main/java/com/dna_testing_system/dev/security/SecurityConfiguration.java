@@ -24,8 +24,9 @@ import lombok.RequiredArgsConstructor;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfiguration {
 
+    UserDetailsServiceImpl userDetailsService;
+    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
-    private final UserDetailsServiceImpl userDetailsService;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -34,20 +35,21 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/", "/register", "/login", "/error", "/assets/**",
-                                "/uploads/**"
+                                "/uploads/**",  "/api/**", "/ws/**"
                                 // XÓA BỎ "/layouts/**" KHỎI ĐÂY
                         ).permitAll()
-
-                        .requestMatchers("/user/**").authenticated()
+                        .requestMatchers("/manager/**", "/manager/services/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
+                        .requestMatchers("/user/**", "/manager/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/register")
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/user/home", true)
-                        .permitAll()
+                                .loginPage("/login")
+//                        .defaultSuccessUrl("/user/home", true)
+                                .successHandler(customAuthenticationSuccessHandler)
+                                .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
