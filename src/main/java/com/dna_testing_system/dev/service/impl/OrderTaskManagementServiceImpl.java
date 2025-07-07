@@ -32,7 +32,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
     UserRepository userRepository;
     SampleCollectionRepository sampleCollectionRepository;
     TestResultRepository testResultRepository;
-    ServiceOrderRepository serviceOrderRepository;
+    OrderServiceRepository serviceOrderRepository;
     EmailSender emailSender;
     ServiceOrderMapper serviceOrderMapper;
 
