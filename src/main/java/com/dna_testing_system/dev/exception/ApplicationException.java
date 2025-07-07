@@ -13,6 +13,8 @@ public class ApplicationException extends RuntimeException{
         this.errorCode = errorCode;
     }
 
-    public ApplicationException() {
+    public ApplicationException(ErrorCode errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
     }
 }

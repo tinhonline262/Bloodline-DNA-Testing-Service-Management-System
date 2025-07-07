@@ -3,11 +3,9 @@
     <!-- Start::main-sidebar-header -->
     <div class="main-sidebar-header">
         <a th:href="@{/admin/dashboard}" class="header-logo">
-            <span class="fs-4 fw-bold text-danger desktop-logo"><img
-                    src="/assets/images/brand-logos/desktop-logo.png"
+            <span class="fs-4 fw-bold text-danger desktop-logo"><img src="/assets/images/brand-logos/desktop-logo.png"
                     alt="logo"></span>
-            <span class="fs-4 fw-bold text-danger toggle-logo"><img
-                    src="/assets/images/brand-logos/toggle-logo.png"
+            <span class="fs-4 fw-bold text-danger toggle-logo"><img src="/assets/images/brand-logos/toggle-logo.png"
                     alt="logo"></span>
             <span class="fs-4 fw-bold text-white desktop-white">Admin Panel</span>
             <span class="fs-4 fw-bold text-white toggle-white">DNA</span>
@@ -85,13 +83,20 @@
                                                 <a th:href="@{/admin/users}" class="side-menu__item">All Users</a>
                                             </li>
                                             <li class="slide">
-                                                <a th:href="@{/admin/users/admins}" class="side-menu__item">Administrators</a>
+                                                <a th:href="@{/admin/users(search='', role='ADMIN')}"
+                                                    class="side-menu__item">Administrators</a>
                                             </li>
                                             <li class="slide">
-                                                <a th:href="@{/admin/users/managers}" class="side-menu__item">Managers</a>
+                                                <a th:href="@{/admin/users(search='', role='MANAGER')}"
+                                                    class="side-menu__item">Managers</a>
                                             </li>
                                             <li class="slide">
-                                                <a th:href="@{/admin/users/customers}" class="side-menu__item">Customers</a>
+                                                <a th:href="@{/admin/users(search='', role='STAFF')}"
+                                                   class="side-menu__item">Staffs</a>
+                                            </li>
+                                            <li class="slide">
+                                                <a th:href="@{/admin/users(search='', role='CUSTOMER')}"
+                                                    class="side-menu__item">Customers</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -117,7 +122,8 @@
                                     <!-- End::slide -->
 
                                     <!-- Start::slide__category -->
-                                    <li class="slide__category"><span class="category-name">System Management</span></li>
+                                    <li class="slide__category"><span class="category-name">System Management</span>
+                                    </li>
                                     <!-- End::slide__category -->
 
                                     <!-- Start::slide -->
@@ -140,16 +146,20 @@
                                                 <a href="javascript:void(0);">System Settings</a>
                                             </li>
                                             <li class="slide">
-                                                <a th:href="@{/admin/settings/general}" class="side-menu__item">General Settings</a>
+                                                <a th:href="@{/admin/settings/general}" class="side-menu__item">General
+                                                    Settings</a>
                                             </li>
                                             <li class="slide">
-                                                <a th:href="@{/admin/settings/email}" class="side-menu__item">Email Configuration</a>
+                                                <a th:href="@{/admin/settings/email}" class="side-menu__item">Email
+                                                    Configuration</a>
                                             </li>
                                             <li class="slide">
-                                                <a th:href="@{/admin/settings/security}" class="side-menu__item">Security Settings</a>
+                                                <a th:href="@{/admin/settings/security}"
+                                                    class="side-menu__item">Security Settings</a>
                                             </li>
                                             <li class="slide">
-                                                <a th:href="@{/admin/settings/backup}" class="side-menu__item">Backup & Restore</a>
+                                                <a th:href="@{/admin/settings/backup}" class="side-menu__item">Backup &
+                                                    Restore</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -174,7 +184,8 @@
                                     <!-- End::slide -->
 
                                     <!-- Start::slide__category -->
-                                    <li class="slide__category"><span class="category-name">Business Operations</span></li>
+                                    <li class="slide__category"><span class="category-name">Business Operations</span>
+                                    </li>
                                     <!-- End::slide__category -->
 
                                     <!-- Start::slide -->
@@ -201,10 +212,12 @@
                                                 <a th:href="@{/admin/services}" class="side-menu__item">All Services</a>
                                             </li>
                                             <li class="slide">
-                                                <a th:href="@{/admin/services/categories}" class="side-menu__item">Service Categories</a>
+                                                <a th:href="@{/admin/services/categories}"
+                                                    class="side-menu__item">Service Categories</a>
                                             </li>
                                             <li class="slide">
-                                                <a th:href="@{/admin/services/pricing}" class="side-menu__item">Pricing Management</a>
+                                                <a th:href="@{/admin/services/pricing}" class="side-menu__item">Pricing
+                                                    Management</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -215,7 +228,8 @@
                                         <a th:href="@{/admin/orders}" class="side-menu__item">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
                                                 viewBox="0 0 576 512">
-                                                <path d="M0 24C0 10.7 10.7 0 24 0L69.5 0c22 0 41.5 12.8 50.6 32l411 0c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3l-288.5 0 5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5L488 336c13.3 0 24 10.7 24 24s-10.7 24-24 24l-288.3 0c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5L24 48C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/>
+                                                <path
+                                                    d="M0 24C0 10.7 10.7 0 24 0L69.5 0c22 0 41.5 12.8 50.6 32l411 0c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3l-288.5 0 5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5L488 336c13.3 0 24 10.7 24 24s-10.7 24-24 24l-288.3 0c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5L24 48C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
                                             </svg>
                                             <span class="side-menu__label">Orders Overview</span>
                                         </a>
@@ -223,19 +237,22 @@
                                     <!-- End::slide -->
 
                                     <!-- Start::slide__category -->
-                                    <li class="slide__category"><span class="category-name">Analytics & Reports</span></li>
+                                    <li class="slide__category"><span class="category-name">Analytics & Reports</span>
+                                    </li>
                                     <!-- End::slide__category -->
 
                                     <!-- Start::slide -->
+                                    <!-- Start::slide -->
                                     <li class="slide has-sub">
-                                        <a href="javascript:void(0);" class="side-menu__item">
+                                        <a th:href="@{/admin/reports}" class="side-menu__item">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
-                                                viewBox="0 0 24 24">
+                                                 viewBox="0 0 24 24">
                                                 <path d="M0 0h24v24H0V0z" fill="none"></path>
-                                                <path d="M5 5v14h14V5H5zm4 12H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"
-                                                    opacity=".3"></path>
                                                 <path
-                                                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z">
+                                                        d="M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm1 13h-2v-2h2v2zm0-4h-2V7h2v6z"
+                                                        opacity=".3"></path>
+                                                <path
+                                                        d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm0 2c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm-1 5h2v6h-2zm0 8h2v2h-2z">
                                                 </path>
                                             </svg>
                                             <span class="side-menu__label">Reports</span>
@@ -246,16 +263,8 @@
                                                 <a href="javascript:void(0);">Reports</a>
                                             </li>
                                             <li class="slide">
-                                                <a th:href="@{/admin/reports/financial}" class="side-menu__item">Financial Reports</a>
-                                            </li>
-                                            <li class="slide">
-                                                <a th:href="@{/admin/reports/user-activity}" class="side-menu__item">User Activity</a>
-                                            </li>
-                                            <li class="slide">
-                                                <a th:href="@{/admin/reports/system-performance}" class="side-menu__item">System Performance</a>
-                                            </li>
-                                            <li class="slide">
-                                                <a th:href="@{/admin/reports/custom}" class="side-menu__item">Custom Reports</a>
+                                                <a th:href="@{/admin/reports}" class="side-menu__item">Reports
+                                                    Management</a>
                                             </li>
                                         </ul>
                                     </li>
