@@ -66,7 +66,7 @@ public class UserController {
         UserProfileResponse existingProfile = userProfileService.getUserProfile(currentPrincipalName);
 
 
-        // Xử lý file upload
+
         if (file != null && !file.getOriginalFilename().equals("")) {
             String uploadsDir = "uploads/";
             String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
