@@ -1,93 +1,185 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" data-nav-layout="horizontal">
 <head>
+    <th:block th:replace="~{fragments/public/head :: head}"></th:block>
+
     <title>Danh sách bộ kit xét nghiệm</title>
+
     <style>
+        :root {
+            --primary-blue: #0162e8;
+            --primary-blue-light: #4a8bff;
+            --success-color: #10b981;
+            --bg-light: #f8fafc;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+        }
+.landing-body {
+
+     min-height: auto;
+}
+.landing-page-wrapper {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f7f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
             margin: 0;
-            padding: 0;
+    padding: 0;
+    min-height: 100vh;
         }
-        .container {
-            max-width: 700px;
-            margin: 40px auto;
-            background: #fff;
-            border-radius: 10px;
-            padding: 32px 24px;
-            box-shadow: 0 2px 16px rgba(60, 72, 88, 0.08);
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top:110px;
         }
-        h1, h2 {
-            color: #2664ad;
-            margin-bottom: 24px;
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
             text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(1, 98, 232, 0.2);
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 24px;
+
+        .header-section h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
         }
-        table th, table td {
-            border: 1px solid #dde2e7;
-            padding: 10px 8px;
-            text-align: left;
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
-        table th {
-            background: #e6f0fa;
-            color: #245b88;
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: 25px;
+            background: var(--bg-light);
+            font-weight: 500;
         }
-        tr:nth-child(even) {
-            background: #f5f8fb;
+
+        .step.completed {
+            background: var(--success-color);
+            color: white;
         }
-        .button {
-            background: #2664ad;
-            color: #fff;
+
+        .step.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .kit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .kit-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        .kit-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .kit-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .kit-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .btn-order {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+            color: white;
             border: none;
-            padding: 8px 18px;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background 0.18s;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
         }
-        .button:hover {
-            background: #184375;
-        }
-        .success-message {
-            margin-top: 20px;
-            color: #2e8b57;
-            background: #eafbe5;
-            border: 1px solid #b3e6b3;
-            padding: 12px;
-            border-radius: 5px;
+
+        .no-kits-message {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
             text-align: center;
         }
+
     </style>
 </head>
-<body>
-<div class="container">
-    <h1>Danh sách bộ kit xét nghiệm</h1>
-    <table>
-        <thead>
-        <tr>
-            <th>Tên kit</th>
-            <th>Mô tả</th>
-            <th>Giá</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="one : ${testKitResponse}" th:if="${one.isAvailable}">
-            <td th:text="${one.kitName}"></td>
-            <td th:text="${one.kitDescription}"></td>
-            <td th:text="${#numbers.formatDecimal(one.currentPrice, 0, 'COMMA', 0, 'POINT')}"></td>
-            <td th:text="${one.quantityInStock}"></td>
-            <td>
-                <a th:href="@{'/order-kit'(kitTestId=${one.id}, orderId=${orderId})}" class="button">Đặt kit</a>
-                <!-- orderId hãy truyền đúng ID đơn hàng thực tế -->
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<body class="landing-body">
+<div class="landing-page-wrapper">
+
+    <aside th:replace="~{fragments/user/profile-header :: profile-header}"></aside>
+
+    <div class="main-content">
+        <div class="main-container">
+            <div class="header-section">
+                <h1><i class="fas fa-vials"></i> Test Kit List</h1>
+                <div class="header-subtitle">Choose the appropriate kit for your test service</div>
+            </div>
+
+            <div class="step-indicator">
+                <div class="step completed"><i class="fas fa-check"></i> Booking Information</div>
+                <div class="step completed"><i class="fas fa-check"></i> Participant Information</div>
+                <div class="step active"><i class="fas fa-vials"></i> Select Kit</div>
+            </div>
+
+            <div class="kit-grid" th:if="${testKitResponse != null and not #lists.isEmpty(testKitResponse)}">
+                <div class="kit-card" th:each="kit : ${testKitResponse}" th:if="${kit.isAvailable}">
+                    <h3 class="kit-title" th:text="${kit.kitName}">Kit Name</h3>
+                    <p class="kit-description" th:text="${kit.kitDescription}">Description</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="kit-price"
+                             th:text="${#numbers.formatDecimal(kit.currentPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
+                            Price
+                        </div>
+                        <a th:href="@{'/order-kit'(kitTestId=${kit.id}, orderId=${orderId})}" class="btn btn-order"
+                           th:if="${kit.quantityInStock > 0}">
+                            <i class="fas fa-cart-plus"></i> Order
+                        </a>
+                        <button class="btn btn-secondary" disabled th:if="${kit.quantityInStock == 0}">Out of Stock
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-kits-message" th:if="${testKitResponse == null or #lists.isEmpty(testKitResponse)}">
+                <h3>No kits available</h3>
+                <p>Currently no test kits are available for this service.</p>
+                <a th:href="@{'/order-kit'(orderId=${orderId})}" class="btn btn-primary">Order new kit</a>
+            </div>
+        </div>
+    </div>
 </div>
+<div th:replace="~{fragments/public/last-footer :: last-footer}"></div>
+
+<div th:replace="~{fragments/public/script :: scripts}"></div>
 </body>
 </html>

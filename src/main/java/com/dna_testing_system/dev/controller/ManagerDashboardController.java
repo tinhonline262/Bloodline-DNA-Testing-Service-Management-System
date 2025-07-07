@@ -117,15 +117,6 @@ public class ManagerDashboardController extends BaseController {
         return "manager/staff";
     }
 
-
-    @GetMapping("/reports")
-    public String reports(Model model) {
-        model.addAttribute("pageTitle", "Reports & Analytics");
-        // In a real application, you would add reporting data here
-        return "manager/reports";
-    }
-
-
     @GetMapping("/profile")  // URL sẽ là /user/profile
     public String getProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

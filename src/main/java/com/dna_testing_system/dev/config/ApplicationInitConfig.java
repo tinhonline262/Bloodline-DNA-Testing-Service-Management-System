@@ -40,6 +40,7 @@ public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigure
 
     public void run(ApplicationArguments args) throws Exception {
         initRoleDatabase();
+        createAdminDefault();
         createManagerDefault();
         createStaffDefault();
         launchBrowser();
@@ -232,6 +233,43 @@ public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigure
                     .user(user)
                     .firstName("MANAGER")
                     .email("manager2@email.com")
+                    .build();
+
+            userProfileRepository.save(userProfile);
+
+            user.setUserProfile(userProfile);
+            userRepository.save(user);
+        }
+    }
+
+    private void createAdminDefault() {
+        if (!userRepository.existsByUsername("admin")) {
+            Role role = roleRepository.findByRoleName(RoleType.ADMIN.name());
+
+            // Create and save the User entity with minimal information
+            User user = User.builder()
+                    .username("admin")
+                    .passwordHash(PasswordUtil.encode("admin"))
+                    .isActive(true)
+                    .userRoles(new HashSet<>())
+                    .build();
+
+            user = userRepository.save(user);
+
+            UserRole userRoleForCreate = UserRole.builder()
+                    .user(user)
+                    .role(role)
+                    .isActive(true)
+                    .build();
+            UserRole userRole = userRoleRepository.save(userRoleForCreate);
+            user.getUserRoles().add(userRole);
+            userRepository.save(user);
+
+            // Create and save minimal UserProfile
+            UserProfile userProfile = UserProfile.builder()
+                    .user(user)
+                    .firstName("ADMIN")
+                    .email("admin@gmail.com")
                     .build();
 
             userProfileRepository.save(userProfile);
