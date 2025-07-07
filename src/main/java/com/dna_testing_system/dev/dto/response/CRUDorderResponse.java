@@ -1,6 +1,5 @@
 package com.dna_testing_system.dev.dto.response;
 
-
 import com.dna_testing_system.dev.enums.ServiceOrderStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -14,8 +13,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ServiceOrderByCustomerResponse {
+public class CRUDorderResponse {
     Long idServiceOrder;
+    String userName;
+    String userEmail;
+    String userPhoneNumber;
     String medicalServiceName;
     LocalDateTime appointmentDate;
     String collectionType;

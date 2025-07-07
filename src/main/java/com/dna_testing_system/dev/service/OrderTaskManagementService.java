@@ -17,6 +17,6 @@ public interface OrderTaskManagementService {
     List<ServiceOrderResponse> getServiceOrders();
     List<ServiceOrderResponse> getNewOrders(); // Add method for new orders
 
-    void updateOrderStatus(Long orderId, String status, String notes);
+    void updateOrderStatus(Long orderId, String status);
 
 }

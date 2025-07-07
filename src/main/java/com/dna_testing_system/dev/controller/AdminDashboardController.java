@@ -2001,7 +2001,7 @@ public class AdminDashboardController extends BaseController {
         Map<String, Object> response = new HashMap<>();
         
         try {
-            orderTaskManagementService.updateOrderStatus(orderId, status, notes);
+            orderTaskManagementService.updateOrderStatus(orderId, status);
             response.put("success", true);
             response.put("message", "Order status updated successfully");
         } catch (Exception e) {

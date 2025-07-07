@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách đơn hàng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f4f6f8;
+        }
+        h1, h2 {
+            color: #2d3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+            background: #fff;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background: #e5eaf1;
+        }
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        .btn-details, .btn-update, .btn-back {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 14px;
+            margin: 2px 0;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-update {
+            background: #28a745;
+        }
+        .btn-back {
+            background: #6c757d;
+        }
+        .btn-details:hover, .btn-update:hover, .btn-back:hover {
+            opacity: 0.85;
+        }
+        form > div {
+            margin-bottom: 12px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 60px;
+        }
+        .order-info {
+            border: 1px solid #bbb;
+            padding: 18px;
+            background: #fff;
+            margin-bottom: 24px;
+            border-radius: 6px;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+<h1>Danh sách đơn hàng</h1>
+<form th:action="@{/staff/search-orders}" method="get" class="search-form">
+    <input type="text" name="query" placeholder="Search by id" required />
+    <button type="submit">Search</button>
+    <a th:href="@{/staff/list-orders}" style="margin-left:10px;">Reset</a>
+</form>
+<form th:action="@{/staff/filter-orders}" method="get" class="filter-form">
+    <label>filter</label>
+    <select  name="status" required>
+        <option th:each="orderStatus : ${T(com.dna_testing_system.dev.enums.ServiceOrderStatus).values()}"
+                th:value="${orderStatus}"
+                th:text="${orderStatus}"
+                th:selected="${orderStatus == orderStatus}">
+        </option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
+<table>
+    <thead>
+    <tr>
+        <th>Mã đơn</th>
+        <th>Tên khách hàng</th>
+        <th>Email</th>
+        <th>SĐT</th>
+        <th>Dịch vụ</th>
+        <th>Ngày hẹn</th>
+        <th>Trạng thái</th>
+        <th>Tổng tiền</th>
+        <th>Xem chi tiết</th>
+        <th>Cập nhật</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${serviceOrders}">
+        <td th:text="${order.idServiceOrder}"></td>
+        <td th:text="${order.userName}"></td>
+        <td th:text="${order.userEmail}"></td>
+        <td th:text="${order.userPhoneNumber}"></td>
+        <td th:text="${order.medicalServiceName}"></td>
+        <td th:text="${#temporals.format(order.appointmentDate, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="${order.orderStatus}"></td>
+        <td th:text="${order.finalAmount}"></td>
+        <td>
+            <a th:href="@{/staff/details-order(orderId=${order.idServiceOrder})}" class="btn-details">Chi tiết</a>
+        </td>
+        <td>
+            <a th:href="@{/staff/update-order(orderId=${order.idServiceOrder})}" class="btn-update">Cập nhật</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<button onclick="history.back()" class="btn-back">Quay lại</button>
+</body>
+</html>

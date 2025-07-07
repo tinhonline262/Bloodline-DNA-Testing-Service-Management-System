@@ -176,6 +176,6 @@ public class OrderingByCustomer {
     @PostMapping("/cancel")
     public String cancel(@RequestParam("orderId") Long orderId) {
         orderService.cancelOrder(orderId);
-        return "redirect:/order-history";
+        return "redirect:user/order-history";
     }
 }
