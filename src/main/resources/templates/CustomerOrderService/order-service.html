@@ -68,11 +68,11 @@
 
         <div class="form-group">
             <label>Ngày hẹn:</label>
-            <input type="date" th:field="*{appointmentDate}" th:min="${today}" required/>
+            <input type="datetime-local" th:field="*{appointmentDate}" th:min="${today}" required/>
         </div>
         <div class="form-group">
             <label>Địa chỉ lấy mẫu :</label>
-            <input type="text" th:field="*{collectionAddress}" />
+            <input type="text" th:field="*{collectionAddress}" required />
         </div>
         <div class="form-group">
             <label>Loại lấy mẫu:</label>

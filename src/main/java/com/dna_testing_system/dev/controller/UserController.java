@@ -82,6 +82,18 @@ public class UserController {
 
             String imageUrl = "/uploads/" + fileName;
             userProfile.setProfileImageUrl(imageUrl);
+            // Nếu imageUrl là /uploads/abcxyz.jpg
+            String oldImageUrl = existingProfile.getProfileImageUrl();
+            if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                // Chuyển về đường dẫn vật lý
+                String fileSystemPath = oldImageUrl.replaceFirst("/", ""); // "uploads/abcxyz.jpg"
+                Path oldImagePath = Paths.get(fileSystemPath);
+                try {
+                    Files.deleteIfExists(oldImagePath);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
         } else {
             // Giữ nguyên ảnh cũ nếu không upload ảnh mới

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,7 +16,7 @@ import java.util.List;
 public class ServiceOrderRequestByCustomer {
     String username;
     Long idMedicalService;
-    LocalDate appointmentDate;
+    LocalDateTime appointmentDate;
     CollectionType collectionType;
     String collectionAddress;
 }
