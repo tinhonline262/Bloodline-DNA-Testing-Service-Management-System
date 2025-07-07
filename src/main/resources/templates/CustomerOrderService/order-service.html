@@ -373,25 +373,7 @@
 </head>
 <body class="landing-body">
 <div class="landing-page-wrapper">
-        <div class="form-group">
-            <label>Ngày hẹn:</label>
-            <input type="datetime-local" th:field="*{appointmentDate}" th:min="${today}" required/>
-        </div>
-        <div class="form-group">
-            <label>Địa chỉ lấy mẫu :</label>
-            <input type="text" th:field="*{collectionAddress}" required />
-        </div>
-        <div class="form-group">
-            <label>Loại lấy mẫu:</label>
-            <select th:field="*{collectionType}" required>
-                <option th:each="type : ${collectionTypes}"
-                        th:value="${type}"
-                        th:text="${type.description}">
-                </option>
-            </select>
-        </div>
-        <button type="submit" class="button">Đặt dịch vụ</button>
-    </form>
+
 <aside th:replace="~{fragments/user/profile-header :: profile-header}"></aside>
 <div class="main-container">
     <div class="header-section">
