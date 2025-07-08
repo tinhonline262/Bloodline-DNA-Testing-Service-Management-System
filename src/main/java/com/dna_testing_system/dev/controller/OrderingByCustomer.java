@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -59,7 +60,7 @@ public class OrderingByCustomer {
         ServiceOrderRequestByCustomer serviceOrderRequestByCustomer = new ServiceOrderRequestByCustomer();
         serviceOrderRequestByCustomer.setUsername(currentPrincipalName);
         serviceOrderRequestByCustomer.setIdMedicalService(medicalServiceId);
-        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("today", LocalDateTime.now());
         model.addAttribute("collectionTypes", CollectionType.values());
         model.addAttribute("serviceOrderRequestByCustomer", serviceOrderRequestByCustomer);
 
@@ -149,7 +150,7 @@ public class OrderingByCustomer {
     }
 
 
-    @PostMapping("/order-kit")
+    @PostMapping("user/order-kit")
 
     public String submitOrder(@ModelAttribute("orderTestKitRequest") OrderTestKitRequest orderTestKitRequest, Model model) {
 

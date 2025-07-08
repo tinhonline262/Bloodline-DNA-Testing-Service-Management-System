@@ -418,7 +418,7 @@
                     <i class="fas fa-calendar-alt"></i>
                     Appointment Date <span class="required-indicator">*</span>
                 </label>
-                <input type="date" class="form-control" th:field="*{appointmentDate}" th:min="${today}" required/>
+                <input type="datetime-local" class="form-control" th:field="*{appointmentDate}" th:min="${today}" required/>
                 <div class="form-helper">
                     <i class="fas fa-info-circle"></i>
                     Select the date you want to perform the test
