@@ -5,6 +5,7 @@ import com.dna_testing_system.dev.dto.response.ServiceOrderByCustomerResponse;
 import com.dna_testing_system.dev.entity.MedicalService;
 import com.dna_testing_system.dev.entity.ServiceOrder;
 import com.dna_testing_system.dev.entity.User;
+import com.dna_testing_system.dev.enums.ServiceOrderStatus;
 import com.dna_testing_system.dev.exception.ErrorCode;
 import com.dna_testing_system.dev.exception.ResourceNotFoundException;
 import com.dna_testing_system.dev.mapper.OrderServiceMapper;
@@ -64,10 +65,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void updateOrder(Long orderId, ServiceOrderRequestByCustomer serviceOrderRequestByCustomer) {
+    public void updateOrder(Long orderId, ServiceOrderStatus serviceOrderStatus) {
         ServiceOrder serviceOrder = orderServiceRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
-        orderServiceMapper.updateOrderServiceFromRequest(serviceOrderRequestByCustomer, serviceOrder);
+        if (serviceOrder == null) {
+            throw new IllegalArgumentException("Order not found for ID: " + orderId);
+        }
+        serviceOrder.setOrderStatus(serviceOrderStatus);
         orderServiceRepository.save(serviceOrder);
     }
 

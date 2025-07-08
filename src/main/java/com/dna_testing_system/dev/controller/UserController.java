@@ -66,7 +66,7 @@ public class UserController {
         UserProfileResponse existingProfile = userProfileService.getUserProfile(currentPrincipalName);
 
 
-        // Xử lý file upload
+
         if (file != null && !file.getOriginalFilename().equals("")) {
             String uploadsDir = "uploads/";
             String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
@@ -82,6 +82,18 @@ public class UserController {
 
             String imageUrl = "/uploads/" + fileName;
             userProfile.setProfileImageUrl(imageUrl);
+            // Nếu imageUrl là /uploads/abcxyz.jpg
+            String oldImageUrl = existingProfile.getProfileImageUrl();
+            if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                // Chuyển về đường dẫn vật lý
+                String fileSystemPath = oldImageUrl.replaceFirst("/", ""); // "uploads/abcxyz.jpg"
+                Path oldImagePath = Paths.get(fileSystemPath);
+                try {
+                    Files.deleteIfExists(oldImagePath);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
         } else {
             // Giữ nguyên ảnh cũ nếu không upload ảnh mới

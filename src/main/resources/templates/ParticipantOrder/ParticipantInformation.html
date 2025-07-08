@@ -1,96 +1,210 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" data-nav-layout="horizontal">
 <head>
-    <title>Thông tin người tham gia</title>
+    <th:block th:replace="~{fragments/public/head :: head}"></th:block>
+
+    <title>Participant Information</title>
+
     <style>
+        :root {
+            --primary-blue: #0162e8;
+            --primary-blue-light: #4a8bff;
+            --success-color: #10b981;
+            --bg-light: #f8fafc;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+        }
+
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f7f9fa;
-            margin: 0;
-            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
         }
-        .container {
-            max-width: 700px;
-            margin: 40px auto;
-            background: #fff;
-            border-radius: 10px;
-            padding: 32px 24px;
-            box-shadow: 0 2px 16px rgba(60, 72, 88, 0.08);
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding-top: 110px;
         }
-        h1, h2 {
-            color: #2664ad;
-            margin-bottom: 24px;
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
             text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(1, 98, 232, 0.2);
         }
-        .button {
-            background: #2664ad;
-            color: #fff;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background 0.18s;
+
+        .header-section h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
         }
-        .button:hover {
-            background: #184375;
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
-        .form-group {
-            margin-bottom: 18px;
-        }
-        .form-group label {
-            display: inline-block;
-            width: 150px;
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: 25px;
+            background: var(--bg-light);
+            color: var(--text-secondary);
             font-weight: 500;
         }
-        .form-group input, .form-group select {
-            padding: 6px 10px;
-            width: 60%;
-            border: 1px solid #bbc5d5;
-            border-radius: 4px;
+
+        .step.completed {
+            background: var(--success-color);
+            color: white;
         }
-        .success-message {
-            margin-top: 20px;
-            color: #2e8b57;
-            background: #eafbe5;
-            border: 1px solid #b3e6b3;
-            padding: 12px;
-            border-radius: 5px;
+
+        .step.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .form-section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .required-indicator {
+            color: #ef4444;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.9rem 1.1rem;
+            background: #fafbfc;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(1, 98, 232, 0.1);
+        }
+
+        .btn-submit, .btn-next {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .success-container {
+            background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+            border: 2px solid var(--success-color);
+            border-radius: 20px;
+            padding: 2.5rem;
             text-align: center;
+        }
+
+        .success-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--success-color);
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <h1>Thông tin người tham gia</h1>
-    <form th:action="@{/user/participant-information}" method="post">
-        <input type="hidden" name="orderId" th:value="${orderId}" />
-        <div class="form-group">
-            <label>Họ:</label>
-            <input type="text" th:name="firstName" required th:value="${participantRequest.firstName}"/>
+<body class="landing-body">
+<div class="landing-page-wrapper">
+
+<aside th:replace="~{fragments/user/profile-header :: profile-header}"></aside>
+
+<div class="main-content">
+    <div class="main-container">
+        <div class="header-section">
+            <h1><i class="fas fa-users"></i> Participant Information</h1>
+            <div class="header-subtitle">Fill in personal information to complete test registration</div>
         </div>
-        <div class="form-group">
-            <label>Tên:</label>
-            <input type="text" th:name="lastName" required th:value="${participantRequest.lastName}"/>
+
+        <div class="step-indicator">
+            <div class="step completed"><i class="fas fa-check"></i> Booking Information</div>
+            <div class="step active"><i class="fas fa-users"></i> Participant Information</div>
+            <div class="step"><i class="fas fa-check-circle"></i> Complete</div>
         </div>
-        <div class="form-group">
-            <label>Giới tính:</label>
-            <select th:name="gender" required>
-                <option value="Nam" th:selected="${participantRequest.gender == 'Nam'}">Nam</option>
-                <option value="Nữ" th:selected="${participantRequest.gender == 'Nữ'}">Nữ</option>
-                <option value="Khác" th:selected="${participantRequest.gender == 'Khác'}">Khác</option>
-            </select>
+
+        <div class="form-container" th:if="${message == null}">
+            <div class="form-section-title"><i class="fas fa-id-card"></i> Personal Information</div>
+            <form th:action="@{/user/participant-information}" method="post">
+                <input type="hidden" name="orderId" th:value="${orderId}" />
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">First Name <span class="required-indicator">*</span></label>
+                        <input type="text" class="form-control" name="firstName" required th:value="${participantRequest.firstName}" placeholder="Enter first name"/>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">Last Name <span class="required-indicator">*</span></label>
+                        <input type="text" class="form-control" name="lastName" required th:value="${participantRequest.lastName}" placeholder="Enter last name"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">Gender <span class="required-indicator">*</span></label>
+                        <select class="form-select" name="gender" required>
+                            <option value="">-- Select Gender --</option>
+                            <option value="Nam" th:selected="${participantRequest.gender == 'Nam'}">Male</option>
+                            <option value="Nữ" th:selected="${participantRequest.gender == 'Nữ'}">Female</option>
+                            <option value="Khác" th:selected="${participantRequest.gender == 'Khác'}">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">Date of Birth <span class="required-indicator">*</span></label>
+                        <input type="date" class="form-control" name="birthDate" th:value="${participantRequest.birthDate}" th:max="${today}" required/>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-submit d-block mx-auto"><i class="fas fa-save"></i> Save Information</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label>Ngày sinh:</label>
-            <input type="date" th:name="birthDate" th:value="${participantRequest.birthDate}" th:max="${today}" required/>
+
+        <div th:if="${message != null}" class="success-container">
+            <div class="success-icon mb-3" style="font-size: 2.5rem; width: 80px; height: 80px; background: var(--success-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin: auto;">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <h2 class="success-title">Information Saved!</h2>
+            <p class="fs-5 text-secondary">You have successfully completed participant information entry.</p>
+            <p class="lead" th:text="${message}"></p>
+            <a th:href="@{'/list-kit'(orderId=${orderId})}" class="btn btn-next mt-3"><i class="fas fa-arrow-right"></i> Continue - View Kit List</a>
         </div>
-        <button type="submit" class="button">Lưu thông tin</button>
-    </form>
-    <div th:if="${message != null}" class="success-message">
-        <p th:text="${message}"></p>
-        <a th:href="@{'/list-kit'(orderId=${orderId})}">Danh sách kit</a>
     </div>
 </div>
+    <div th:replace="~{fragments/public/last-footer :: last-footer}"></div>
+</div>
+
+
+<div th:replace="~{fragments/public/script :: scripts}"></div>
 </body>
 </html>

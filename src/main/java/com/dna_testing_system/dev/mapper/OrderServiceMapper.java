@@ -12,6 +12,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderServiceMapper {
+    @Mapping(target = "appointmentDate", source = "appointmentDate")
     ServiceOrder toOrderService(ServiceOrderRequestByCustomer serviceOrderRequestByCustomer);
     ServiceOrderRequestByCustomer toServiceOrderRequestByCustomer(ServiceOrder orderService);
     void updateOrderServiceFromRequest(ServiceOrderRequestByCustomer serviceOrderRequestByCustomer
@@ -19,6 +20,10 @@ public interface OrderServiceMapper {
     @Mapping(target = "idServiceOrder", source = "orderService.id")
     @Mapping(target="finalAmount", source = "finalAmount")
     @Mapping(target = "orderStatus", source = "orderService.orderStatus")
+    @Mapping(target = "medicalServiceName", source = "orderService.service.serviceName")
+    @Mapping(target = "appointmentDate", source = "orderService.appointmentDate")
+    @Mapping(target = "collectionType", source = "orderService.collectionType")
+    @Mapping(target = "collectionAddress", source = "orderService.collectionAddress")
     ServiceOrderByCustomerResponse toServiceOrderByCustomerResponse(ServiceOrder orderService);
     List<ServiceOrderByCustomerResponse> toServiceOrderByCustomerResponseList(List<ServiceOrder> orderServices);
 }
