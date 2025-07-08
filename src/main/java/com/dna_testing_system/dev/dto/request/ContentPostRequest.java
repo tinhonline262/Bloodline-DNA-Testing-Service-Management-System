@@ -21,6 +21,8 @@ public class ContentPostRequest {
     @NotNull
     Long authorId;
 
+    Long postId;
+
     @NotBlank
     @Size(max = 500)
     String postTitle;

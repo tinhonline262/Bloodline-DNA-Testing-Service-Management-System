@@ -51,24 +51,29 @@ public class ContentPostController {
         if (response == null) {
             return "redirect:/manager/posts";
         }
-        model.addAttribute("pageTitle", "EDIT POST | " + response.getPostTitle());
+
         ContentPostRequest request = new ContentPostRequest();
+
+        request.setPostId(id);
         request.setPostTitle(response.getPostTitle());
         request.setPostContent(response.getPostContent());
         request.setFeaturedImageUrl(response.getFeaturedImageUrl());
         request.setPostCategory(response.getPostCategory());
-        // request.setTags(response.getTags());
+        request.setTags(response.getTags());
         request.setPostStatus(response.getPostStatus());
-        model.addAttribute("postId", id);
+        // Gan post vao model
         model.addAttribute("post", request);
+        model.addAttribute("postId", id);
+        model.addAttribute("pageTitle", "EDIT POST | " + response.getPostTitle());
         return "/manager/form";
     }
 
-    // Cap nhat bai viet
+    // Xu ly cap nhat bai viet
     @PostMapping("/update/{id}")
-    public String updatePost(@PathVariable("id") Long id, @ModelAttribute("post") ContentPostRequest request) {
+    public String updatePost(@PathVariable("id") Long id, @ModelAttribute("post") ContentPostRequest request, RedirectAttributes redirectAttributes ) {
         contentPostService.updatePost(id, request);
-        return "redirect:/manager/posts/post";
+        redirectAttributes.addFlashAttribute("message", "Post updated successfully!");
+        return "redirect:/manager/posts";
     }
 
     // Xoa bai viet

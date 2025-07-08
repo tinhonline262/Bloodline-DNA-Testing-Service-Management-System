@@ -5,15 +5,19 @@ import com.dna_testing_system.dev.dto.response.ContentPostResponse;
 import com.dna_testing_system.dev.entity.ContentPost;
 import com.dna_testing_system.dev.entity.User;
 import com.dna_testing_system.dev.repository.ContentPostRepository;
+import com.dna_testing_system.dev.repository.UserRepository;
 import com.dna_testing_system.dev.service.ContentPostService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,8 +26,7 @@ import java.util.stream.Collectors;
 public class ContentPostServiceImpl implements ContentPostService {
 
     ContentPostRepository contentPostRepository;
-
-    static final String DEFAULT_AUTHOR_ID = "user_id";
+    UserRepository userRepository;
 
     @Override
     public List<ContentPostResponse> getAllPosts() {
@@ -51,7 +54,10 @@ public class ContentPostServiceImpl implements ContentPostService {
         post.setTags(request.getTags());
         post.setPostStatus(request.getPostStatus());
 
-        post.setAuthor(User.builder().id(DEFAULT_AUTHOR_ID).build());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User author = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
+        post.setAuthor(author);
         post.setCreatedAt(LocalDateTime.now());
         post.setViewCount(0L);
         post.setLikeCount(0);
@@ -63,9 +69,11 @@ public class ContentPostServiceImpl implements ContentPostService {
     @Override
     @Transactional
     public void updatePost(Long postId, ContentPostRequest request) {
+        //  Tim post theo ID
         ContentPost post = contentPostRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Not found post with id: " + postId + " to update"));
+                .orElseThrow(() -> new NoSuchElementException("Not found post with id: " + postId + " to update"));
 
+        //  Update theo request
         post.setPostTitle(request.getPostTitle());
         post.setPostContent(request.getPostContent());
         post.setPostCategory(request.getPostCategory());
@@ -74,7 +82,8 @@ public class ContentPostServiceImpl implements ContentPostService {
         post.setPostStatus(request.getPostStatus());
         post.setUpdatedAt(LocalDateTime.now());
 
-        toResponse(contentPostRepository.save(post));
+        // Save to database
+        contentPostRepository.save(post);
     }
 
     @Override

@@ -6,6 +6,18 @@
     <title>Blog</title>
     <link rel="stylesheet" type="text/css" th:href="@{/assets/libs/bootstrap/css/bootstrap.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/assets/icon-fonts/fontawesome/css/all.css}"/>
+    <style>
+        .clamp-5 {
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-align: justify;
+        }
+        .img-fit {
+            width: 150px; height: 150px; object-fit: cover;
+        }
+    </style>
 </head>
 <body>
     <!--  Blog section  -->
@@ -90,27 +102,29 @@
                             <div class="list-group-item text-bg-light fw-bold">
                                 List of all posts
                             </div>
+<!--                            Item-->
+                                <div class="list-group">
+                                        <div th:each="i : ${#numbers.sequence(0, posts.size() - 1, 2)}" class="row mb-4">
+                                            <div class="col-md-6 mb-3" th:each="j : ${#numbers.sequence(i, i + 1)}"
+                                                 th:if="${j < posts.size()}" th:with="post=${posts[j]}">
 
-                            <!-- Item -->
-                            <div class="list-group">
-                                <div th:each="post : ${posts}">
-                                    <a href="#!" class="list-group-item list-group-item-action">
-                                        <div class="row align-items-center">
-                                            <div class="col-4 d-flex justify-content-center">
-                                                <img th:src="${post.featuredImageUrl}" alt="Image" class="rounded img-fluid"
-                                                     style="width: 180px; height: 180px; object-fit: cover;" />
-                                            </div>
-                                            <div class="col-8">
-                                                <h5 th:text="${post.postTitle}"></h5>
-                                                <p class="text-secondary" th:text="${post.postContent}"></p>
-                                                <div style="width: 100px;" class="rounded-pill text-center text-bg-primary p-2">
-                                                    <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy')}"></span>
-                                                </div>
+                                                <a href="#!" class="list-group-item list-group-item-action h-100">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-4 d-flex justify-content-center">
+                                                            <img th:src="${post.featuredImageUrl}" alt="Image" class="rounded img-fluid img-fit"/>
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <h5 th:text="${post.postTitle}"></h5>
+                                                            <p class="text-secondary small clamp-5" th:text="${post.postContent}"></p>
+                                                            <div class="rounded-pill text-center text-bg-primary p-1 mt-2" style="width: 90px;">
+                                                                <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy')}"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
                                             </div>
                                         </div>
-                                    </a>
                                 </div>
-                            </div>
                         </div>
                     </div>
                 </div>
