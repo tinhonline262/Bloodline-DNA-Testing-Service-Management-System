@@ -1,6 +1,8 @@
 package com.dna_testing_system.dev.entity;
 
 import com.dna_testing_system.dev.enums.ServiceCategory;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -25,6 +27,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "tbl_medical_services")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class MedicalService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +40,7 @@ public class MedicalService {
     String serviceName;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "service_type_id")
     ServiceType serviceType;
 

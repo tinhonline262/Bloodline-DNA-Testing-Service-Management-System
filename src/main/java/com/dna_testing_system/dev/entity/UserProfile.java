@@ -1,5 +1,6 @@
 package com.dna_testing_system.dev.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -28,6 +29,7 @@ public class UserProfile {
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     User user;
