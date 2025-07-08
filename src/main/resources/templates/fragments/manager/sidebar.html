@@ -3,11 +3,9 @@
     <!-- Start::main-sidebar-header -->
     <div class="main-sidebar-header">
         <a th:href="@{/manager/dashboard}" class="header-logo">
-            <span class="fs-4 fw-bold text-primary desktop-logo"><img
-                    src="/assets/images/brand-logos/desktop-logo.png"
+            <span class="fs-4 fw-bold text-primary desktop-logo"><img src="/assets/images/brand-logos/desktop-logo.png"
                     alt="logo"></span>
-            <span class="fs-4 fw-bold text-primary toggle-logo"><img
-                    src="/assets/images/brand-logos/toggle-logo.png"
+            <span class="fs-4 fw-bold text-primary toggle-logo"><img src="/assets/images/brand-logos/toggle-logo.png"
                     alt="logo"></span>
             <span class="fs-4 fw-bold text-white desktop-white">Manager Panel</span>
             <span class="fs-4 fw-bold text-white toggle-white">DNA</span>
@@ -60,7 +58,8 @@
 
                                     <!-- Start::slide -->
                                     <li class="slide">
-                                        <a href="javascript:void(0)" th:href="@{/manager/services}" class="side-menu__item">
+                                        <a href="javascript:void(0)" th:href="@{/manager/services}"
+                                            class="side-menu__item">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
                                                 viewBox="0 0 24 24">
                                                 <path d="M0 0h24v24H0z" fill="none"></path>
@@ -84,13 +83,13 @@
                                     <li class="slide has-sub">
                                         <a href="javascript:void(0)" class="side-menu__item">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
-                                                 viewBox="0 0 24 24">
+                                                viewBox="0 0 24 24">
                                                 <path d="M0 0h24v24H0V0z" fill="none"></path>
                                                 <path
-                                                        d="M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm1 13h-2v-2h2v2zm0-4h-2V7h2v6z"
-                                                        opacity=".3"></path>
+                                                    d="M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm1 13h-2v-2h2v2zm0-4h-2V7h2v6z"
+                                                    opacity=".3"></path>
                                                 <path
-                                                        d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm0 2c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm-1 5h2v6h-2zm0 8h2v2h-2z">
+                                                    d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm0 2c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm-1 5h2v6h-2zm0 8h2v2h-2z">
                                                 </path>
                                             </svg>
                                             <span class="side-menu__label">Orders</span>
@@ -101,13 +100,33 @@
                                                 <a href="javascript:void(0);">Orders</a>
                                             </li>
                                             <li class="slide">
-                                                <a href="javascript:void(0);" th:href="@{/manager/new-orders}" class="side-menu__item">New Orders</a>
+                                                <a href="javascript:void(0);" th:href="@{/manager/new-orders}"
+                                                    class="side-menu__item">New Orders</a>
                                             </li>
                                             <li class="slide">
-                                                <a href="javascript:void(0);" th:href="@{/manager/order-management}" class="side-menu__item">Order Management
+                                                <a href="javascript:void(0);" th:href="@{/manager/order-management}"
+                                                    class="side-menu__item">Order Management
                                                 </a>
                                             </li>
                                         </ul>
+                                    </li>
+                                    <!-- End::slide -->
+
+                                    <!-- Start::slide -->
+                                    <li class="slide">
+                                        <a th:href="@{/manager/test-kit-management}" class="side-menu__item">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
+                                                 viewBox="0 0 24 24">
+                                                <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                                <path
+                                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                                                        opacity=".3"></path>
+                                                <path
+                                                        d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm0 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10zm-1-6l-4.5-4.5L8 10l3 3 7-7 1.5 1.5L11 16z">
+                                                </path>
+                                            </svg>
+                                            <span class="side-menu__label">Test Kit Management</span>
+                                        </a>
                                     </li>
                                     <!-- End::slide -->
 

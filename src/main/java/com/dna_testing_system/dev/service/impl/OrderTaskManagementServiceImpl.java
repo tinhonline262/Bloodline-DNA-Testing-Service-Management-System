@@ -133,7 +133,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
     public void taskAssignmentForStaff(Long orderId, StaffAvailableRequest collectionStaff, StaffAvailableRequest analysisStaff) {
         if (collectionStaff.getStaffId().equals(analysisStaff.getStaffId()))
             throw new ManagerException(ErrorCode.INVALID_STAFF_ASSIGNMENT);
-        var order = serviceOrderRepository.findById(orderId)
+        var order = orderServiceRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND));
         var collectStaff = userRepository.findById(collectionStaff.getStaffId())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND));
@@ -145,7 +145,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
             testResultTaskAssignment(order, analysisByStaff);
 
             order.setOrderStatus(ServiceOrderStatus.CONFIRMED);
-            serviceOrderRepository.save(order);
+            orderServiceRepository.save(order);
             log.info("Successfully completed dual task assignment for order ID: {}", orderId);
 
         } catch (Exception e) {
@@ -156,7 +156,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
 
     @Override
     public List<ServiceOrderResponse> getServiceOrders() {
-        var orders = serviceOrderRepository.findAll();
+        var orders = orderServiceRepository.findAll();
         List<ServiceOrderResponse> serviceOrderResponses = new ArrayList<>();
         for (ServiceOrder serviceOrder : orders) {
             ServiceOrderResponse serviceOrderResponse = serviceOrderMapper.toDto(serviceOrder);
@@ -168,7 +168,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
     @Override
     public List<ServiceOrderResponse> getNewOrders() {
 
-        var newOrders = serviceOrderRepository.findAll().stream()
+        var newOrders = orderServiceRepository.findAll().stream()
                 .filter(order -> order.getOrderStatus() == ServiceOrderStatus.PENDING)
                 .filter(order -> order.getSampleCollections().isEmpty()) // No sample collection assigned yet
                 .toList();
@@ -186,7 +186,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
     public void updateOrderStatus(Long orderId, String status) {
         log.info("Updating order status for order ID: {} to status: {}", orderId, status);
 
-        var order = serviceOrderRepository.findById(orderId)
+        var order = orderServiceRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.NOT_FOUND));
 
         ServiceOrderStatus newStatus;
@@ -203,7 +203,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
         order.setOrderStatus(newStatus);
         order.setUpdatedAt(LocalDateTime.now());
 
-        serviceOrderRepository.save(order);
+        orderServiceRepository.save(order);
         log.info("Successfully updated order {} status to {}", orderId, newStatus);
 
         if (newStatus.equals(ServiceOrderStatus.CANCELLED)) {
