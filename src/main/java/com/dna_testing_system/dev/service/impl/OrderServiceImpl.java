@@ -5,6 +5,7 @@ import com.dna_testing_system.dev.dto.response.ServiceOrderByCustomerResponse;
 import com.dna_testing_system.dev.entity.MedicalService;
 import com.dna_testing_system.dev.entity.ServiceOrder;
 import com.dna_testing_system.dev.entity.User;
+import com.dna_testing_system.dev.enums.ServiceOrderStatus;
 import com.dna_testing_system.dev.exception.ErrorCode;
 import com.dna_testing_system.dev.exception.ResourceNotFoundException;
 import com.dna_testing_system.dev.mapper.OrderServiceMapper;
@@ -102,4 +103,17 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("Failed to retrieve order by ID: " + orderId);
         }
     }
+
+    @Override
+    @Transactional
+    public void acceptOrder(Long orderId) {
+        ServiceOrder serviceOrder = orderServiceRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
+
+        // Cập nhật trạng thái đơn hàng từ PENDING thành CONFIRMED
+        serviceOrder.setOrderStatus(ServiceOrderStatus.CONFIRMED);
+        orderServiceRepository.save(serviceOrder);
+    }
+
+
 }

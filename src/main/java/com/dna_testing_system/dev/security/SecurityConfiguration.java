@@ -35,7 +35,7 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/", "/register", "/login", "/error", "/assets/**",
-                                "/uploads/**",  "/api/**", "/ws/**"
+                                "/uploads/**",  "/api/**", "/ws/**", "/cancel"
                         ).permitAll()
                         .requestMatchers("/manager/**", "/manager/services/**", "/manager/service-types/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
                         .requestMatchers("/admin/**").hasAnyRole(RoleType.ADMIN.name())

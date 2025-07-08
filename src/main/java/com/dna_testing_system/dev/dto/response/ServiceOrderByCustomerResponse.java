@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
 public class ServiceOrderByCustomerResponse {
     Long idServiceOrder;
     String medicalServiceName;
-    String appointmentDate;
+    LocalDateTime appointmentDate;
     String collectionType;
     String collectionAddress;
     BigDecimal finalAmount;
