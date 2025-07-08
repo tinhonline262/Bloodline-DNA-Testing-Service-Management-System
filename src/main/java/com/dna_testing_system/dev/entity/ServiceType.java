@@ -35,8 +35,9 @@ public class ServiceType {
 
     @OneToMany(mappedBy = "serviceType", cascade = CascadeType.ALL, orphanRemoval = true)
     List<MedicalService> medicalServices;
+
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at")
     LocalDateTime createdAt;
 
     @UpdateTimestamp
