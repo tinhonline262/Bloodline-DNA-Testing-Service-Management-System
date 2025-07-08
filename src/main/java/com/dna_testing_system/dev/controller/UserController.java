@@ -115,14 +115,6 @@ public class UserController {
         return "redirect:/user/profile";
     }
 
-    @GetMapping("/order-history")
-    public String getOrderHistory(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        List<ServiceOrderByCustomerResponse> orders = orderService.getAllOrdersByCustomerId(currentPrincipalName);
-        model.addAttribute("orders", orders);
-        return "order-history"; // Return the view name for the order history page
-    }
 
     @GetMapping("/order-history/details")
     public String getOrderDetails(@RequestParam("orderId") Long orderId, Model model) {

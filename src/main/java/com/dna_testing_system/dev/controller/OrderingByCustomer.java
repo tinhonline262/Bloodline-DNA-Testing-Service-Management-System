@@ -15,8 +15,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -47,7 +49,7 @@ public class OrderingByCustomer {
         return "CustomerOrderService/list-service";
     }
 
-    @GetMapping("user/order-service")
+    @GetMapping("/user/order-service")
     public String orderServiceGet(Model model, @RequestParam("medicalServiceId") Long medicalServiceId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
@@ -59,14 +61,14 @@ public class OrderingByCustomer {
         ServiceOrderRequestByCustomer serviceOrderRequestByCustomer = new ServiceOrderRequestByCustomer();
         serviceOrderRequestByCustomer.setUsername(currentPrincipalName);
         serviceOrderRequestByCustomer.setIdMedicalService(medicalServiceId);
-        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("today", LocalDateTime.now());
         model.addAttribute("collectionTypes", CollectionType.values());
         model.addAttribute("serviceOrderRequestByCustomer", serviceOrderRequestByCustomer);
 
         return "CustomerOrderService/order-service";
     }
 
-    @PostMapping("user/order-service")
+    @PostMapping("/user/order-service")
     public String orderServicePost(Model model, @ModelAttribute("serviceOrderRequestByCustomer") ServiceOrderRequestByCustomer serviceOrderRequestByCustomer) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
@@ -80,7 +82,7 @@ public class OrderingByCustomer {
         return "CustomerOrderService/order-service";
     }
 
-    @GetMapping("user/participant-information")
+    @GetMapping("/user/participant-information")
     public String participantInformation(Model model, @RequestParam("orderId") Long orderId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -90,13 +92,13 @@ public class OrderingByCustomer {
         }
 
 
-        model.addAttribute("today", LocalDate.now());
+        model.addAttribute("today", LocalDateTime.now());
         model.addAttribute("orderId", orderId);
         model.addAttribute("participantRequest", new ParticipantRequest());
         return "ParticipantOrder/ParticipantInformation";
     }
 
-    @PostMapping("user/participant-information")
+    @PostMapping("/user/participant-information")
     public String participantInformationPost(Model model, @ModelAttribute("participantRequest") ParticipantRequest participantRequest, @RequestParam("orderId") Long orderId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -113,7 +115,7 @@ public class OrderingByCustomer {
         return "ParticipantOrder/ParticipantInformation";
     }
 
-    @GetMapping("/list-kit")
+    @GetMapping("/user/list-kit")
     public String listKits(Model model, @RequestParam("orderId") Long orderId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -129,16 +131,15 @@ public class OrderingByCustomer {
     }
 
 
-    @GetMapping("/order-kit")
+    @GetMapping("/user/order-kit")
     public String orderKit(@RequestParam("kitTestId") Long kitTestId, Model model, @RequestParam("orderId") Long orderId) {
-        // THÊM userProfile VÀO MODEL
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             UserProfileResponse userProfile = userProfileService.getUserProfile(authentication.getName());
             model.addAttribute("userProfile", userProfile);
         }
 
-        // Code cũ giữ nguyên
         OrderTestKitRequest request = new OrderTestKitRequest();
         TestKitResponse testKit = testKitService.GetTestKitResponseById(kitTestId);
         request.setKitTestId(kitTestId);
@@ -149,21 +150,27 @@ public class OrderingByCustomer {
     }
 
 
-    @PostMapping("/order-kit")
+    @PostMapping("/user/order-kit")
+    public String submitOrder(@ModelAttribute("orderTestKitRequest") OrderTestKitRequest orderTestKitRequest,
+                              Model model, RedirectAttributes redirectAttributes) {
 
-    public String submitOrder(@ModelAttribute("orderTestKitRequest") OrderTestKitRequest orderTestKitRequest, Model model) {
+        orderKitService.createOrder(orderTestKitRequest.getOrderId(), orderTestKitRequest);
 
-        orderKitService.createOrder(orderTestKitRequest.getOrderId(),orderTestKitRequest);
 
-        model.addAttribute("message", "Order placed successfully!");
+        redirectAttributes.addFlashAttribute("message", "Order placed successfully!");
 
-        return "OrderKit/order-kit"; // Redirect to the list of kits after successful order
 
+        return "redirect:/user/detail?orderId=" + orderTestKitRequest.getOrderId();
     }
 
 
-    @GetMapping("/detail")
+    @GetMapping("/user/detail")
     public String detail(Model model, @RequestParam("orderId") Long orderId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+            UserProfileResponse userProfile = userProfileService.getUserProfile(authentication.getName());
+            model.addAttribute("userProfile", userProfile);
+        }
         ServiceOrderByCustomerResponse detail = orderService.getOrderById(orderId);
         List<OrderTestKitResponse> testKitDetails = orderKitService.getOrderById(orderId);
         List<OrderParticipantResponse> participantDetails = orderParticipantService.getAllParticipantsByOrderId(orderId);
@@ -173,9 +180,71 @@ public class OrderingByCustomer {
         return "CustomerOrderService/detail";
     }
 
-    @PostMapping("/cancel")
-    public String cancel(@RequestParam("orderId") Long orderId) {
-        orderService.cancelOrder(orderId);
-        return "redirect:user/order-history";
+
+//    @PostMapping("/user/cancel")
+//    public String cancel(@RequestParam("orderId") Long orderId) {
+//        orderService.cancelOrder(orderId);
+//        return "redirect:/order-history";
+//    }
+
+    @GetMapping("/user/order-history")
+    public String orderHistory(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+            UserProfileResponse userProfile = userProfileService.getUserProfile(authentication.getName());
+            model.addAttribute("userProfile", userProfile);
+
+
+            List<ServiceOrderByCustomerResponse> orders = orderService.getAllOrdersByCustomerId(authentication.getName());
+            model.addAttribute("orders", orders);
+        }
+
+        return "order-history";
+    }
+
+    @PostMapping("/user/cancel")
+    public String cancelOrder(@RequestParam("orderId") Long orderId, RedirectAttributes redirectAttributes) {
+        try {
+            orderService.cancelOrder(orderId);
+            redirectAttributes.addFlashAttribute("message", "Order cancelled successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to cancel order: " + e.getMessage());
+        }
+
+        return "redirect:/order-history";
+
+    }
+
+    @PostMapping("/user/accept")
+    public String acceptOrder(@RequestParam("orderId") Long orderId, RedirectAttributes redirectAttributes) {
+        try {
+
+            orderService.acceptOrder(orderId);
+            redirectAttributes.addFlashAttribute("message", "Order accepted successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to accept order: " + e.getMessage());
+        }
+
+        return "redirect:/order-history";
+    }
+
+    @GetMapping("/user/order-details")
+    public String orderDetails(Model model, @RequestParam("orderId") Long orderId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+            UserProfileResponse userProfile = userProfileService.getUserProfile(authentication.getName());
+            model.addAttribute("userProfile", userProfile);
+        }
+
+        // Lấy dữ liệu cho order-details.html
+        ServiceOrderByCustomerResponse orderDetails = orderService.getOrderById(orderId);
+        List<OrderTestKitResponse> orderTestKits = orderKitService.getOrderById(orderId);
+        List<OrderParticipantResponse> orderParticipants = orderParticipantService.getAllParticipantsByOrderId(orderId);
+
+        model.addAttribute("orderDetails", orderDetails);
+        model.addAttribute("orderTestKits", orderTestKits);
+        model.addAttribute("orderParticipants", orderParticipants);
+
+        return "order-details"; // trả về template order-details.html
     }
 }

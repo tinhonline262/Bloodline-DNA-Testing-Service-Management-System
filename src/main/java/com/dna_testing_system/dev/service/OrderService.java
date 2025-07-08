@@ -12,4 +12,5 @@ public interface OrderService {
     void updateOrder(Long orderId, ServiceOrderStatus serviceOrderStatus);
     List<ServiceOrderByCustomerResponse> getAllOrdersByCustomerId(String customerName);
     ServiceOrderByCustomerResponse getOrderById(Long orderId);
+    void acceptOrder(Long orderId);
 }

@@ -106,4 +106,17 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("Failed to retrieve order by ID: " + orderId);
         }
     }
+
+    @Override
+    @Transactional
+    public void acceptOrder(Long orderId) {
+        ServiceOrder serviceOrder = orderServiceRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
+
+        // Cập nhật trạng thái đơn hàng từ PENDING thành CONFIRMED
+        serviceOrder.setOrderStatus(ServiceOrderStatus.CONFIRMED);
+        orderServiceRepository.save(serviceOrder);
+    }
+
+
 }
