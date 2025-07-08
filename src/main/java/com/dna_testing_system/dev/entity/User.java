@@ -1,6 +1,7 @@
 package com.dna_testing_system.dev.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,6 +22,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "tbl_users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
     @Id
     @Column(name = "user_id", nullable = false)
@@ -57,12 +59,15 @@ public class User {
     @JsonIgnore
     Set<UserRole> userRoles = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     Set<ServiceOrder> serviceOrders = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     Set<CustomerFeedback> customerFeedbacks = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     Set<ContentPost> contentPosts = new HashSet<>();
 

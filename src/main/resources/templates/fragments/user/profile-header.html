@@ -20,7 +20,7 @@
                 </svg></div>
                 <ul class="main-menu">
                     <li class="slide">
-                        <a class="side-menu__item" href="#home">
+                        <a class="side-menu__item" th:href="@{/user/home}">
                             <span class="side-menu__label">Home</span>
                         </a>
                     </li>
@@ -94,7 +94,8 @@
                                     <i class="bx bx-cog fs-18 me-2 op-7"></i>Edit Profile
                                 </a>
                             </li>
-                            <li><a class="dropdown-item d-flex border-block-end" th:href="@{/user/dashboard}"><i class="bx bx-tachometer fs-18 me-2 op-7"></i>Dashboard</a></li>                            <li><a class="dropdown-item d-flex" href="chat.html"><i class="bx bx-envelope fs-18 me-2 op-7"></i>Messages</a></li>
+                            <li><a class="dropdown-item d-flex border-block-end" th:href="@{/user/dashboard}"><i class="bx bx-tachometer fs-18 me-2 op-7"></i>Dashboard</a></li>
+                            <li><a class="dropdown-item d-flex" href="chat.html"><i class="bx bx-bell fs-18 me-2 op-7"></i>Notifications</a></li>
                             <li><a class="dropdown-item d-flex border-block-end" href="editprofile.html"><i class="bx bx-slider-alt fs-18 me-2 op-7"></i>Account Settings</a></li>
                             <li><a class="dropdown-item d-flex" href="signin.html"><i class="bx bx-log-out fs-18 me-2 op-7"></i>Sign Out</a></li>
                         </ul>

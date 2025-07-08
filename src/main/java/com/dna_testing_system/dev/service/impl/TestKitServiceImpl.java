@@ -24,6 +24,7 @@ import java.util.List;
 public class TestKitServiceImpl implements TestKitService {
 
     TestKitRepository testKitRepository;
+    OrderTestKitRepository orderTestKitRepository;
     TestKitMapper testKitMapper;
     OrderTestKitRepository orderTestKitRepository;
 

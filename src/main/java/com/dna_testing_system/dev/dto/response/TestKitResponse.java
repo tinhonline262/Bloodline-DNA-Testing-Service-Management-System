@@ -26,4 +26,25 @@ public class TestKitResponse {
     Boolean isAvailable;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+    
+    // Helper methods for UI display
+    public boolean isExpired() {
+        return expiryDate != null && expiryDate.isBefore(LocalDate.now());
+    }
+    
+    public boolean isLowStock() {
+        return quantityInStock != null && quantityInStock <= 10;
+    }
+    
+    public String getAvailabilityStatus() {
+        if (isExpired()) {
+            return "Expired";
+        } else if (!isAvailable) {
+            return "Unavailable";
+        } else if (isLowStock()) {
+            return "Low Stock";
+        } else {
+            return "Available";
+        }
+    }
 }

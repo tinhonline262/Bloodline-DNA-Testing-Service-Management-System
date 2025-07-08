@@ -152,7 +152,6 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
             log.error("Failed dual task assignment for order ID: {} - {}", orderId, e.getMessage());
             throw new ManagerException(ErrorCode.ASSIGNMENT_FAILED);
         }
-
     }
 
     @Override
@@ -168,7 +167,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
     
     @Override
     public List<ServiceOrderResponse> getNewOrders() {
-        // Get orders with PENDING status (new orders that haven't been assigned yet)
+
         var newOrders = orderServiceRepository.findAll().stream()
                 .filter(order -> order.getOrderStatus() == ServiceOrderStatus.PENDING)
                 .filter(order -> order.getSampleCollections().isEmpty()) // No sample collection assigned yet
@@ -199,7 +198,6 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
         }
 
 
-        // Validate status transition
         validateStatusTransition(order.getOrderStatus(), newStatus);
 
         order.setOrderStatus(newStatus);

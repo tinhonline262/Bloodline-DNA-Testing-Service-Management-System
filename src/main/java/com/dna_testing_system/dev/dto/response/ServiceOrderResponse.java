@@ -36,7 +36,7 @@ public class ServiceOrderResponse {
     String serviceCategory;
     Integer participants;
     Integer executionTimeDays;
-    LocalDate appointmentDate;
+    LocalDateTime appointmentDate;
     CollectionType collectionType;
     String collectionAddress;
     ServiceOrderStatus orderStatus = ServiceOrderStatus.PENDING;
