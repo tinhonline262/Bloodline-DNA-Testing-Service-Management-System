@@ -21,6 +21,11 @@ public enum ErrorCode {
     INVALID_STATUS_TRANSITION("Invalid status transition"),
     MANIPULATION_SYSTEM_REPORT_FAILED("Operating system report failed"),
     VALIDATE_ENUMERATION_FAILED("Validation enum failed"),
+    ORDER_NOT_EXISTS("Order is not exists"),
+    FEEDBACK_PERSIST_ERROR("Feedback persistence error"),
+    FEEDBACK_GETTING_ERROR("Feedback getting error"),
+    FEEDBACK_RESPONDING_ERROR("Feedback responding error"),
+    UNAUTHORIZED_FEEDBACK_ACTION("You do not have permission to modify or delete this feedback"),
     UNKNOWN_ERROR("Unknown error!");
 
 

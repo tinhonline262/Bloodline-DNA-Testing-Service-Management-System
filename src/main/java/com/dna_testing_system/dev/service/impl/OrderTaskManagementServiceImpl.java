@@ -32,9 +32,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
     UserRepository userRepository;
     SampleCollectionRepository sampleCollectionRepository;
     TestResultRepository testResultRepository;
-
-    OrderServiceRepository serviceOrderRepository;
-
+    OrderServiceRepository orderServiceRepository;
     EmailSender emailSender;
     ServiceOrderMapper serviceOrderMapper;
 
@@ -94,6 +92,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
                 .collectionStatus(CollectionStatus.PENDING)
                 .sampleType(SampleType.BLOOD)
                 .sampleQuality(SampleQuality.EXCELLENT)
+                .sampleType(SampleType.BLOOD)
                 .build(); // mock, sửa sau
 
         try {
@@ -184,7 +183,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
 
     @Override
     @Transactional
-    public void updateOrderStatus(Long orderId, String status, String notes) {
+    public void updateOrderStatus(Long orderId, String status) {
         log.info("Updating order status for order ID: {} to status: {}", orderId, status);
 
         var order = serviceOrderRepository.findById(orderId)

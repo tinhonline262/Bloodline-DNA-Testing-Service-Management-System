@@ -180,6 +180,7 @@ public class OrderingByCustomer {
         return "CustomerOrderService/detail";
     }
 
+
 //    @PostMapping("/user/cancel")
 //    public String cancel(@RequestParam("orderId") Long orderId) {
 //        orderService.cancelOrder(orderId);
@@ -211,6 +212,7 @@ public class OrderingByCustomer {
         }
 
         return "redirect:/order-history";
+
     }
 
     @PostMapping("/user/accept")

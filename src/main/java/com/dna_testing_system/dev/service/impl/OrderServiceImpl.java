@@ -65,10 +65,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void updateOrder(Long orderId, ServiceOrderRequestByCustomer serviceOrderRequestByCustomer) {
+    public void updateOrder(Long orderId, ServiceOrderStatus serviceOrderStatus) {
         ServiceOrder serviceOrder = orderServiceRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
-        orderServiceMapper.updateOrderServiceFromRequest(serviceOrderRequestByCustomer, serviceOrder);
+        if (serviceOrder == null) {
+            throw new IllegalArgumentException("Order not found for ID: " + orderId);
+        }
+        serviceOrder.setOrderStatus(serviceOrderStatus);
         orderServiceRepository.save(serviceOrder);
     }
 

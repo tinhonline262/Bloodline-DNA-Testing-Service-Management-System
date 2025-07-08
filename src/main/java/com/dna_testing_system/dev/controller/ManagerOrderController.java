@@ -38,7 +38,7 @@ public class ManagerOrderController extends BaseController {
                                     @RequestParam(required = false) String notes,
                                     RedirectAttributes redirectAttributes) {
         try {
-            orderTaskManagementService.updateOrderStatus(orderId, status, notes);
+            orderTaskManagementService.updateOrderStatus(orderId, status);
             redirectAttributes.addAttribute("success", "true");
             log.info("Order status updated successfully for order ID: {}", orderId);
         } catch (Exception e) {
