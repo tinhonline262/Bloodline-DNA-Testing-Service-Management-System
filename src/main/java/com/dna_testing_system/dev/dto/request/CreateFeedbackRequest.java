@@ -30,5 +30,5 @@ public class CreateFeedbackRequest {
     @Size(max = 255)
     String feedbackTitle;
     String feedbackContent;
-    Boolean responseRequired;
+    Boolean responseRequired = false;
 }
