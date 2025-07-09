@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -91,8 +92,9 @@ public class CRUDstaffController {
         String currentPrincipalName = authentication.getName();
         List<CRUDsampleCollectionResponse> sampleCollections = staffService.getSampleCollectionTasks(currentPrincipalName);
         model.addAttribute("sampleCollections", sampleCollections);
-        return "staff/list-sample-collection"; // Assuming you have a Thymeleaf template named "list-sample-collection.html"
+        return "staff/list-sample-collection";
     }
+
 
     @GetMapping("/details-sample-collection")
     public String detailsSampleCollection(@RequestParam("sampleCollectionId") Long sampleCollectionId, Model model) {
@@ -106,17 +108,32 @@ public class CRUDstaffController {
     public String viewUpdateSampleCollection(@RequestParam("sampleCollectionId") Long sampleCollectionId, Model model) {
         CRUDsampleCollectionResponse sampleCollection = staffService.getSampleCollectionTasksById(sampleCollectionId);
         model.addAttribute("sampleCollection", sampleCollection);
-        return "staff/update-sample-collection"; // Assuming you have a Thymeleaf template named "update-sample-collection.html"
+        return "staff/update-sample-collection";
     }
-
     @PostMapping("/update-sample-collection")
-    public String updateSampleCollection(@RequestParam("sampleCollectionId") Long sampleCollectionId,
-                                         @RequestParam("collectionStatus") String collectionStatus,
-                                         @RequestParam("sampleQualilty") String sampleQuality) {
-        staffService.updateSampleCollectionStatus(sampleCollectionId, collectionStatus, sampleQuality);
-        return "redirect:/staff/list-sample-collection"; // Redirect to the list of sample collections after updating
+    public String updateSampleCollection(
+            @RequestParam("sampleCollectionId") Long sampleCollectionId,
+            @RequestParam("collectionStatus") String collectionStatus,
+            @RequestParam("sampleQuality") String sampleQuality,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            // Validate input
+            if (sampleCollectionId == null || collectionStatus == null || sampleQuality == null) {
+                throw new IllegalArgumentException("Missing required parameters");
+            }
+
+            staffService.updateSampleCollectionStatus(sampleCollectionId, collectionStatus, sampleQuality);
+            redirectAttributes.addFlashAttribute("successMessage", "Sample collection updated successfully!");
+
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Invalid input: " + e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update: " + e.getMessage());
+        }
+
+        return "redirect:/staff/list-sample-collection";
     }
-    // end update sample collection status
 
     @GetMapping("/list-test-results")
     public String listTestResults(Model model) {
@@ -271,5 +288,26 @@ public class CRUDstaffController {
         List<TestResultsResponse> filteredTestResults = staffService.filterTestResultsByStatus(status, currentPrincipalName);
         model.addAttribute("testResults", filteredTestResults);
         return "staff/list-test-results"; // Assuming you have a Thymeleaf template named "list-test-results.html"
+    }
+
+
+    @GetMapping("/dashboard")
+    public String dashboard(@RequestParam(value = "section", required = false) String section, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        if ("orders".equals(section)) {
+            List<CRUDorderResponse> serviceOrders = staffService.getForStaff(username);
+            model.addAttribute("serviceOrders", serviceOrders);
+        } else if ("sample-collection".equals(section)) {
+            List<CRUDsampleCollectionResponse> sampleCollections = staffService.getSampleCollectionTasks(username);
+            model.addAttribute("sampleCollections", sampleCollections);
+        } else if ("test-results".equals(section)) {
+            List<TestResultsResponse> testResults = staffService.getTestResults(username);
+            model.addAttribute("testResults", testResults);
+        }
+
+        model.addAttribute("section", section);
+        return "staff/dashboard";
     }
 }

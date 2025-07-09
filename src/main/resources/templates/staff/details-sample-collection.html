@@ -2,66 +2,220 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Sample Collection Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
+    :root {
+        --primary-color: #0162e8;
+        --primary-light: #e3f2fd;
+        --primary-dark: #0146b8;
+        --secondary-color: #f8f9fa;
+        --text-color: #333;
+        --border-color: #e9ecef;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+        --danger-color: #dc3545;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f6f8fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
     }
-    h1 {
-      color: #2a3c60;
+
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
     }
-    table {
-      width: 60%;
-      border-collapse: collapse;
-      margin-bottom: 24px;
-      background: #fff;
+
+    .page-header h1 {
+        margin: 0;
+        font-weight: 600;
     }
-    th, td {
-      border: 1px solid #cdd2d4;
-      padding: 8px 12px;
-      text-align: left;
+
+    .details-container {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
-    th {
-      background: #eaf0fa;
+
+    .detail-table {
+        width: 100%;
+        margin-bottom: 2rem;
     }
-    tr:nth-child(even) {
-      background: #f4f9fd;
+
+    .detail-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
     }
-    a {
-      color: #2563eb;
-      text-decoration: none;
-      margin: 0 4px;
+
+    .detail-table td:first-child {
+        font-weight: 600;
+        color: var(--primary-color);
+        background-color: var(--primary-light);
+        width: 30%;
     }
-    a:hover {
-      text-decoration: underline;
+
+    .detail-table td:last-child {
+        background-color: #fff;
     }
-    button {
-      background: #2563eb;
-      color: #fff;
-      padding: 8px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+
+    .detail-table tr:last-child td {
+        border-bottom: none;
     }
-    button:hover {
-      background: #163b7b;
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+        border-color: var(--primary-dark);
+    }
+
+    .btn-outline-primary {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 0.5rem 1.5rem;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .info-card h5 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 1rem 0;
+        }
+
+        .details-container {
+            padding: 1rem;
+        }
+
+        .detail-table td:first-child {
+            width: 40%;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .action-buttons .btn {
+            width: 100%;
+        }
     }
   </style>
 </head>
 <body>
-<h1>Sample Collection Details</h1>
-<table>
-  <tr><td>ID</td><td th:text="${sampleCollection.collectionId}"></td></tr>
-  <tr><td>Order ID</td><td th:text="${sampleCollection.order.id}"></td></tr>
-  <tr><td>Collection Date</td><td th:text="${#temporals.format(sampleCollection.collectionDate, 'yyyy-MM-dd HH:mm')}"></td></tr>
-  <tr><td>Status</td><td th:text="${sampleCollection.collectionStatus}"></td></tr>
-  <tr><td>Quality</td><td th:text="${sampleCollection.sampleQuality}"></td></tr>
-  <tr><td>Type</td><td th:text="${sampleCollection.sampleType}"></td></tr>
-  <tr><td>Created At</td><td th:text="${#temporals.format(sampleCollection.createdAt, 'yyyy-MM-dd HH:mm')}"></td></tr>
-  <tr><td>Updated At</td><td th:text="${#temporals.format(sampleCollection.updatedAt, 'yyyy-MM-dd HH:mm')}"></td></tr>
-</table>
-<a th:href="@{/staff/list-sample-collection}">Back to List</a>
-<a th:href="@{/staff/update-sample-collection(sampleCollectionId=${sampleCollection.collectionId})}">Update Status</a>
+<!-- Header -->
+<div class="page-header">
+  <div class="container">
+    <h1><i class="fas fa-vial me-2"></i>Sample Collection Details</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <!-- Main Details -->
+    <div class="col-lg-8">
+      <div class="details-container">
+        <div class="d-flex align-items-center mb-3">
+          <i class="fas fa-info-circle text-primary me-2"></i>
+          <h4 class="mb-0">Collection Information</h4>
+        </div>
+
+        <table class="detail-table">
+          <tr>
+            <td>Collection ID</td>
+            <td><strong th:text="${sampleCollection.collectionId}"></strong></td>
+          </tr>
+          <tr>
+            <td>Order ID</td>
+            <td><strong th:text="${sampleCollection.order.id}"></strong></td>
+          </tr>
+          <tr>
+            <td>Collection Date</td>
+            <td th:text="${#temporals.format(sampleCollection.collectionDate, 'yyyy-MM-dd HH:mm')}"></td>
+          </tr>
+          <tr>
+            <td>Status</td>
+            <td>
+              <span class="status-badge bg-light" th:text="${sampleCollection.collectionStatus}"></span>
+            </td>
+          </tr>
+          <tr>
+            <td>Sample Quality</td>
+            <td th:text="${sampleCollection.sampleQuality}"></td>
+          </tr>
+          <tr>
+            <td>Sample Type</td>
+            <td th:text="${sampleCollection.sampleType}"></td>
+          </tr>
+          <tr>
+            <td>Created At</td>
+            <td th:text="${#temporals.format(sampleCollection.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+          </tr>
+          <tr>
+            <td>Updated At</td>
+            <td th:text="${#temporals.format(sampleCollection.updatedAt, 'yyyy-MM-dd HH:mm')}"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-lg-4">
+      <div class="info-card">
+        <h5><i class="fas fa-tools me-2"></i>Quick Actions</h5>
+        <div class="action-buttons">
+          <a th:href="@{/staff/list-sample-collection}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-1"></i>Back to List
+          </a>
+          <a th:href="@{/staff/update-sample-collection(sampleCollectionId=${sampleCollection.collectionId})}"
+             class="btn btn-primary">
+            <i class="fas fa-edit me-1"></i>Update Status
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

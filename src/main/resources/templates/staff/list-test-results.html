@@ -1,158 +1,89 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Danh sách kết quả xét nghiệm</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f5f6fa;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            background: #fff;
-            margin: 40px auto;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(60,72,88,0.09);
-            max-width: 800px;
-        }
-        h1, h3 {
-            color: #324358;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0 30px 0;
-            background: #fafbfc;
-        }
-        table th, table td {
-            border: 1px solid #e1e4e8;
-            padding: 10px 12px;
-            text-align: left;
-        }
-        table th {
-            background: #e7f0fd;
-        }
-        a, span.disabled-link {
-            color: #1976d2;
-            text-decoration: none;
-        }
-        a.btn, button.btn {
-            display: inline-block;
-            background: #1976d2;
-            color: #fff;
-            padding: 10px 22px;
-            border-radius: 4px;
-            margin: 8px 4px 0 0;
-            text-decoration: none;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            transition: background 0.18s;
-        }
-        a.btn.cancel, button.btn.cancel {
-            background: #ccc;
-            color: #333;
-        }
-        a.btn:hover, button.btn:hover {
-            background: #135ba1;
-        }
-        /* Style cho link bị disable */
-        .disabled-link {
-            color: #aaa !important;
-            pointer-events: none;
-            cursor: default;
-            text-decoration: none;
-        }
-        .form-group {
-            margin-bottom: 18px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-        .form-group input[type="text"], .form-group input[type="datetime-local"], .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            background: #f9fafb;
-        }
-        .form-group textarea {
-            min-height: 60px;
-            resize: vertical;
-        }
-        @media (max-width: 600px) {
-            .container {
-                padding: 16px;
-            }
-            table, thead, tbody, th, td, tr {
-                font-size: 0.95em;
-            }
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-    <form th:action="@{/staff/search-test-results}" method="get" class="search-form">
-        <input type="text" name="query" placeholder="Search by id" required />
-        <button type="submit">Search</button>
-        <a th:href="@{/staff/list-test-results}" style="margin-left:10px;">Reset</a>
-    </form>
-    <form th:action="@{/staff/filter-test-results}" method="get" class="filter-form">
-        <label>filter</label>
-        <select  name="status" required>
-            <option th:each="resultsStatus : ${T(com.dna_testing_system.dev.enums.ResultStatus).values()}"
-                    th:value="${resultsStatus}"
-                    th:text="${resultsStatus}"
-                    th:selected="${resultsStatus == resultsStatus}">
-            </option>
-        </select>
-        <button type="submit">Filter</button>
-    </form>
-    <h1>Danh sách kết quả xét nghiệm</h1>
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Ngày xét nghiệm</th>
-            <th>Tóm tắt kết quả</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="result : ${testResults}">
-            <td th:text="${result.testResultId}"></td>
-            <td th:text="${#temporals.format(result.testDate, 'dd/MM/yyyy HH:mm')}"></td>
-            <td th:text="${result.resultSummary}"></td>
-            <td th:text="${result.resultStatus}"></td>
-            <td>
-                <!-- Nếu đã có rawTestId thì cho phép xem chi tiết, cập nhật -->
-                <a th:if="${result.rawTestId != null}"
-                   th:href="@{/staff/details-test-result(testResultId=${result.testResultId})}">Chi tiết</a>
-                <span th:if="${result.rawTestId == null}" class="disabled-link">Chi tiết</span>
-                |
-                <a th:if="${result.rawTestId != null}"
-                   th:href="@{/staff/update-test-result(testResultId=${result.testResultId})}">Cập nhật result</a>
-                <span th:if="${result.rawTestId == null}" class="disabled-link">Cập nhật result</span>
-                |
-                <a th:if="${result.rawTestId != null}"
-                    th:href="@{/staff/update-raw-data(testResultId=${result.testResultId})}">Cập nhật raw</a>
-                <span th:if="${result.rawTestId == null}" class="disabled-link">Cập nhật raw</span>
-                |
-                <!-- Luôn cho phép tạo Raw Data nếu chưa có -->
-                <a th:if="${result.rawTestId == null}"
-                   th:href="@{/staff/create-raw-data(testResultsId=${result.testResultId})}">Tạo Raw Data</a>
-                <span th:if="${result.rawTestId != null}" class="disabled-link">Tạo Raw Data</span>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<!-- staff/list-test-results.html -->
+<div th:fragment="content">
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1 class="header-title">Test Results Management</h1>
+            <div class="controls">
+                <form th:action="@{/staff/search-test-results}" method="get" class="search-form">
+                    <input type="text" name="query" placeholder="Search by test result ID..." required />
+                    <button type="submit" class="btn-primary">Search</button>
+                    <a th:href="@{/staff/list-test-results}" class="btn-secondary">Reset</a>
+                </form>
+
+                <form th:action="@{/staff/filter-test-results}" method="get" class="filter-form">
+                    <label for="status">Filter by Status:</label>
+                    <select name="status" id="status" required>
+                        <option th:each="resultsStatus : ${T(com.dna_testing_system.dev.enums.ResultStatus).values()}"
+                                th:value="${resultsStatus}"
+                                th:text="${resultsStatus}"
+                                th:selected="${resultsStatus == resultsStatus}">
+                        </option>
+                    </select>
+                    <button type="submit" class="btn-primary">Filter</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Test Results List</h2>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Test ID</th>
+                    <th>Test Date</th>
+                    <th>Result Summary</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="result : ${testResults}">
+                    <td><strong th:text="${result.testResultId}"></strong></td>
+                    <td>
+                        <div style="font-size: 13px;" th:text="${#temporals.format(result.testDate, 'dd/MM/yyyy')}"></div>
+                        <div style="font-size: 12px; color: #64748b;" th:text="${#temporals.format(result.testDate, 'HH:mm')}"></div>
+                    </td>
+                    <td>
+                        <div class="result-summary" th:text="${result.resultSummary}" th:title="${result.resultSummary}"></div>
+                    </td>
+                    <td>
+                        <span class="status-badge"
+                              th:class="${'status-badge ' + (result.resultStatus == 'COMPLETED' ? 'status-completed' :
+                                        result.resultStatus == 'PROCESSING' ? 'status-processing' :
+                                        result.resultStatus == 'FAILED' ? 'status-failed' : 'status-pending')}"
+                              th:text="${result.resultStatus}"></span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a th:if="${result.rawTestId != null}"
+                               th:href="@{/staff/details-test-result(testResultId=${result.testResultId})}"
+                               class="action-link">Details</a>
+                            <span th:if="${result.rawTestId == null}" class="disabled-link">Details</span>
+
+                            <a th:if="${result.rawTestId != null}"
+                               th:href="@{/staff/update-test-result(testResultId=${result.testResultId})}"
+                               class="action-link update">Update Result</a>
+                            <span th:if="${result.rawTestId == null}" class="disabled-link">Update Result</span>
+
+                            <a th:if="${result.rawTestId != null}"
+                               th:href="@{/staff/update-raw-data(testResultId=${result.testResultId})}"
+                               class="action-link raw">Update Raw</a>
+                            <span th:if="${result.rawTestId == null}" class="disabled-link">Update Raw</span>
+
+                            <a th:if="${result.rawTestId == null}"
+                               th:href="@{/staff/create-raw-data(testResultsId=${result.testResultId})}"
+                               class="action-link create">Create Raw Data</a>
+                            <span th:if="${result.rawTestId != null}" class="disabled-link">Create Raw Data</span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-</body>
-</html>

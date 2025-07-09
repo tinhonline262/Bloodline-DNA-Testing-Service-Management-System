@@ -124,7 +124,7 @@
                                         </td>
                                         <td th:text="${order.serviceName ?: 'N/A'}">Service Name</td>
                                         <td>
-                                            <span th:class="'badge ' + ${order.orderStatus.name() == 'COMPLETED' ? 'bg-success-transparent' : 
+                                            <span th:class="'badge ' + ${order.orderStatus.name() == 'COMPLETED' ? 'bg-success-transparent' :
                                                                       order.orderStatus.name() == 'IN_PROGRESS' ? 'bg-primary-transparent' :
                                                                       order.orderStatus.name() == 'PENDING' ? 'bg-warning-transparent' :
                                                                       order.orderStatus.name() == 'CANCELLED' ? 'bg-danger-transparent' :

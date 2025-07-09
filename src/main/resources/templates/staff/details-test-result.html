@@ -1,123 +1,378 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Chi tiết kết quả xét nghiệm</title>
+    <title>Test Result Details</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <style>
+        :root {
+            --primary-color: #0162e8;
+            --primary-light: #4285f4;
+            --primary-dark: #0052cc;
+            --secondary-light: #f8f9fa;
+            --border-color: #e9ecef;
+            --text-muted: #6c757d;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+        }
+
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f5f6fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--secondary-light);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .details-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: none;
+        }
+
+        .card-header h1 {
             margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-body {
             padding: 0;
         }
-        .container {
-            background: #fff;
-            margin: 40px auto;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(60,72,88,0.09);
-            max-width: 800px;
+
+        .details-table {
+            margin: 0;
         }
-        h1, h3 {
-            color: #324358;
+
+        .details-table .table {
+            margin-bottom: 0;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0 30px 0;
-            background: #fafbfc;
+
+        .details-table .table th {
+            background: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+            padding: 1rem;
+            width: 25%;
+            vertical-align: middle;
         }
-        table th, table td {
-            border: 1px solid #e1e4e8;
-            padding: 10px 12px;
-            text-align: left;
+
+        .details-table .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
         }
-        table th {
-            background: #e7f0fd;
-            width: 200px;
+
+        .details-table .table tbody tr:last-child td,
+        .details-table .table tbody tr:last-child th {
+            border-bottom: none;
         }
-        a {
-            color: #1976d2;
-            text-decoration: none;
-        }
-        a.btn, button.btn {
-            display: inline-block;
-            background: #1976d2;
-            color: #fff;
-            padding: 10px 22px;
-            border-radius: 4px;
-            margin: 8px 4px 0 0;
-            text-decoration: none;
+
+        .value-display {
             font-weight: 500;
-            border: none;
-            cursor: pointer;
-            transition: background 0.18s;
-        }
-        a.btn.cancel, button.btn.cancel {
-            background: #ccc;
             color: #333;
         }
-        a.btn:hover, button.btn:hover {
-            background: #135ba1;
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        @media (max-width: 600px) {
-            .container {
-                padding: 16px;
+
+        .id-badge {
+            background: var(--info-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .date-display {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .detailed-content {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .file-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .file-link:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .no-file {
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px dashed var(--border-color);
+        }
+
+        .raw-data-section {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .raw-data-item {
+            margin-bottom: 1rem;
+        }
+
+        .raw-data-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .raw-data-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .raw-data-content {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            word-wrap: break-word;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: white;
+        }
+
+        .icon {
+            margin-right: 0.5rem;
+        }
+
+        .action-buttons {
+            padding: 2rem;
+            text-align: center;
+            background: #f8f9fa;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 1rem auto;
+                padding: 0 0.5rem;
             }
-            table, thead, tbody, th, td, tr {
-                font-size: 0.95em;
+
+            .details-table .table th,
+            .details-table .table td {
+                padding: 0.75rem;
+            }
+
+            .details-table .table th {
+                width: 30%;
+            }
+
+            .file-actions {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                padding: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Chi tiết kết quả xét nghiệm</h1>
-    <table>
-        <tr>
-            <th>ID</th>
-            <td th:text="${testResult.testResultId}"></td>
-        </tr>
-        <tr>
-            <th>Ngày xét nghiệm</th>
-            <td th:text="${#temporals.format(testResult.testDate, 'dd/MM/yyyy HH:mm')}"></td>
-        </tr>
-        <tr>
-            <th>Tóm tắt kết quả</th>
-            <td th:text="${testResult.resultSummary}"></td>
-        </tr>
-        <tr>
-            <th>Kết quả chi tiết</th>
-            <td th:text="${testResult.detailedResults}"></td>
-        </tr>
-        <tr>
-            <th>Trạng thái</th>
-            <td th:text="${testResult.resultStatus}"></td>
-        </tr>
-        <tr>
-            <th>Báo cáo</th>
-            <td>
-                <a th:if="${testResult.reportFile != null and !#strings.isEmpty(testResult.reportFile)}"
-                   th:href="@{/files/download(filename=${#strings.substring(testResult.reportFile, testResult.reportFile.lastIndexOf('/')+1)})}"
-                   target="_blank">Tải báo cáo</a>
-                <span th:if="${testResult.reportFile == null or #strings.isEmpty(testResult.reportFile)}">Chưa có</span>
-            </td>
-        </tr>
-        <tr>
-            <th>Dữ liệu thô</th>
-            <td>
-                <div>
-                    <b>Định dạng:</b> <span th:text="${rawData.dataFormat}"></span><br>
-                    <b>Nội dung:</b> <span th:text="${rawData.rawDataContent}"></span><br>
-                    <b>File dữ liệu thô:</b>
-                    <a th:if="${rawData.filePath != null and !#strings.isEmpty(rawData.filePath)}"
-                       th:href="@{/files/download(filename=${#strings.substring(rawData.filePath, rawData.filePath.lastIndexOf('/')+1)})}"
-                       target="_blank">Tải file</a>
-                    <span th:if="${rawData.filePath == null or #strings.isEmpty(rawData.filePath)}">Chưa có</span>
-                </div>
-            </td>
-        </tr>
-    </table>
-    <a th:href="@{/staff/list-test-results}" class="btn">Quay lại danh sách</a>
+<div class="main-container">
+    <div class="details-card">
+        <div class="card-header">
+            <h1><i class="fas fa-flask icon"></i>Test Result Details</h1>
+        </div>
+        <div class="card-body">
+            <div class="details-table">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>
+                            <i class="fas fa-hashtag icon"></i>Result ID
+                        </th>
+                        <td>
+                            <span class="id-badge" th:text="${testResult.testResultId}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <i class="fas fa-calendar-alt icon"></i>Test Date
+                        </th>
+                        <td>
+                            <span class="date-display" th:text="${#temporals.format(testResult.testDate, 'dd/MM/yyyy HH:mm')}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <i class="fas fa-clipboard-list icon"></i>Result Summary
+                        </th>
+                        <td>
+                            <div class="value-display" th:text="${testResult.resultSummary}"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <i class="fas fa-file-alt icon"></i>Detailed Results
+                        </th>
+                        <td>
+                            <div class="detailed-content" th:text="${testResult.detailedResults}"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <i class="fas fa-flag icon"></i>Status
+                        </th>
+                        <td>
+                            <span class="status-badge bg-primary text-white" th:text="${testResult.resultStatus}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <i class="fas fa-file-pdf icon"></i>Report
+                        </th>
+                        <td>
+                            <div class="file-actions">
+                                <a th:if="${testResult.reportFile != null and !#strings.isEmpty(testResult.reportFile)}"
+                                   th:href="@{/files/download(filename=${#strings.substring(testResult.reportFile, testResult.reportFile.lastIndexOf('/')+1)})}"
+                                   target="_blank"
+                                   class="file-link">
+                                    <i class="fas fa-download"></i>
+                                    Download Report
+                                </a>
+                                <span th:if="${testResult.reportFile == null or #strings.isEmpty(testResult.reportFile)}"
+                                      class="no-file">
+                                            <i class="fas fa-times-circle"></i>
+                                            No report available
+                                        </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <i class="fas fa-database icon"></i>Raw Data
+                        </th>
+                        <td>
+                            <div class="raw-data-section">
+                                <div class="raw-data-item">
+                                    <div class="raw-data-label">
+                                        <i class="fas fa-code icon"></i>Format:
+                                    </div>
+                                    <div class="raw-data-content" th:text="${rawData.dataFormat}"></div>
+                                </div>
+
+                                <div class="raw-data-item">
+                                    <div class="raw-data-label">
+                                        <i class="fas fa-file-code icon"></i>Content:
+                                    </div>
+                                    <div class="raw-data-content" th:text="${rawData.rawDataContent}"></div>
+                                </div>
+
+                                <div class="raw-data-item">
+                                    <div class="raw-data-label">
+                                        <i class="fas fa-file icon"></i>Raw Data File:
+                                    </div>
+                                    <div class="file-actions">
+                                        <a th:if="${rawData.filePath != null and !#strings.isEmpty(rawData.filePath)}"
+                                           th:href="@{/files/download(filename=${#strings.substring(rawData.filePath, rawData.filePath.lastIndexOf('/')+1)})}"
+                                           target="_blank"
+                                           class="file-link">
+                                            <i class="fas fa-download"></i>
+                                            Download Raw Data
+                                        </a>
+                                        <span th:if="${rawData.filePath == null or #strings.isEmpty(rawData.filePath)}"
+                                              class="no-file">
+                                                    <i class="fas fa-times-circle"></i>
+                                                    No file available
+                                                </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="action-buttons">
+            <a th:href="@{/staff/list-test-results}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i>
+                Back to List
+            </a>
+        </div>
+    </div>
 </div>
+
 </body>
 </html>
