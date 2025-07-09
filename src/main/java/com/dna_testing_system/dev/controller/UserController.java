@@ -2,10 +2,8 @@ package com.dna_testing_system.dev.controller;
 
 
 import com.dna_testing_system.dev.dto.request.UserProfileRequest;
-import com.dna_testing_system.dev.dto.response.OrderParticipantResponse;
-import com.dna_testing_system.dev.dto.response.OrderTestKitResponse;
-import com.dna_testing_system.dev.dto.response.ServiceOrderByCustomerResponse;
-import com.dna_testing_system.dev.dto.response.UserProfileResponse;
+import com.dna_testing_system.dev.dto.response.*;
+import com.dna_testing_system.dev.entity.TestResult;
 import com.dna_testing_system.dev.service.ContentPostService;
 import com.dna_testing_system.dev.service.UserProfileService;
 import com.dna_testing_system.dev.service.*;
@@ -35,6 +33,8 @@ public class UserController {
     OrderService orderService;
     OrderKitService orderKitService;
     OrderParticipantService orderParticipantService;
+    UserService userService;
+    StaffService staffService;
     MedicalServiceManageService medicalService;
     TestKitService testKitService;
 
@@ -125,6 +125,16 @@ public class UserController {
         return "user/dashboard"; // Trả về template dashboard.html
     }
 
+    @GetMapping("/view-results")
+    public String viewResults(Model model, @RequestParam("orderId") Long orderId) {
+        TestResult testResult = userService.getTestResult(orderId);
+        TestResultsResponse testResultsResponse = staffService.getTestResultById(testResult.getId());
+        RawDataResponse rawDataResponse = staffService.getRawDataById(testResult.getRawData().getId());
+        model.addAttribute("rawData", rawDataResponse);
+        model.addAttribute("testResult", testResultsResponse);
+        // Lấy thông tin kết quả xét nghiệm từ service
+        return "user/view-results"; // Trả về template view-results.html
+    }
     // Blog for user
     ContentPostService contentPostService;
     // Hien thi danh sach bai viet dang co
@@ -133,5 +143,4 @@ public class UserController {
         model.addAttribute("posts", contentPostService.getAllPosts());
         return "/user/blog";
     }
-
 }

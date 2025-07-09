@@ -5,7 +5,9 @@ import com.dna_testing_system.dev.dto.request.ParticipantRequest;
 import com.dna_testing_system.dev.dto.request.ServiceOrderRequestByCustomer;
 import com.dna_testing_system.dev.dto.response.*;
 import com.dna_testing_system.dev.entity.MedicalService;
+import com.dna_testing_system.dev.entity.ServiceOrder;
 import com.dna_testing_system.dev.enums.CollectionType;
+import com.dna_testing_system.dev.enums.ServiceOrderStatus;
 import com.dna_testing_system.dev.service.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -92,11 +94,20 @@ public class OrderingByCustomer {
             UserProfileResponse userProfile = userProfileService.getUserProfile(authentication.getName());
             model.addAttribute("userProfile", userProfile);
         }
-
-
+        Integer count = 0;
+        ServiceOrder serviceOrder = orderService.getOrderByIdEntity(orderId);
+        MedicalServiceResponse medicalServiceResponse = medicalService.getServiceById(serviceOrder.getService().getId());
+        List<OrderParticipantResponse> orderParticipants = orderParticipantService.getAllParticipantsByOrderId(orderId);
+        if (orderParticipants != null && !orderParticipants.isEmpty()) {
+            count = orderParticipants.size();
+            model.addAttribute("count", count);
+        } else {
+            model.addAttribute("count", count);
+        }
         model.addAttribute("today", LocalDateTime.now());
         model.addAttribute("orderId", orderId);
         model.addAttribute("participantRequest", new ParticipantRequest());
+        model.addAttribute("medicalServiceResponse", medicalServiceResponse);
         return "ParticipantOrder/ParticipantInformation";
     }
 
@@ -110,10 +121,20 @@ public class OrderingByCustomer {
         }
 
         // Code cũ giữ nguyên
+        Integer count = 0;
         orderParticipantService.createOrderParticipant(orderId, participantRequest);
+        ServiceOrder serviceOrder = orderService.getOrderByIdEntity(orderId);
+        MedicalServiceResponse medicalServiceResponse = medicalService.getServiceById(serviceOrder.getService().getId());
+        List<OrderParticipantResponse> orderParticipants = orderParticipantService.getAllParticipantsByOrderId(orderId);
+        if (orderParticipants != null && !orderParticipants.isEmpty()) {
+            count = orderParticipants.size();
+            model.addAttribute("count", count);
+        } else {
+            model.addAttribute("count", count);
+        }
         model.addAttribute("message", "Participant information saved successfully!");
         model.addAttribute("orderId", orderId);
-
+        model.addAttribute("medicalServiceResponse", medicalServiceResponse);
         return "ParticipantOrder/ParticipantInformation";
     }
 
@@ -152,9 +173,11 @@ public class OrderingByCustomer {
     }
 
 
+
     @PostMapping("/user/order-kit")
     public String submitOrder(@ModelAttribute("orderTestKitRequest") OrderTestKitRequest orderTestKitRequest,
                               Model model, RedirectAttributes redirectAttributes) {
+
 
         orderKitService.createOrder(orderTestKitRequest.getOrderId(), orderTestKitRequest);
 
@@ -199,6 +222,7 @@ public class OrderingByCustomer {
 
             List<ServiceOrderByCustomerResponse> orders = orderService.getAllOrdersByCustomerId(authentication.getName());
             model.addAttribute("orders", orders);
+
         }
 
         return "order-history";

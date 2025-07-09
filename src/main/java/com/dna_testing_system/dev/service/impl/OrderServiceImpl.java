@@ -118,5 +118,12 @@ public class OrderServiceImpl implements OrderService {
         orderServiceRepository.save(serviceOrder);
     }
 
+    @Override
+    public ServiceOrder getOrderByIdEntity(Long orderId) {
+        ServiceOrder serviceOrder = orderServiceRepository.findById(orderId)
+            .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
+        return serviceOrder;
+    }
+
 
 }
