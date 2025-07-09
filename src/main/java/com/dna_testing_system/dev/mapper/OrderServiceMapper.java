@@ -19,7 +19,7 @@ public interface OrderServiceMapper {
             ,@MappingTarget ServiceOrder orderService);
     @Mapping(target = "idServiceOrder", source = "orderService.id")
     @Mapping(target = "serviceId", source = "orderService.service.id")
-    @Mapping(target="finalAmount", source = "finalAmount")
+    @Mapping(target="finalAmount", source = "orderService.payments.netAmount")
     @Mapping(target = "orderStatus", source = "orderService.orderStatus")
     @Mapping(target = "medicalServiceName", source = "orderService.service.serviceName")
     @Mapping(target = "appointmentDate", source = "orderService.appointmentDate")

@@ -2029,12 +2029,12 @@ public class AdminDashboardController extends BaseController {
             .filter(o -> "CANCELLED".equals(o.getOrderStatus().name())).count());
         
         stats.setPaidOrders((int) orders.stream()
-            .filter(o -> "PAID".equals(o.getPaymentStatus().name())).count());
+            .filter(o -> "PAID".equals(o.getPaymentStatus() != null ? o.getPaymentStatus().name() : null)).count());
         stats.setPendingPaymentOrders((int) orders.stream()
-            .filter(o -> "PENDING".equals(o.getPaymentStatus().name())).count());
+            .filter(o -> "PENDING".equals(o.getPaymentStatus() != null ? o.getPaymentStatus().name() : null)).count());
         
         double totalRevenue = orders.stream()
-            .filter(o -> "PAID".equals(o.getPaymentStatus().name()))
+            .filter(o -> "PAID".equals(o.getPaymentStatus() != null ? o.getPaymentStatus().name() : null))
             .mapToDouble(o -> o.getFinalAmount().doubleValue())
             .sum();
         stats.setTotalRevenue(totalRevenue);
