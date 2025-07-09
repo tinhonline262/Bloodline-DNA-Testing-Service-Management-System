@@ -86,7 +86,7 @@ public class CRUDstaffController {
         }
         paymentTotal = paymentTotal.add(serviceOrder.getFinalAmount());
         model.addAttribute("paymentTotal",paymentTotal);
-        return "staff/update-order"; // Assuming you have a Thymeleaf template named "details-order.html"
+
 
         model.addAttribute("section", "orders");
         return "staff/update-order";
