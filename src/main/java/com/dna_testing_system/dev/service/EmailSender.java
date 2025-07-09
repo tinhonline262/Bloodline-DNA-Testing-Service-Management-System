@@ -6,9 +6,8 @@ import com.dna_testing_system.dev.entity.TestResult;
 import com.dna_testing_system.dev.entity.User;
 
 public interface EmailSender {
-    boolean sendNewOrderNotificationToManager(ServiceOrder order, String managerEmail);
-    boolean sendTestAssignmentNotification(ServiceOrder order, SampleCollection sampleCollection, User staffMember);
-    boolean sendTestAssignmentNotification(ServiceOrder order, TestResult testResult, User staffMember);
-    boolean sendOrderStatusUpdateNotification(ServiceOrder order, String recipient);
-    boolean sendResultAvailableNotification(TestResult testResult, String recipient);
+    void sendNewOrderNotificationToManager(ServiceOrder order, String managerEmail);
+    void sendTestAssignmentNotification(ServiceOrder order, SampleCollection sampleCollection, User staffMember);
+    void sendTestAssignmentNotification(ServiceOrder order, TestResult testResult, User staffMember);
+    void sendOrderStatusUpdateNotification(ServiceOrder order, String recipient);
 }
