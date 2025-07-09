@@ -26,7 +26,6 @@ public class SecurityConfiguration {
 
     UserDetailsServiceImpl userDetailsService;
     CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -35,7 +34,7 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/", "/register", "/login", "/error", "/assets/**",
-                                "/uploads/**",  "/api/**", "/ws/**", "/cancel"
+                                "/uploads/**", "/api/**", "/ws/**", "/cancel", "/public/**"
                         ).permitAll()
                         .requestMatchers("/manager/**", "/manager/services/**", "/manager/service-types/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
                         .requestMatchers("/admin/**").hasAnyRole(RoleType.ADMIN.name())

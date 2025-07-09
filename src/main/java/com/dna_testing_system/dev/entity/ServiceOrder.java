@@ -3,6 +3,7 @@ package com.dna_testing_system.dev.entity;
 import com.dna_testing_system.dev.enums.CollectionType;
 import com.dna_testing_system.dev.enums.PaymentStatus;
 import com.dna_testing_system.dev.enums.ServiceOrderStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -40,6 +41,7 @@ public class ServiceOrder {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
     @JoinColumn(name = "service_id", nullable = false)
     MedicalService service;
 
@@ -92,20 +94,26 @@ public class ServiceOrder {
     String updatedBy;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     Set<OrderKit> orderKits = new HashSet<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     Set<OrderParticipant> orderParticipants = new HashSet<>();
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @JsonIgnore
     Set<SampleCollection> sampleCollections = new HashSet<>();
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @JsonIgnore
     Set<Payment> payments = new HashSet<>();
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @JsonIgnore
     Set<TestResult> testResults = new HashSet<>();
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @JsonIgnore
     Set<Notification> notifications = new HashSet<>();
 }

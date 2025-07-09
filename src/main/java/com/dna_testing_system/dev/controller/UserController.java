@@ -2,10 +2,10 @@ package com.dna_testing_system.dev.controller;
 
 
 import com.dna_testing_system.dev.dto.request.UserProfileRequest;
-import com.dna_testing_system.dev.dto.response.OrderParticipantResponse;
-import com.dna_testing_system.dev.dto.response.OrderTestKitResponse;
-import com.dna_testing_system.dev.dto.response.ServiceOrderByCustomerResponse;
-import com.dna_testing_system.dev.dto.response.UserProfileResponse;
+import com.dna_testing_system.dev.dto.response.*;
+import com.dna_testing_system.dev.entity.TestResult;
+import com.dna_testing_system.dev.service.ContentPostService;
+import com.dna_testing_system.dev.service.UserProfileService;
 import com.dna_testing_system.dev.service.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -32,9 +33,11 @@ public class UserController {
     OrderService orderService;
     OrderKitService orderKitService;
     OrderParticipantService orderParticipantService;
+    UserService userService;
+    StaffService staffService;
     MedicalServiceManageService medicalService;
     TestKitService testKitService;
-    
+
     @GetMapping("/profile")  // URL sẽ là /user/profile
     public String getProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -114,18 +117,6 @@ public class UserController {
 
         return "redirect:/user/profile";
     }
-
-
-    @GetMapping("/order-history/details")
-    public String getOrderDetails(@RequestParam("orderId") Long orderId, Model model) {
-        ServiceOrderByCustomerResponse orderDetails = orderService.getOrderById(orderId);
-        List<OrderTestKitResponse> orderTestKits = orderKitService.getOrderById(orderId);
-        List<OrderParticipantResponse> orderParticipants = orderParticipantService.getAllParticipantsByOrderId(orderId);
-        model.addAttribute("orderParticipants", orderParticipants);
-        model.addAttribute("orderTestKits", orderTestKits);
-        model.addAttribute("orderDetails", orderDetails);
-        return "order-details"; // Return the view name for the order details page
-    }
     @GetMapping("/user/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("pageTitle", "Dashboard - Trang chủ");
@@ -133,7 +124,23 @@ public class UserController {
         model.addAttribute("currentPage", "dashboard"); // Để đánh dấu mục menu active
         return "user/dashboard"; // Trả về template dashboard.html
     }
+
+    @GetMapping("/view-results")
+    public String viewResults(Model model, @RequestParam("orderId") Long orderId) {
+        TestResult testResult = userService.getTestResult(orderId);
+        TestResultsResponse testResultsResponse = staffService.getTestResultById(testResult.getId());
+        RawDataResponse rawDataResponse = staffService.getRawDataById(testResult.getRawData().getId());
+        model.addAttribute("rawData", rawDataResponse);
+        model.addAttribute("testResult", testResultsResponse);
+        // Lấy thông tin kết quả xét nghiệm từ service
+        return "user/view-results"; // Trả về template view-results.html
+    }
+    // Blog for user
+    ContentPostService contentPostService;
+    // Hien thi danh sach bai viet dang co
+    @GetMapping(value = "/posts")
+    public String showPostList(Model model) {
+        model.addAttribute("posts", contentPostService.getAllPosts());
+        return "/user/blog";
+    }
 }
-
-
-

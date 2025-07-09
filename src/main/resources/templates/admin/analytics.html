@@ -204,7 +204,7 @@
                                             $123,400</td>
                                         <td><span class="text-success">+12%</span></td>
                                     </tr>
-                                    <tr th:if="${topServices == null or topServices.empty}">
+                                    <tr th:if="${topServices == null or topServices.isEmpty()}">
                                         <td colspan="4" class="text-center">No data available</td>
                                     </tr>
                                 </tbody>
@@ -246,7 +246,7 @@
                                             th:text="'$' + ${#numbers.formatDecimal(geo.revenue, 0, 'COMMA', 2, 'POINT')}">
                                             $234,500</td>
                                     </tr>
-                                    <tr th:if="${geographicData == null or geographicData.empty}">
+                                    <tr th:if="${geographicData == null or geographicData.isEmpty()}">
                                         <td colspan="4" class="text-center">No data available</td>
                                     </tr>
                                 </tbody>
