@@ -62,22 +62,9 @@ public class ServiceOrder {
     @Column(name = "order_status", nullable = false, length = 50)
     ServiceOrderStatus orderStatus = ServiceOrderStatus.PENDING;
 
-    @Builder.Default
-    @NotNull
-    @Column(name = "payment_status", nullable = false, length = 50)
-    PaymentStatus paymentStatus = PaymentStatus.PENDING;
-
-    @Builder.Default
-    @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
-    BigDecimal totalAmount = BigDecimal.ZERO;
-
-    @Builder.Default
-    @Column(name = "discount_amount", nullable = false, precision = 10, scale = 2)
-    BigDecimal discountAmount = BigDecimal.ZERO;
-
-    @Builder.Default
-    @Column(name = "final_amount", nullable = false, precision = 10, scale = 2)
-    BigDecimal finalAmount = BigDecimal.ZERO;
+    @OneToOne(mappedBy = "order")
+    @JsonIgnore
+    Payment payments;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
@@ -104,10 +91,6 @@ public class ServiceOrder {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     @JsonIgnore
     Set<SampleCollection> sampleCollections = new HashSet<>();
-
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-    @JsonIgnore
-    Set<Payment> payments = new HashSet<>();
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     @JsonIgnore
