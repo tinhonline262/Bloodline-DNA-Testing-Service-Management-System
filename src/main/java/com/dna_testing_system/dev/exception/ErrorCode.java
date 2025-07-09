@@ -26,6 +26,8 @@ public enum ErrorCode {
     FEEDBACK_GETTING_ERROR("Feedback getting error"),
     FEEDBACK_RESPONDING_ERROR("Feedback responding error"),
     UNAUTHORIZED_FEEDBACK_ACTION("You do not have permission to modify or delete this feedback"),
+    PAYMENT_NOT_EXISTS("Payment not exists"),
+    PAYMENT_PERSIST_ERROR("Payment persistence error"),
     UNKNOWN_ERROR("Unknown error!");
 
 
