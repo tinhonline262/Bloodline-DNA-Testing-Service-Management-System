@@ -1,10 +1,14 @@
 package com.dna_testing_system.dev.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -15,6 +19,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "tbl_service_types")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ServiceType {
 
     @Id
@@ -32,4 +37,12 @@ public class ServiceType {
 
     @OneToMany(mappedBy = "serviceType", cascade = CascadeType.ALL, orphanRemoval = true)
     List<MedicalService> medicalServices;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    LocalDateTime updatedAt;
 }

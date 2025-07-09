@@ -26,7 +26,6 @@ public class SecurityConfiguration {
 
     UserDetailsServiceImpl userDetailsService;
     CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -35,21 +34,22 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
                                 "/", "/register", "/login", "/error", "/assets/**",
-                                "/uploads/**",  "/api/**", "/ws/**"
-                                // XÓA BỎ "/layouts/**" KHỎI ĐÂY
+                                "/uploads/**",  "/api/**", "/ws/**", "/cancel"
                         ).permitAll()
-                        .requestMatchers("/manager/**", "/manager/services/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
-                        .requestMatchers("/user/**", "/manager/**").authenticated()
+                        .requestMatchers("/manager/**", "/manager/services/**", "/manager/service-types/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
+                        .requestMatchers("/admin/**").hasAnyRole(RoleType.ADMIN.name())
+                        .requestMatchers("/user/**").authenticated()
                         .anyRequest().permitAll()
                 )
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/register")
-                )
+//                .csrf(csrf -> csrf
+//                        .ignoringRequestMatchers("/register")
+//                )
+                .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form
-                                .loginPage("/login")
+                        .loginPage("/login")
 //                        .defaultSuccessUrl("/user/home", true)
                                 .successHandler(customAuthenticationSuccessHandler)
-                                .permitAll()
+                        .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

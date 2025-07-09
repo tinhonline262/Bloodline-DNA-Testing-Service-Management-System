@@ -2,8 +2,10 @@ package com.dna_testing_system.dev.service.impl;
 
 import com.dna_testing_system.dev.dto.request.TestKitRequest;
 import com.dna_testing_system.dev.dto.response.TestKitResponse;
+import com.dna_testing_system.dev.entity.OrderKit;
 import com.dna_testing_system.dev.entity.TestKit;
 import com.dna_testing_system.dev.mapper.TestKitMapper;
+import com.dna_testing_system.dev.repository.OrderTestKitRepository;
 import com.dna_testing_system.dev.repository.TestKitRepository;
 import com.dna_testing_system.dev.service.TestKitService;
 import lombok.AccessLevel;
@@ -22,6 +24,7 @@ import java.util.List;
 public class TestKitServiceImpl implements TestKitService {
 
     TestKitRepository testKitRepository;
+    OrderTestKitRepository orderTestKitRepository;
     TestKitMapper testKitMapper;
 
 
@@ -70,8 +73,16 @@ public class TestKitServiceImpl implements TestKitService {
     @Override
     @Transactional
     public void DeleteTestKit(Long kitId) {
-        if (!testKitRepository.existsById(kitId)) {
-            throw new RuntimeException("Test Kit not found with id: " + kitId);
+        List<OrderKit> orderKits = orderTestKitRepository.findAll();
+        TestKit testKit = testKitRepository.findById(kitId)
+                .orElseThrow(() -> new RuntimeException("Test Kit not found with id: " + kitId));
+        for (OrderKit orderKit : orderKits) {
+            if (orderKit.getKit().getId().equals(kitId)) {
+                testKit.setIsAvailable(false);
+                testKit.setUpdatedAt(LocalDateTime.now());
+                testKitRepository.save(testKit);
+                return;
+            }
         }
         testKitRepository.deleteById(kitId);
     }
@@ -81,5 +92,32 @@ public class TestKitServiceImpl implements TestKitService {
         TestKit testKit = testKitRepository.findById(kitId)
                 .orElseThrow(() -> new RuntimeException("Test Kit not found with id: " + kitId));
         return testKitMapper.toResponse(testKit);
+    }
+
+    @Override
+    public List<TestKitResponse> searchTestKits(String searchQuery) {
+        List<TestKit> testKits = testKitRepository.findAll();
+        List<TestKitResponse> testKitResponses = new ArrayList<>();
+
+        String searchTerm = searchQuery.toLowerCase().trim();
+
+        for (TestKit testKit : testKits) {
+            boolean match = false;
+
+
+            if (testKit.getKitName() != null &&
+                    testKit.getKitName().toLowerCase().contains(searchTerm)) {
+                match = true;
+            }
+
+            //field entity
+
+            if (match) {
+                TestKitResponse response = testKitMapper.toResponse(testKit);
+                testKitResponses.add(response);
+            }
+        }
+
+        return testKitResponses;
     }
 }

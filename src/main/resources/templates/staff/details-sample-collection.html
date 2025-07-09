@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Sample Collection Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f6f8fa;
+    }
+    h1 {
+      color: #2a3c60;
+    }
+    table {
+      width: 60%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #cdd2d4;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: #eaf0fa;
+    }
+    tr:nth-child(even) {
+      background: #f4f9fd;
+    }
+    a {
+      color: #2563eb;
+      text-decoration: none;
+      margin: 0 4px;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    button {
+      background: #2563eb;
+      color: #fff;
+      padding: 8px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #163b7b;
+    }
+  </style>
+</head>
+<body>
+<h1>Sample Collection Details</h1>
+<table>
+  <tr><td>ID</td><td th:text="${sampleCollection.collectionId}"></td></tr>
+  <tr><td>Order ID</td><td th:text="${sampleCollection.order.id}"></td></tr>
+  <tr><td>Collection Date</td><td th:text="${#temporals.format(sampleCollection.collectionDate, 'yyyy-MM-dd HH:mm')}"></td></tr>
+  <tr><td>Status</td><td th:text="${sampleCollection.collectionStatus}"></td></tr>
+  <tr><td>Quality</td><td th:text="${sampleCollection.sampleQuality}"></td></tr>
+  <tr><td>Type</td><td th:text="${sampleCollection.sampleType}"></td></tr>
+  <tr><td>Created At</td><td th:text="${#temporals.format(sampleCollection.createdAt, 'yyyy-MM-dd HH:mm')}"></td></tr>
+  <tr><td>Updated At</td><td th:text="${#temporals.format(sampleCollection.updatedAt, 'yyyy-MM-dd HH:mm')}"></td></tr>
+</table>
+<a th:href="@{/staff/list-sample-collection}">Back to List</a>
+<a th:href="@{/staff/update-sample-collection(sampleCollectionId=${sampleCollection.collectionId})}">Update Status</a>
+</body>
+</html>
