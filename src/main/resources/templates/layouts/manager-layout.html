@@ -5,11 +5,7 @@
     data-vertical-style="overlay" class="mdl-js" data-toggled="icon-overlay-close" style="">
 
 <head th:replace="~{fragments/common/meta :: common-meta}"></head>
-
-
-
 <body class="app sidebar-mini ltr">
-
     <!--    &lt;!&ndash; Loader &ndash;&gt;-->
     <!--    <div id="global-loader">-->
     <!--        <div class="loader"></div>-->
@@ -237,6 +233,7 @@
 
                     // Thêm lớp active vào side-menu__item được nhấp
                     this.classList.add('active');
+
 
                     // Lưu trạng thái active vào localStorage để duy trì qua các lần tải trang
                     localStorage.setItem('activeMenuItem', this.getAttribute('href'));

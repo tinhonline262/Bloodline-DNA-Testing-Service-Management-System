@@ -54,50 +54,52 @@
     </style>
 </head>
 <body>
-<h1>Sample Collections</h1>
-<form th:action="@{/staff/search-sample-collections}" method="get" class="search-form">
-    <input type="text" name="query" placeholder="Search by id" required />
-    <button type="submit">Search</button>
-    <a th:href="@{/staff/list-sample-collection}" style="margin-left:10px;">Reset</a>
-</form>
-<form th:action="@{/staff/filter-sample-collections}" method="get" class="filter-form">
-    <label>filter</label>
-    <select  name="status" required>
-        <option th:each="collectionStatus : ${T(com.dna_testing_system.dev.enums.CollectionStatus).values()}"
-                th:value="${collectionStatus}"
-                th:text="${collectionStatus}"
-                th:selected="${collectionStatus == collectionStatus}">
-        </option>
-    </select>
-    <button type="submit">Filter</button>
-</form>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Order ID</th>
-        <th>Collection Date</th>
-        <th>Status</th>
-        <th>Quality</th>
-        <th>Type</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="sample : ${sampleCollections}">
-        <td th:text="${sample.collectionId}"></td>
-        <td th:text="${sample.order.id}">Order ID</td>
-        <td th:text="${#temporals.format(sample.collectionDate, 'yyyy-MM-dd HH:mm')}">Date</td>
-        <td th:text="${sample.collectionStatus}"></td>
-        <td th:text="${sample.sampleQuality}"></td>
-        <td th:text="${sample.sampleType}"></td>
-        <td>
-            <a th:href="@{/staff/details-sample-collection(sampleCollectionId=${sample.collectionId})}">Details</a>
-            |
-            <a th:href="@{/staff/update-sample-collection(sampleCollectionId=${sample.collectionId})}">Update Status</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div th:fragment="content">
+    <h1>Sample Collections</h1>
+    <form th:action="@{/staff/search-sample-collections}" method="get" class="search-form">
+        <input type="text" name="query" placeholder="Search by id" required />
+        <button type="submit">Search</button>
+        <a th:href="@{/staff/list-sample-collection}" style="margin-left:10px;">Reset</a>
+    </form>
+    <form th:action="@{/staff/filter-sample-collections}" method="get" class="filter-form">
+        <label>filter</label>
+        <select  name="status" required>
+            <option th:each="collectionStatus : ${T(com.dna_testing_system.dev.enums.CollectionStatus).values()}"
+                    th:value="${collectionStatus}"
+                    th:text="${collectionStatus}"
+                    th:selected="${collectionStatus == collectionStatus}">
+            </option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Order ID</th>
+            <th>Collection Date</th>
+            <th>Status</th>
+            <th>Quality</th>
+            <th>Type</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="sample : ${sampleCollections}">
+            <td th:text="${sample.collectionId}"></td>
+            <td th:text="${sample.order.id}">Order ID</td>
+            <td th:text="${#temporals.format(sample.collectionDate, 'yyyy-MM-dd HH:mm')}">Date</td>
+            <td th:text="${sample.collectionStatus}"></td>
+            <td th:text="${sample.sampleQuality}"></td>
+            <td th:text="${sample.sampleType}"></td>
+            <td>
+                <a th:href="@{/staff/details-sample-collection(sampleCollectionId=${sample.collectionId})}">Details</a>
+                |
+                <a th:href="@{/staff/update-sample-collection(sampleCollectionId=${sample.collectionId})}">Update Status</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

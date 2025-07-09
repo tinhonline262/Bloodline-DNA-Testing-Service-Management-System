@@ -38,6 +38,7 @@ public class SecurityConfiguration {
                         ).permitAll()
                         .requestMatchers("/manager/**", "/manager/services/**", "/manager/service-types/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
                         .requestMatchers("/admin/**").hasAnyRole(RoleType.ADMIN.name())
+                        .requestMatchers("/staff/**").hasAnyRole(RoleType.STAFF.name(), RoleType.MANAGER.name(), RoleType.ADMIN.name())
                         .requestMatchers("/user/**").authenticated()
                         .anyRequest().permitAll()
                 )
@@ -46,10 +47,10 @@ public class SecurityConfiguration {
 //                )
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form
-                        .loginPage("/login")
+                                .loginPage("/login")
 //                        .defaultSuccessUrl("/user/home", true)
                                 .successHandler(customAuthenticationSuccessHandler)
-                        .permitAll()
+                                .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
