@@ -2,6 +2,7 @@ package com.dna_testing_system.dev.enums;
 
 public enum PaymentStatus {
     PENDING("Pending"),
+    FAILED("Failed"),
     PAID("Paid");
 
     private final String description;

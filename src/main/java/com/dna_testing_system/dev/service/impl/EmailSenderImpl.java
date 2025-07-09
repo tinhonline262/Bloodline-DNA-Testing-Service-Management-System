@@ -39,7 +39,6 @@ public class EmailSenderImpl implements EmailSender {
     String baseUrl;
 
     @Override
-    @Async
     public void sendNewOrderNotificationToManager(ServiceOrder order, String managerEmail) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("order", order);
@@ -55,7 +54,6 @@ public class EmailSenderImpl implements EmailSender {
     }
 
     @Override
-    @Async
     public void sendTestAssignmentNotification(ServiceOrder order, SampleCollection sampleCollection, User staffMember) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("order", order);
@@ -74,7 +72,6 @@ public class EmailSenderImpl implements EmailSender {
     }
 
     @Override
-    @Async
     public void sendTestAssignmentNotification(ServiceOrder order, TestResult testResult, User staffMember) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("order", order);
@@ -93,7 +90,6 @@ public class EmailSenderImpl implements EmailSender {
     }
 
     @Override
-    @Async
     public void sendOrderStatusUpdateNotification(ServiceOrder order, String recipient) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("order", order);

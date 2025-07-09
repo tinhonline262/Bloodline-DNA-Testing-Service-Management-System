@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:replace="~{layouts/admin-layout :: layout(~{::#content}, ~{::script}, 'Admin Dashboard', null, null)}"
+<html th:replace="~{layouts/admin-layout :: layout(~{::#content}, ~{::page-script}, 'Admin Dashboard', null, null)}"
     xmlns:th="http://www.thymeleaf.org" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="light"
     data-menu-styles="light" loader="disable" data-vertical-style="overlay" class="mdl-js"
     data-toggled="icon-overlay-close">
@@ -311,110 +311,114 @@
         </div>
     </div>
 
-    <script>
-        // Real-time updates for dashboard metrics
-        document.addEventListener('DOMContentLoaded', function() {
-            // Update metrics every 30 seconds
-            setInterval(function() {
-                // In a real application, this would fetch real data from the server
-                updatePerformanceMetrics();
-            }, 30000);
-            
-            function updatePerformanceMetrics() {
-                // Mock data - in real app, fetch from server
-                const metrics = {
-                    cpu: Math.floor(Math.random() * 30) + 10,
-                    memory: Math.floor(Math.random() * 40) + 50,
-                    disk: Math.floor(Math.random() * 20) + 70,
-                    network: Math.floor(Math.random() * 50) + 10
-                };
-                
-                // Update progress bars
-                updateProgressBar('cpu', metrics.cpu);
-                updateProgressBar('memory', metrics.memory);
-                updateProgressBar('disk', metrics.disk);
-                updateProgressBar('network', metrics.network);
-            }
-            
-            function updateProgressBar(metric, value) {
-                const progressBar = document.querySelector(`.metric:nth-child(${getMetricIndex(metric)}) .progress-bar`);
-                const valueSpan = document.querySelector(`.metric:nth-child(${getMetricIndex(metric)}) .text-muted`);
-                
-                if (progressBar && valueSpan) {
-                    progressBar.style.width = value + '%';
-                    valueSpan.textContent = value + '%';
-                    
-                    // Update color based on value
-                    progressBar.className = 'progress-bar ' + getProgressBarColor(metric, value);
-                }
-            }
-            
-            function getMetricIndex(metric) {
-                switch(metric) {
-                    case 'cpu': return 1;
-                    case 'memory': return 2;
-                    case 'disk': return 3;
-                    case 'network': return 4;
-                    default: return 1;
-                }
-            }
-            
-            function getProgressBarColor(metric, value) {
-                if (value > 80) return 'bg-danger';
-                if (value > 60) return 'bg-warning';
-                return 'bg-success';
-            }
-        });
-    </script>
+    <div id="page-script">
+        <script type="text/html" th:replace="~{fragments/common/scripts :: scripts}"></script>
 
-    <style>
-        .timeline {
-            position: relative;
-            padding-left: 20px;
-        }
-        
-        .timeline-item {
-            position: relative;
-            margin-bottom: 12px;
-        }
-        
-        .timeline-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .timeline-marker {
-            position: absolute;
-            left: -20px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            top: 6px;
-        }
-        
-        .timeline-content h6 {
-            margin-bottom: 2px;
-        }
-        
-        .timeline-text {
-            margin-bottom: 2px;
-            font-size: 13px;
-        }
-        
-        .alert-list .alert {
-            padding: 0.5rem;
-        }
-        
-        .alert-list .alert:last-child {
-            margin-bottom: 0;
-        }
-        
-        .card-header {
-            border-bottom: 1px solid rgba(0,0,0,.075);
-        }
-        
-        .progress {
-            background-color: rgba(0,0,0,.05);
-        }
-    </style>
+        <script>
+            // Real-time updates for dashboard metrics
+            document.addEventListener('DOMContentLoaded', function() {
+                // Update metrics every 30 seconds
+                setInterval(function() {
+                    // In a real application, this would fetch real data from the server
+                    updatePerformanceMetrics();
+                }, 30000);
+
+                function updatePerformanceMetrics() {
+                    // Mock data - in real app, fetch from server
+                    const metrics = {
+                        cpu: Math.floor(Math.random() * 30) + 10,
+                        memory: Math.floor(Math.random() * 40) + 50,
+                        disk: Math.floor(Math.random() * 20) + 70,
+                        network: Math.floor(Math.random() * 50) + 10
+                    };
+
+                    // Update progress bars
+                    updateProgressBar('cpu', metrics.cpu);
+                    updateProgressBar('memory', metrics.memory);
+                    updateProgressBar('disk', metrics.disk);
+                    updateProgressBar('network', metrics.network);
+                }
+
+                function updateProgressBar(metric, value) {
+                    const progressBar = document.querySelector(`.metric:nth-child(${getMetricIndex(metric)}) .progress-bar`);
+                    const valueSpan = document.querySelector(`.metric:nth-child(${getMetricIndex(metric)}) .text-muted`);
+
+                    if (progressBar && valueSpan) {
+                        progressBar.style.width = value + '%';
+                        valueSpan.textContent = value + '%';
+
+                        // Update color based on value
+                        progressBar.className = 'progress-bar ' + getProgressBarColor(metric, value);
+                    }
+                }
+
+                function getMetricIndex(metric) {
+                    switch(metric) {
+                        case 'cpu': return 1;
+                        case 'memory': return 2;
+                        case 'disk': return 3;
+                        case 'network': return 4;
+                        default: return 1;
+                    }
+                }
+
+                function getProgressBarColor(metric, value) {
+                    if (value > 80) return 'bg-danger';
+                    if (value > 60) return 'bg-warning';
+                    return 'bg-success';
+                }
+            });
+        </script>
+
+        <style>
+            .timeline {
+                position: relative;
+                padding-left: 20px;
+            }
+
+            .timeline-item {
+                position: relative;
+                margin-bottom: 12px;
+            }
+
+            .timeline-item:last-child {
+                margin-bottom: 0;
+            }
+
+            .timeline-marker {
+                position: absolute;
+                left: -20px;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                top: 6px;
+            }
+
+            .timeline-content h6 {
+                margin-bottom: 2px;
+            }
+
+            .timeline-text {
+                margin-bottom: 2px;
+                font-size: 13px;
+            }
+
+            .alert-list .alert {
+                padding: 0.5rem;
+            }
+
+            .alert-list .alert:last-child {
+                margin-bottom: 0;
+            }
+
+            .card-header {
+                border-bottom: 1px solid rgba(0,0,0,.075);
+            }
+
+            .progress {
+                background-color: rgba(0,0,0,.05);
+            }
+        </style>
+    </div>
 </body>
 </html>

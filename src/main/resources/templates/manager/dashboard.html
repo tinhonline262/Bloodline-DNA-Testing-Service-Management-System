@@ -1,10 +1,7 @@
 <!DOCTYPE html>
-<html th:replace="~{layouts/manager-layout :: layout(~{::#content}, ~{::script}, 'Dashboard', null, null)}"
-    xmlns:th="http://www.thymeleaf.org" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="light"
-    data-menu-styles="light" loader="disable" data-vertical-style="overlay" class="mdl-js"
-    data-toggled="icon-overlay-close" style="">
+<html th:replace="~{layouts/manager-layout :: layout(~{::#content}, ~{::#page-scripts}, 'Dashboard', null, null)}"
+    xmlns:th="http://www.thymeleaf.org">
 
-<body>
     <div id="content">
         <!-- Dashboard Overview Cards -->
         <div class="row mb-4">
@@ -125,10 +122,10 @@
                                         <td th:text="${order.serviceName ?: 'N/A'}">Service Name</td>
                                         <td>
                                             <span th:class="'badge ' + ${order.orderStatus.name() == 'COMPLETED' ? 'bg-success-transparent' :
-                                                                      order.orderStatus.name() == 'IN_PROGRESS' ? 'bg-primary-transparent' :
-                                                                      order.orderStatus.name() == 'PENDING' ? 'bg-warning-transparent' :
-                                                                      order.orderStatus.name() == 'CANCELLED' ? 'bg-danger-transparent' :
-                                                                      'bg-secondary-transparent'}"
+                                                                      (order.orderStatus.name() == 'IN_PROGRESS' ? 'bg-primary-transparent' :
+                                                                      (order.orderStatus.name() == 'PENDING' ? 'bg-warning-transparent' :
+                                                                      (order.orderStatus.name() == 'CANCELLED' ? 'bg-danger-transparent' :
+                                                                      'bg-secondary-transparent')))}"
                                                 th:text="${order.orderStatus.name().replace('_', ' ')}">Status</span>
                                         </td>
                                         <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy')}">Date</td>
@@ -182,15 +179,15 @@
                             <li th:each="activity : ${recentActivities}" th:if="${recentActivities != null}"
                                 class="activity-item">
                                 <div th:class="'activity-icon ' + ${activity.type == 'ORDER' ? 'bg-primary' :
-                                                                   activity.type == 'CUSTOMER' ? 'bg-success' :
-                                                                   activity.type == 'PAYMENT' ? 'bg-info' :
-                                                                   activity.type == 'RESULT' ? 'bg-warning' :
-                                                                   'bg-secondary'}">
+                                                                   (activity.type == 'CUSTOMER' ? 'bg-success' :
+                                                                   (activity.type == 'PAYMENT' ? 'bg-info' :
+                                                                   (activity.type == 'RESULT' ? 'bg-warning' :
+                                                                   'bg-secondary')))}">
                                     <i th:class="${activity.type == 'ORDER' ? 'ri-file-text-line' :
-                                                  activity.type == 'CUSTOMER' ? 'ri-user-add-line' :
-                                                  activity.type == 'PAYMENT' ? 'ri-money-dollar-circle-line' :
-                                                  activity.type == 'RESULT' ? 'ri-file-search-line' :
-                                                  'ri-notification-line'}"></i>
+                                                  (activity.type == 'CUSTOMER' ? 'ri-user-add-line' :
+                                                  (activity.type == 'PAYMENT' ? 'ri-money-dollar-circle-line' :
+                                                  (activity.type == 'RESULT' ? 'ri-file-search-line' :
+                                                  'ri-notification-line')))}"></i>
                                 </div>
                                 <div class="ms-3">
                                     <h6 class="mb-1 fw-semibold" th:text="${activity.title}">Activity Title</h6>
@@ -227,15 +224,6 @@
                                     <div>
                                         <div class="fw-semibold">Orders</div>
                                         <small>View All Orders</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-6">
-                                <a th:href="@{/manager/customers}" class="btn btn-outline-info w-100">
-                                    <i class="ri-user-3-line me-2"></i>
-                                    <div>
-                                        <div class="fw-semibold">Customers</div>
-                                        <small>Customer Management</small>
                                     </div>
                                 </a>
                             </div>
@@ -282,32 +270,58 @@
             </div>
         </div>
     </div>
+    <div id="page-scripts">
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                // Initialize tooltips
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
 
-    <!-- Dashboard Scripts -->
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialize tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
+                console.log('Manager dashboard loaded successfully');
             });
 
-            console.log('Manager dashboard loaded successfully');
-        });
+            function refreshActivity() {
+                // Refresh activity feed
+                location.reload();
+            }
 
-        function refreshActivity() {
-            // Refresh activity feed
-            location.reload();
-        }
+            // Auto-refresh dashboard data every 5 minutes
+            setInterval(function () {
+                // You can implement AJAX refresh here instead of full page reload
+                console.log('Auto-refreshing dashboard data...');
+            }, 300000);
 
-        // Auto-refresh dashboard data every 5 minutes
-        setInterval(function () {
-            // You can implement AJAX refresh here instead of full page reload
-            console.log('Auto-refreshing dashboard data...');
-        }, 300000);
-    </script>
+            function showAlert(type, message) {
+                const alertContainer = document.querySelector('.container-fluid') || document.querySelector('#main-content');
+                const existingAlert = alertContainer.querySelector('.alert');
 
-    <script type="text/html" th:replace="~{fragments/common/scripts :: scripts}"></script>
-</body>
+                if (existingAlert) {
+                    existingAlert.remove();
+                }
+
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type} alert-dismissible fade show`;
+                alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+                alertContainer.insertBefore(alert, alertContainer.firstChild);
+
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    if (alert && alert.parentNode) {
+                        alert.remove();
+                    }
+                }, 5000);
+            }
+        </script>
+
+        <script type="text/html" th:replace="~{fragments/common/scripts :: scripts}"></script>
+    </div>
+    <!-- Dashboard Scripts -->
+
+
 
 </html>

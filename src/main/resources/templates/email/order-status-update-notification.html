@@ -87,8 +87,7 @@
         <h3>Order Details</h3>
         <p><strong>Order ID:</strong> #<span th:text="${order.id}">12345</span></p>
         <p><strong>Order Date:</strong> <span th:text="${#temporals.format(order.createdAt, 'MMMM dd, yyyy')}">January 01, 2024</span></p>
-        <p><strong>Service:</strong> <span th:if="${order.service != null}" th:text="${order != null and order.service != null and order.service.serviceType != null} ?
-                 ${order.service.serviceType.typeName} : 'N/A'">DNA Testing</span></p>
+        <p><strong>Service:</strong> <span th:text="${order?.service?.serviceType?.typeName ?: 'N/A'}">DNA Testing</span></p>
         <p><strong>Current Status:</strong>
             <span class="status-badge"
                   th:classappend="${order.orderStatus.name() == 'COMPLETED'} ? 'status-completed' : 'status-cancelled'"
