@@ -2,10 +2,8 @@ package com.dna_testing_system.dev.controller;
 
 
 import com.dna_testing_system.dev.dto.request.UserProfileRequest;
-import com.dna_testing_system.dev.dto.response.OrderParticipantResponse;
-import com.dna_testing_system.dev.dto.response.OrderTestKitResponse;
-import com.dna_testing_system.dev.dto.response.ServiceOrderByCustomerResponse;
-import com.dna_testing_system.dev.dto.response.UserProfileResponse;
+import com.dna_testing_system.dev.dto.response.*;
+import com.dna_testing_system.dev.entity.TestResult;
 import com.dna_testing_system.dev.service.ContentPostService;
 import com.dna_testing_system.dev.service.UserProfileService;
 import com.dna_testing_system.dev.service.*;
