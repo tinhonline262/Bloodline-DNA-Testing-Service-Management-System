@@ -17,6 +17,7 @@ public class CustomerFeedbackResponse {
     Long id;
     String customerName;
     String serviceName;
+    Long orderId;
     String feedbackTitle;
     String feedbackContent;
     Float overallRating;
