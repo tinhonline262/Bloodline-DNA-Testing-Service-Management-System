@@ -327,7 +327,7 @@
                     </div>
                 </div>
                 <button type="submit" class="btn btn-submit d-block mx-auto"><i class="fas fa-save"></i> Save Information</button>
-            </form>
+                </form>
         </div>
 
         <div th:if="${message != null}" class="success-container">
@@ -337,7 +337,10 @@
             <h2 class="success-title">Information Saved!</h2>
             <p class="fs-5 text-secondary">You have successfully completed participant information entry.</p>
             <p class="lead" th:text="${message}"></p>
-            <a th:href="@{'/user/list-kit'(orderId=${orderId})}" class="btn btn-next mt-3"><i class="fas fa-arrow-right"></i> Continue - View Kit List</a>
+            <a th:if="${medicalServiceResponse.participants > count }"
+               th:href="@{'/user/participant-information'(orderId=${orderId})}" class="btn btn-next mt-3"><i class="fas fa-arrow-right"></i> Continue - Participant</a>
+            <a th:if="${medicalServiceResponse.participants == count }"
+               th:href="@{'/user/list-kit'(orderId=${orderId})}" class="btn btn-next mt-3"><i class="fas fa-arrow-right"></i> Continue - View Kit List</a>
         </div>
     </div>
 </div>

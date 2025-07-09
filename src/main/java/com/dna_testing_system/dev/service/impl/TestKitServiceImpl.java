@@ -26,7 +26,6 @@ public class TestKitServiceImpl implements TestKitService {
     TestKitRepository testKitRepository;
     OrderTestKitRepository orderTestKitRepository;
     TestKitMapper testKitMapper;
-    OrderTestKitRepository orderTestKitRepository;
 
 
     @Override

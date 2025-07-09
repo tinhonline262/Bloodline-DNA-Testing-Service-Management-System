@@ -2,10 +2,9 @@ package com.dna_testing_system.dev.controller;
 
 
 import com.dna_testing_system.dev.dto.request.UserProfileRequest;
-import com.dna_testing_system.dev.dto.response.OrderParticipantResponse;
-import com.dna_testing_system.dev.dto.response.OrderTestKitResponse;
-import com.dna_testing_system.dev.dto.response.ServiceOrderByCustomerResponse;
-import com.dna_testing_system.dev.dto.response.UserProfileResponse;
+import com.dna_testing_system.dev.dto.response.*;
+import com.dna_testing_system.dev.entity.ServiceOrder;
+import com.dna_testing_system.dev.entity.TestResult;
 import com.dna_testing_system.dev.service.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +31,8 @@ public class UserController {
     OrderService orderService;
     OrderKitService orderKitService;
     OrderParticipantService orderParticipantService;
-    MedicalServiceManageService medicalService;
-    TestKitService testKitService;
+    UserService userService;
+    StaffService staffService;
     
     @GetMapping("/profile")  // URL sẽ là /user/profile
     public String getProfile(Model model) {
@@ -133,6 +132,18 @@ public class UserController {
         model.addAttribute("currentPage", "dashboard"); // Để đánh dấu mục menu active
         return "user/dashboard"; // Trả về template dashboard.html
     }
+
+    @GetMapping("/view-results")
+    public String viewResults(Model model, @RequestParam("orderId") Long orderId) {
+        TestResult testResult = userService.getTestResult(orderId);
+        TestResultsResponse testResultsResponse = staffService.getTestResultById(testResult.getId());
+        RawDataResponse rawDataResponse = staffService.getRawDataById(testResult.getRawData().getId());
+        model.addAttribute("rawData", rawDataResponse);
+        model.addAttribute("testResult", testResultsResponse);
+        // Lấy thông tin kết quả xét nghiệm từ service
+        return "user/view-results"; // Trả về template view-results.html
+    }
+
 }
 
 

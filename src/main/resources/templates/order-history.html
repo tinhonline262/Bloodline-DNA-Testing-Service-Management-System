@@ -340,6 +340,7 @@
                     <th scope="col">Amount</th>
                     <th scope="col">Status</th>
                     <th scope="col">Actions</th>
+                    <th scope="col">Results</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -368,6 +369,14 @@
                             <i class="bi bi-eye"></i>
                             View Details
                         </a>
+                    </td>
+                    <td>
+                        <a th:if="${order.orderStatus == T(com.dna_testing_system.dev.enums.ServiceOrderStatus).COMPLETED}"
+                           th:href="@{/user/view-results(orderId=${order.idServiceOrder})}" class="btn-view">
+                            <i class="bi bi-eye"></i>
+                            View Results
+                        </a>
+                        <span th:if="${order.orderStatus != T(com.dna_testing_system.dev.enums.ServiceOrderStatus).COMPLETED}" class="disabled-link">View Results</span>
                     </td>
                 </tr>
                 </tbody>
