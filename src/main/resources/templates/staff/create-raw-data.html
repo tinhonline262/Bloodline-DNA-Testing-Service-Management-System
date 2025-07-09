@@ -1,260 +1,100 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Create Raw Data</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <style>
-        :root {
-            --primary-color: #0162e8;
-            --primary-hover: #014cbf;
-            --primary-light: #e8f2fe;
-            --text-primary: #2c3e50;
-            --text-secondary: #5a6c7d;
-            --border-color: #e2e8f0;
-            --bg-gray: #f8fafc;
-        }
-
-        body {
-            background: var(--bg-gray);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .main-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 20px 0;
-        }
-
-        .form-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 20px rgba(1, 98, 232, 0.08);
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-        }
-
-        .form-header {
-            background: linear-gradient(135deg, var(--primary-color), #0152d1);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-        }
-
-        .form-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/><circle cx="20" cy="20" r="1" fill="white" opacity="0.05"/><circle cx="80" cy="30" r="1.5" fill="white" opacity="0.08"/></svg>');
-            pointer-events: none;
-        }
-
-        .form-header h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .form-body {
-            padding: 40px 30px;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .form-control {
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            background: #fafbfc;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(1, 98, 232, 0.1);
-            background: white;
-        }
-
-        .form-control::placeholder {
-            color: #94a3b8;
-        }
-
-        .form-control[type="file"] {
-            border: 2px dashed var(--border-color);
-            background: var(--primary-light);
-            cursor: pointer;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .form-control[type="file"]:hover {
-            border-color: var(--primary-color);
-            background: #dbeafe;
-        }
-
-        .file-input-label {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            border: none;
-            border-radius: 8px;
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: 500;
-            width: 100%;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-        }
-
-        .btn-primary:focus {
-            box-shadow: 0 0 0 3px rgba(1, 98, 232, 0.2);
-        }
-
-        .form-icon {
-            color: var(--primary-color);
-            font-size: 14px;
-        }
-
-        .required-asterisk {
-            color: #dc3545;
-            margin-left: 2px;
-        }
-
-        @media (max-width: 768px) {
-            .form-container {
-                margin: 10px;
-            }
-
-            .form-header {
-                padding: 20px;
-            }
-
-            .form-body {
-                padding: 30px 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-<div class="main-container">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <div class="form-container">
-                    <div class="form-header">
-                        <h2>
-                            <i class="fas fa-database"></i>
-                            Create Raw Data
-                        </h2>
+<html th:replace="~{layouts/staff-layout :: layout(~{::#content}, ~{::#page-scripts}, 'Create Raw Data', null, null)}"
+      xmlns:th="http://www.thymeleaf.org">
+<div id="content">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="ri-add-line me-2"></i>Create Raw Data
                     </div>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/staff/create-raw-data}" th:object="${rawData}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="testResultId" th:value="${testResultId}" />
 
-                    <div class="form-body">
-                        <form th:action="@{/staff/create-raw-data}" th:object="${rawData}" method="post" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="dataFormat" class="form-label">
-                                    <i class="fas fa-file-code form-icon"></i>
-                                    Data Format
-                                    <span class="required-asterisk">*</span>
-                                </label>
-                                <input type="text"
-                                       id="dataFormat"
-                                       th:field="*{dataFormat}"
-                                       class="form-control"
-                                       placeholder="Enter data format (e.g., JSON, XML, CSV)"
-                                       required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="collectionDate" class="form-label">
+                                <i class="ri-calendar-line me-2"></i>Collection Date
+                            </label>
+                            <input type="datetime-local"
+                                   class="form-control"
+                                   id="collectionDate"
+                                   th:field="*{collectionDate}"
+                                   th:max="${today}"
+                                   required>
+                            <div class="form-text">Select the date and time when the data was collected</div>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="rawDataContent" class="form-label">
-                                    <i class="fas fa-edit form-icon"></i>
-                                    Raw Data Content
-                                    <span class="required-asterisk">*</span>
-                                </label>
-                                <textarea id="rawDataContent"
-                                          th:field="*{rawDataContent}"
-                                          class="form-control"
-                                          rows="5"
-                                          placeholder="Enter your raw data content here..."
-                                          required></textarea>
-                            </div>
+                        <div class="mb-3">
+                            <label for="dataFormat" class="form-label">
+                                <i class="ri-code-line me-2"></i>Data Format
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="dataFormat"
+                                   name="dataFormat"
+                                   th:field="*{dataFormat}"
+                                   placeholder="e.g., JSON, XML, CSV"
+                                   required>
+                            <div class="form-text">Specify the format of the raw data</div>
+                        </div>
 
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-calendar-alt form-icon"></i>
-                                    Collection Date
-                                </label>
-                                <input type="datetime-local"
-                                       th:field="*{collectionDate}"
-                                       th:max="${today}"
-                                       class="form-control">
-                            </div>
+                        <div class="mb-3">
+                            <label for="rawDataContent" class="form-label">
+                                <i class="ri-file-text-line me-2"></i>Raw Data Content
+                            </label>
+                            <textarea class="form-control"
+                                      id="rawDataContent"
+                                      name="rawDataContent"
+                                      rows="5"
+                                      th:field="*{rawDataContent}"
+                                      placeholder="Enter the raw data content here..."
+                                      required></textarea>
+                            <div class="form-text">Enter the actual raw data content</div>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="filePath" class="form-label">
-                                    <i class="fas fa-upload form-icon"></i>
-                                    Upload File
-                                    <span class="required-asterisk">*</span>
-                                </label>
-                                <input type="file"
-                                       id="filePath"
-                                       name="filePath"
-                                       accept="application/pdf"
-                                       class="form-control"
-                                       required>
-                                <small class="file-input-label">
-                                    <i class="fas fa-info-circle"></i>
-                                    Please select a PDF file to upload
-                                </small>
-                            </div>
+                        <div class="mb-4">
+                            <label for="filePath" class="form-label">
+                                <i class="ri-file-pdf-line me-2"></i>Raw Data File (PDF)
+                            </label>
+                            <input type="file"
+                                   class="form-control"
+                                   id="filePath"
+                                   name="filePath"
+                                   accept="application/pdf">
+                            <div class="form-text">Upload a PDF file containing the raw data (optional)</div>
+                        </div>
 
-                            <input type="hidden" name="testResultsId" th:value="${testResultsId}" />
-
+                        <div class="d-flex justify-content-end gap-2">
+                            <a th:href="@{/staff/list-test-results}" class="btn btn-outline-secondary">
+                                <i class="ri-arrow-left-line me-2"></i>Cancel
+                            </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-plus-circle me-2"></i>
-                                Create Raw Data
+                                <i class="ri-save-line me-2"></i>Create Raw Data
                             </button>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-</body>
+<th:block id="page-scripts">
+    <th:block th:replace="~{fragments/common/scripts :: scripts}"></th:block>
+    <script>
+        // Ensure proper page transitions
+        document.addEventListener('DOMContentLoaded', function() {
+            const actionButtons = document.querySelectorAll('.btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (this.href) {
+                        window.location.href = this.href;
+                    }
+                });
+            });
+        });
+    </script>
+</th:block>
 </html>
