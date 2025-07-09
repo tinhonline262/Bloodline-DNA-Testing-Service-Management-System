@@ -2,16 +2,21 @@ package com.dna_testing_system.dev.service.impl;
 
 import com.dna_testing_system.dev.dto.request.OrderTestKitRequest;
 import com.dna_testing_system.dev.dto.response.OrderTestKitResponse;
+import com.dna_testing_system.dev.entity.Notification;
 import com.dna_testing_system.dev.entity.OrderKit;
 import com.dna_testing_system.dev.entity.ServiceOrder;
 import com.dna_testing_system.dev.entity.TestKit;
 import com.dna_testing_system.dev.entity.User;
 import com.dna_testing_system.dev.enums.KitStatus;
+import com.dna_testing_system.dev.enums.NotificationCategory;
+import com.dna_testing_system.dev.enums.NotificationType;
+import com.dna_testing_system.dev.enums.RoleType;
 import com.dna_testing_system.dev.mapper.OrderTestKitMapper;
 import com.dna_testing_system.dev.repository.OrderServiceRepository;
 import com.dna_testing_system.dev.repository.OrderTestKitRepository;
 import com.dna_testing_system.dev.repository.TestKitRepository;
 import com.dna_testing_system.dev.repository.UserRepository;
+import com.dna_testing_system.dev.service.NotificationService;
 import com.dna_testing_system.dev.service.OrderKitService;
 import com.dna_testing_system.dev.service.OrderService;
 import jakarta.transaction.Transactional;
@@ -31,6 +36,8 @@ public class OrderKitServiceImpl implements OrderKitService {
     OrderTestKitRepository orderKitRepository;
     TestKitRepository testKitRepository;
     OrderServiceRepository orderServiceRepository;
+    UserRepository userRepository;
+    NotificationService notificationService;
 
     @Override
     @Transactional
@@ -62,6 +69,9 @@ public class OrderKitServiceImpl implements OrderKitService {
         }
         orderKit.setOrder(serviceOrder);
         testKitRepository.save(testKit);
+        
+        // Notify managers about the new order
+        notifyToManagersForNewOrder(serviceOrder, orderKit);
     }
 
     @Override
@@ -119,5 +129,24 @@ public class OrderKitServiceImpl implements OrderKitService {
         return orderKits.stream()
                 .map(orderTestKitMapper::toOrderTestKitResponse)
                 .toList();
+    }
+
+    private void notifyToManagersForNewOrder(ServiceOrder order, OrderKit orderKit) {
+        List<User> managers = userRepository.findUsersByRoleName(RoleType.MANAGER.name());
+
+        for (User manager : managers) {
+            Notification notification = Notification.builder()
+                    .recipientUser(manager)
+                    .subject("New Order")
+                    .messageContent("A new order has just been created: " + order.getId() +
+                            " with kit: " + orderKit.getKit().getKitName() +
+                            " (Quantity: " + orderKit.getQuantityOrdered() + ")")
+                    .notificationCategory(NotificationCategory.IN_APP)
+                    .notificationType(NotificationType.ACCOUNT_ACTIVITY)
+                    .build();
+
+            notificationService.save(notification);
+            notificationService.sendNotification(notification);
+        }
     }
 }

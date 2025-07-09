@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ServiceOrderByCustomerResponse {
     Long idServiceOrder;
+    Long serviceId;
     String medicalServiceName;
     LocalDateTime appointmentDate;
     String collectionType;

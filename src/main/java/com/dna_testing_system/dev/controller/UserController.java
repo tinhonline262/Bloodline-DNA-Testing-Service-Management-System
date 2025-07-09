@@ -6,6 +6,8 @@ import com.dna_testing_system.dev.dto.response.OrderParticipantResponse;
 import com.dna_testing_system.dev.dto.response.OrderTestKitResponse;
 import com.dna_testing_system.dev.dto.response.ServiceOrderByCustomerResponse;
 import com.dna_testing_system.dev.dto.response.UserProfileResponse;
+import com.dna_testing_system.dev.service.ContentPostService;
+import com.dna_testing_system.dev.service.UserProfileService;
 import com.dna_testing_system.dev.service.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -34,7 +37,7 @@ public class UserController {
     OrderParticipantService orderParticipantService;
     MedicalServiceManageService medicalService;
     TestKitService testKitService;
-    
+
     @GetMapping("/profile")  // URL sẽ là /user/profile
     public String getProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -114,18 +117,6 @@ public class UserController {
 
         return "redirect:/user/profile";
     }
-
-
-    @GetMapping("/order-history/details")
-    public String getOrderDetails(@RequestParam("orderId") Long orderId, Model model) {
-        ServiceOrderByCustomerResponse orderDetails = orderService.getOrderById(orderId);
-        List<OrderTestKitResponse> orderTestKits = orderKitService.getOrderById(orderId);
-        List<OrderParticipantResponse> orderParticipants = orderParticipantService.getAllParticipantsByOrderId(orderId);
-        model.addAttribute("orderParticipants", orderParticipants);
-        model.addAttribute("orderTestKits", orderTestKits);
-        model.addAttribute("orderDetails", orderDetails);
-        return "order-details"; // Return the view name for the order details page
-    }
     @GetMapping("/user/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("pageTitle", "Dashboard - Trang chủ");
@@ -133,7 +124,14 @@ public class UserController {
         model.addAttribute("currentPage", "dashboard"); // Để đánh dấu mục menu active
         return "user/dashboard"; // Trả về template dashboard.html
     }
+
+    // Blog for user
+    ContentPostService contentPostService;
+    // Hien thi danh sach bai viet dang co
+    @GetMapping(value = "/posts")
+    public String showPostList(Model model) {
+        model.addAttribute("posts", contentPostService.getAllPosts());
+        return "/user/blog";
+    }
+
 }
-
-
-
