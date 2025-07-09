@@ -445,6 +445,12 @@
                 </div>
                 <div class="value price-highlight" th:text="${detail.finalAmount}"></div>
             </div>
+            <div class="info-item">
+                <div class="label">
+                    <i class="fas fa-stethoscope"></i> Payment Method
+                </div>
+                <div class="value price-highlight" th:text="${detail.payments.getPaymentMethod()}"></div>
+            </div>
         </div>
 
         <h3 class="section-title">
@@ -504,7 +510,12 @@
                 </tbody>
             </table>
         </div>
-
+        <div class="info-item">
+            <div class="label">
+                <i class="fas fa-money-bill-wave"></i> Total Payment Amount
+            </div>
+            <div class="value price-highlight" th:text="${paymentTotal}"></div>
+        </div>
         <div class="action-section">
             <form th:action="@{/user/cancel}" method="post" style="display:inline;">
                 <input type="hidden" name="orderId" th:value="${detail.idServiceOrder}" />

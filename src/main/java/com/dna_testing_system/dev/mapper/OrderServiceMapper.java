@@ -25,6 +25,7 @@ public interface OrderServiceMapper {
     @Mapping(target = "appointmentDate", source = "orderService.appointmentDate")
     @Mapping(target = "collectionType", source = "orderService.collectionType")
     @Mapping(target = "collectionAddress", source = "orderService.collectionAddress")
+    @Mapping(target = "payments", source = "orderService.payments")
     ServiceOrderByCustomerResponse toServiceOrderByCustomerResponse(ServiceOrder orderService);
     List<ServiceOrderByCustomerResponse> toServiceOrderByCustomerResponseList(List<ServiceOrder> orderServices);
 }

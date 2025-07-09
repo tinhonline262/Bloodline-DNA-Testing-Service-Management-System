@@ -112,7 +112,12 @@
             </table>
         </div>
     </div>
-
+    <div class="info-row">
+        <div class="info-label">Payment Total:</div>
+        <div class="info-value">
+            <span class="status-badge" th:text="${paymentTotal}"></span>
+        </div>
+    </div>
     <!-- Back Button -->
     <div class="d-flex justify-content-start">
         <button onclick="history.back()" class="btn-back">

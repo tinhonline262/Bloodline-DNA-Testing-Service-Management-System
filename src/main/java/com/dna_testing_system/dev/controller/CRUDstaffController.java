@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -49,6 +50,12 @@ public class CRUDstaffController {
         model.addAttribute("orderTestKits", orderTestKits);
         model.addAttribute("orderParticipants", orderParticipants);
         model.addAttribute("serviceOrderByCustomerResponse", serviceOrder);
+        BigDecimal paymentTotal = BigDecimal.ZERO;
+        for( OrderTestKitResponse kit : orderTestKits) {
+            paymentTotal = paymentTotal.add(kit.getTotalPrice());
+        }
+        paymentTotal = paymentTotal.add(serviceOrder.getFinalAmount());
+        model.addAttribute("paymentTotal",paymentTotal);
         return "staff/details-order"; // Assuming you have a Thymeleaf template named "details-order.html"
     }
 
@@ -60,6 +67,12 @@ public class CRUDstaffController {
         model.addAttribute("orderTestKits", orderTestKits);
         model.addAttribute("orderParticipants", orderParticipants);
         model.addAttribute("serviceOrderByCustomerResponse", serviceOrder);
+        BigDecimal paymentTotal = BigDecimal.ZERO;
+        for( OrderTestKitResponse kit : orderTestKits) {
+            paymentTotal = paymentTotal.add(kit.getTotalPrice());
+        }
+        paymentTotal = paymentTotal.add(serviceOrder.getFinalAmount());
+        model.addAttribute("paymentTotal",paymentTotal);
         return "staff/update-order"; // Assuming you have a Thymeleaf template named "details-order.html"
     }
     @PostMapping("/update-order")

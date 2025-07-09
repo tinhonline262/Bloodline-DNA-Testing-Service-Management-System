@@ -23,8 +23,8 @@ spring:
     cache: false
   datasource:
     url: "jdbc:mysql://localhost:3306/dna_system_new_db"
-    username: root
-    password: password
+    username: an
+    password: napui@123
   jpa:
     hibernate:
       ddl-auto: update
