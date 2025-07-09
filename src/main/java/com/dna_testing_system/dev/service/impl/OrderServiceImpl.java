@@ -67,7 +67,9 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         paymentRepository.save(payment);
         serviceOrder.setPayments(payment);
+
         serviceOrder = orderServiceRepository.save(serviceOrder);
+
         ServiceOrderByCustomerResponse response = orderServiceMapper.toServiceOrderByCustomerResponse(serviceOrder);
         if(response == null) {
             throw new IllegalArgumentException("Failed to create order service");
@@ -132,7 +134,6 @@ public class OrderServiceImpl implements OrderService {
         ServiceOrder serviceOrder = orderServiceRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
 
-        // Cập nhật trạng thái đơn hàng từ PENDING thành CONFIRMED
         serviceOrder.setOrderStatus(ServiceOrderStatus.CONFIRMED);
         orderServiceRepository.save(serviceOrder);
     }
