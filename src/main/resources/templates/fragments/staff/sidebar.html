@@ -80,13 +80,11 @@
                                     <!-- End::slide -->
 
                                     <!-- Start::slide - Sample Collection -->
-                                    <li class="slide"
-                                        th:classappend="${section == 'sample-collection'} ? 'active' : ''">
-                                        <a href="javascript:void(0)" class="side-menu__item"
-                                            th:classappend="${section == 'sample-collection'} ? 'active' : ''"
-                                            onclick="loadSection('sample-collection')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
-                                                viewBox="0 0 24 24">
+
+                                    <li class="slide" th:classappend="${section == 'sample-collection'} ? 'active' : ''">
+                                        <a th:href="@{/staff/list-sample-collection}" class="side-menu__item" th:classappend="${section == 'sample-collection'} ? 'active' : ''" onclick="loadSection('sample-collection')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24">
+
                                                 <path d="M0 0h24v24H0z" fill="none"></path>
                                                 <path
                                                     d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z">
@@ -97,9 +95,9 @@
                                     </li>
                                     <!-- End::slide --> <!-- Start::slide - Test Results -->
                                     <li class="slide" th:classappend="${section == 'test-results'} ? 'active' : ''">
-                                        <a href="javascript:void(0)" class="side-menu__item"
-                                            th:classappend="${section == 'test-results'} ? 'active' : ''"
-                                            onclick="loadSection('test-results')">
+
+                                        <a th:href="@{/staff/list-test-results}" class="side-menu__item" th:classappend="${section == 'test-results'} ? 'active' : ''" onclick="loadSection('test-results')">
+
                                             <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon"
                                                 viewBox="0 0 24 24">
                                                 <path d="M0 0h24v24H0V0z" fill="none"></path>
@@ -163,6 +161,27 @@
         // Navigate to dashboard with section parameter
         window.location.href = `/staff/dashboard?section=${section}`;
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get current path
+        const currentPath = window.location.pathname;
+
+        // Get all sidebar menu items
+        const menuItems = document.querySelectorAll('.side-menu__item');
+
+        menuItems.forEach(item => {
+            // Get the href attribute
+            const href = item.getAttribute('href');
+
+            // Check if current path includes the href (for sub-pages)
+            if (href && currentPath.includes(href)) {
+                // Remove active class from all items first
+                menuItems.forEach(i => i.classList.remove('active'));
+                // Add active class to current item
+                item.classList.add('active');
+            }
+        });
+    });
 </script>
 
 <style>
@@ -179,8 +198,27 @@
     /* Active state styling */
     .slide.active .side-menu__item,
     .side-menu__item.active {
-        background-color: #007bff;
-        color: white;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        color: white !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        border-radius: 6px;
+    }
+
+    .side-menu__item.active .side-menu__icon,
+    .side-menu__item.active .side-menu__label {
+        color: white !important;
+    }
+
+    .side-menu__item.active::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 60%;
+        background-color: white;
+        border-radius: 4px 0 0 4px;
     }
 
     /* Loading spinner styles */

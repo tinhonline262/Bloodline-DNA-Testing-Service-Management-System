@@ -1,6 +1,7 @@
 package com.dna_testing_system.dev.dto.request;
 
 import com.dna_testing_system.dev.enums.CollectionType;
+import com.dna_testing_system.dev.enums.PaymentMethod;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,4 +20,5 @@ public class ServiceOrderRequestByCustomer {
     LocalDateTime appointmentDate;
     CollectionType collectionType;
     String collectionAddress;
+    PaymentMethod paymentMethod;
 }

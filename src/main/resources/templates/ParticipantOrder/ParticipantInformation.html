@@ -336,6 +336,7 @@
             </div>
             <h2 class="success-title">Information Saved!</h2>
             <p class="fs-5 text-secondary">You have successfully completed participant information entry.</p>
+            <p class="fs-5 text-secondary" th:text="'you have '+${count}+' participant(s) on '+${medicalServiceResponse.participants}+' participant(s) for medical'"></p>
             <p class="lead" th:text="${message}"></p>
             <a th:if="${medicalServiceResponse.participants > count }"
                th:href="@{'/user/participant-information'(orderId=${orderId})}" class="btn btn-next mt-3"><i class="fas fa-arrow-right"></i> Continue - Participant</a>

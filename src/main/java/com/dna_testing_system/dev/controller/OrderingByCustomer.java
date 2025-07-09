@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -82,7 +83,7 @@ public class OrderingByCustomer {
 
         ServiceOrderByCustomerResponse serviceOrderByCustomerResponse = orderService.createOrder(serviceOrderRequestByCustomer);
         model.addAttribute("serviceOrderByCustomerResponse", serviceOrderByCustomerResponse);
-
+        model.addAttribute("paymentMethod", serviceOrderByCustomerResponse.getPayments().getPaymentMethod());
         return "CustomerOrderService/order-service";
     }
 
@@ -202,6 +203,12 @@ public class OrderingByCustomer {
         model.addAttribute("detail", detail);
         model.addAttribute("testKitDetails",testKitDetails);
         model.addAttribute("participantDetails", participantDetails);
+        BigDecimal paymentTotal = BigDecimal.ZERO;
+        for( OrderTestKitResponse kit : testKitDetails) {
+            paymentTotal = paymentTotal.add(kit.getTotalPrice());
+        }
+        paymentTotal = paymentTotal.add(detail.getFinalAmount());
+        model.addAttribute("paymentTotal",paymentTotal);
         return "CustomerOrderService/detail";
     }
 
@@ -272,6 +279,13 @@ public class OrderingByCustomer {
         model.addAttribute("orderDetails", orderDetails);
         model.addAttribute("orderTestKits", orderTestKits);
         model.addAttribute("orderParticipants", orderParticipants);
+
+        BigDecimal paymentTotal = BigDecimal.ZERO;
+        for( OrderTestKitResponse kit : orderTestKits) {
+            paymentTotal = paymentTotal.add(kit.getTotalPrice());
+        }
+        paymentTotal = paymentTotal.add(orderDetails.getFinalAmount());
+        model.addAttribute("paymentTotal",paymentTotal);
 
         // Check for existing feedback if order is completed and user is authenticated
         if ("COMPLETED".equals(orderDetails.getOrderStatus().name()) && userProfile != null) {

@@ -207,7 +207,7 @@
                             </td>
                             <td>
                                 <div class="fw-semibold"
-                                    th:text="'$' + ${payment.netAmount != null ? #numbers.formatDecimal(payment.netAmount, 0, 2) : '0.00'}">
+                                    th:text="'$' + ${payment.grossAmount != null ? #numbers.formatDecimal(payment.grossAmount, 0, 2) : '0.00'}">
                                     $299.00</div>
                                 <div class="small text-muted"
                                     th:if="${payment.discountAmount != null and payment.discountAmount.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
