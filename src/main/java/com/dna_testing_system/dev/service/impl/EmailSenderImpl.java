@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -38,23 +39,24 @@ public class EmailSenderImpl implements EmailSender {
     String baseUrl;
 
     @Override
-    public boolean sendNewOrderNotificationToManager(ServiceOrder order, String managerEmail) {
+    @Async
+    public void sendNewOrderNotificationToManager(ServiceOrder order, String managerEmail) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("order", order);
         templateModel.put("timestamp", new Date());
         templateModel.put("baseUrl", baseUrl);
 
-
-        return sendEmailWithTemplate(
-                managerEmail,
-                "New DNA Testing Kit Order #" + order.getId(),
-                "manager-order-notification",
-                templateModel
-        );
+            sendEmailWithTemplate(
+                    managerEmail,
+                    "New DNA Testing Kit Order #" + order.getId(),
+                    "manager-order-notification",
+                    templateModel
+            );
     }
 
     @Override
-    public boolean sendTestAssignmentNotification(ServiceOrder order, SampleCollection sampleCollection, User staffMember) {
+    @Async
+    public void sendTestAssignmentNotification(ServiceOrder order, SampleCollection sampleCollection, User staffMember) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("order", order);
         templateModel.put("sampleCollection", sampleCollection);
@@ -63,7 +65,7 @@ public class EmailSenderImpl implements EmailSender {
         templateModel.put("baseUrl", baseUrl);
 
 
-        return sendEmailWithTemplate(
+        sendEmailWithTemplate(
                 staffMember.getUserProfile().getEmail(),
                 "New DNA Test Assignment: Order #" + order.getId(),
                 "test-assignment-notification",
@@ -72,7 +74,8 @@ public class EmailSenderImpl implements EmailSender {
     }
 
     @Override
-    public boolean sendTestAssignmentNotification(ServiceOrder order, TestResult testResult, User staffMember) {
+    @Async
+    public void sendTestAssignmentNotification(ServiceOrder order, TestResult testResult, User staffMember) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("order", order);
         templateModel.put("testResult", testResult);
@@ -81,7 +84,7 @@ public class EmailSenderImpl implements EmailSender {
         templateModel.put("baseUrl", baseUrl);
 
 
-        return sendEmailWithTemplate(
+        sendEmailWithTemplate(
                 staffMember.getUserProfile().getEmail(),
                 "New DNA Test Assignment: Order #" + order.getId(),
                 "test-result-assignment-notification",
@@ -90,7 +93,8 @@ public class EmailSenderImpl implements EmailSender {
     }
 
     @Override
-    public boolean sendOrderStatusUpdateNotification(ServiceOrder order, String recipient) {
+    @Async
+    public void sendOrderStatusUpdateNotification(ServiceOrder order, String recipient) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("order", order);
         templateModel.put("timestamp", new Date());
@@ -99,23 +103,9 @@ public class EmailSenderImpl implements EmailSender {
         String subject = "Order Status Update - Order #" + order.getId();
         String template = "order-status-update-notification";
 
-        return sendEmailWithTemplate(recipient, subject, template, templateModel);
+        sendEmailWithTemplate(recipient, subject, template, templateModel);
     }
 
-    @Override
-    public boolean sendResultAvailableNotification(TestResult testResult, String recipient) {
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("testResult", testResult);
-        templateModel.put("timestamp", new Date());
-        templateModel.put("baseUrl", baseUrl);
-
-        return sendEmailWithTemplate(
-                recipient,
-                "Your DNA Test Results Are Available",
-                "result-available-notification",
-                templateModel
-        );
-    }
 
     private boolean sendEmailWithTemplate(String to, String subject, String template, Map<String, Object> templateModel) {
         try {
