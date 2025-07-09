@@ -58,7 +58,16 @@ public class CRUDstaffController {
         model.addAttribute("orderTestKits", orderTestKits);
         model.addAttribute("orderParticipants", orderParticipants);
         model.addAttribute("serviceOrderByCustomerResponse", serviceOrder);
+
+        BigDecimal paymentTotal = BigDecimal.ZERO;
+        for( OrderTestKitResponse kit : orderTestKits) {
+            paymentTotal = paymentTotal.add(kit.getTotalPrice());
+        }
+        paymentTotal = paymentTotal.add(serviceOrder.getFinalAmount());
+        model.addAttribute("paymentTotal",paymentTotal);
+
         model.addAttribute("section", "orders");
+
         return "staff/details-order"; // Assuming you have a Thymeleaf template named "details-order.html"
     }
 
@@ -70,8 +79,18 @@ public class CRUDstaffController {
         model.addAttribute("orderTestKits", orderTestKits);
         model.addAttribute("orderParticipants", orderParticipants);
         model.addAttribute("serviceOrderByCustomerResponse", serviceOrder);
+
+        BigDecimal paymentTotal = BigDecimal.ZERO;
+        for( OrderTestKitResponse kit : orderTestKits) {
+            paymentTotal = paymentTotal.add(kit.getTotalPrice());
+        }
+        paymentTotal = paymentTotal.add(serviceOrder.getFinalAmount());
+        model.addAttribute("paymentTotal",paymentTotal);
+
+
         model.addAttribute("section", "orders");
         return "staff/update-order";
+
     }
     @PostMapping("/update-order")
     public String updateOrder(@RequestParam("orderId") Long orderId, @RequestParam("status") String status) {

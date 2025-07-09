@@ -596,6 +596,24 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-vial"></i>
+                    Payment Method <span class="required-indicator">*</span>
+                </label>
+                <select class="form-select" th:field="*{paymentMethod}" required>
+                    <option value="">-- Select Collection Type --</option>
+                    <option th:each="type : ${T(com.dna_testing_system.dev.enums.PaymentMethod).values()}"
+                            th:value="${type}"
+                            th:text="${type.description}">
+                    </option>
+                </select>
+                <div class="form-helper">
+                    <i class="fas fa-info-circle"></i>
+                    Choose the appropriate payment method
+                </div>
+            </div>
+
             <button type="submit" class="btn-submit">
                 <i class="fas fa-paper-plane"></i>
                 Book Service
@@ -649,7 +667,13 @@
                 </div>
                 <div class="detail-value" th:text="${serviceOrderByCustomerResponse.collectionType}"></div>
             </div>
-
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-vial"></i>
+                    Payment Method:
+                </div>
+                <div class="detail-value" th:text="${paymentMethod}"></div>
+            </div>
             <div class="detail-item">
                 <div class="detail-label">
                     <i class="fas fa-map-marker-alt"></i>

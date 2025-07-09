@@ -494,6 +494,11 @@
                             </div>
 
                             <div class="info-row">
+                                <div class="info-label">Payment Method:</div>
+                                <div class="info-value" th:text="${orderDetails.payments.getPaymentMethod()}"></div>
+                            </div>
+
+                            <div class="info-row">
                                 <div class="info-label">Status:</div>
                                 <div class="info-value">
                                     <span class="status-badge bg-primary text-white"
@@ -557,7 +562,10 @@
                                 </tbody>
                             </table>
                         </div>
-
+                        <div class="info-row">
+                            <div class="info-label">Payment Total:</div>
+                            <div class="info-value" th:text="${paymentTotal}"></div>
+                        </div>
                         <!-- Feedback Section - Only show if order is completed -->
                         <div th:if="${orderDetails.orderStatus == T(com.dna_testing_system.dev.enums.ServiceOrderStatus).COMPLETED}"
                             class="mt-4">

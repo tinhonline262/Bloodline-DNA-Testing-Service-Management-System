@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
         serviceOrder = orderServiceRepository.save(serviceOrder);
 
         Payment payment = Payment.builder()
-                .paymentMethod(PaymentMethod.CASH)//pttt sau
+                .paymentMethod(serviceOrderRequestByCustomer.getPaymentMethod())//pttt sau
                 .paymentStatus(PaymentStatus.PENDING)
                 .order(serviceOrder)
                 .grossAmount(medicalService.getCurrentPrice())
@@ -67,6 +67,9 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         paymentRepository.save(payment);
         serviceOrder.setPayments(payment);
+
+        serviceOrder = orderServiceRepository.save(serviceOrder);
+
         ServiceOrderByCustomerResponse response = orderServiceMapper.toServiceOrderByCustomerResponse(serviceOrder);
         if(response == null) {
             throw new IllegalArgumentException("Failed to create order service");
