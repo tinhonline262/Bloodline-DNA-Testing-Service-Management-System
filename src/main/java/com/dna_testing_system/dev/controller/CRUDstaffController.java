@@ -2,14 +2,17 @@ package com.dna_testing_system.dev.controller;
 
 import com.dna_testing_system.dev.dto.request.RawDataRequest;
 import com.dna_testing_system.dev.dto.request.TestResultsResquest;
+import com.dna_testing_system.dev.dto.request.PaymentUpdatingRequest;
 import com.dna_testing_system.dev.dto.response.*;
 import com.dna_testing_system.dev.entity.RawTestData;
 import com.dna_testing_system.dev.entity.TestResult;
+import com.dna_testing_system.dev.enums.PaymentStatus;
 import com.dna_testing_system.dev.enums.ServiceOrderStatus;
 import com.dna_testing_system.dev.service.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,9 +21,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -32,6 +39,7 @@ public class CRUDstaffController {
     StaffService staffService;
     OrderTaskManagementService orderTaskManagementService;
     FileEdit fileEdit;
+    PaymentService paymentService;
     @GetMapping("/list-orders")
     public String listOrders(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -329,9 +337,170 @@ public class CRUDstaffController {
         } else if ("test-results".equals(section)) {
             List<TestResultsResponse> testResults = staffService.getTestResults(username);
             model.addAttribute("testResults", testResults);
+        } else if ("payment-management".equals(section)) {
+            // Redirect to payment management page
+            return "redirect:/staff/payment-management";
         }
 
         model.addAttribute("section", section);
         return "staff/dashboard";
+    }
+
+    // Payment Management Methods
+    @GetMapping("/payment-management")
+    public String paymentManagement(@RequestParam(value = "query", required = false) String query,
+                                  @RequestParam(value = "status", required = false) String status,
+                                  @RequestParam(value = "sortBy", required = false) String sortBy,
+                                  @RequestParam(value = "sortDir", required = false) String sortDir,
+                                  Model model) {
+        List<PaymentResponse> payments = paymentService.getPayments();
+        
+        // Filter by search query if provided
+        if (query != null && !query.trim().isEmpty()) {
+            payments = payments.stream()
+                    .filter(payment -> 
+                        payment.getId().toString().contains(query) ||
+                        (payment.getOrderId() != null && payment.getOrderId().toString().contains(query)) ||
+                        (payment.getCustomerName() != null &&
+                         payment.getCustomerName().toLowerCase().contains(query.toLowerCase())) ||
+                        (payment.getEmail() != null &&
+                         payment.getEmail().toLowerCase().contains(query.toLowerCase())))
+                    .collect(Collectors.toList());
+        }
+        
+        // Filter by status if provided
+        if (status != null && !status.trim().isEmpty()) {
+            try {
+                PaymentStatus paymentStatus = PaymentStatus.valueOf(status.toUpperCase());
+                payments = payments.stream()
+                        .filter(payment -> payment.getPaymentStatus() != null && 
+                                payment.getPaymentStatus().equalsIgnoreCase(paymentStatus.name()))
+                        .collect(Collectors.toList());
+            } catch (IllegalArgumentException e) {
+                // Invalid status, ignore filter
+            }
+        }
+        
+        // Sort payments if requested
+        if (sortBy != null && !sortBy.trim().isEmpty()) {
+            boolean ascending = "asc".equalsIgnoreCase(sortDir);
+            payments = sortPayments(payments, sortBy, ascending);
+        }
+        
+        // Calculate statistics based on all payments (not filtered)
+        List<PaymentResponse> allPayments = paymentService.getPayments();
+        Map<String, Long> stats = calculatePaymentStatistics(allPayments);
+        
+        // Add pagination and breadcrumbs
+        model.addAttribute("payments", payments);
+        model.addAttribute("totalPayments", stats.get("total"));
+        model.addAttribute("pendingPayments", stats.get("pending"));
+        model.addAttribute("completedPayments", stats.get("completed"));
+        model.addAttribute("failedPayments", stats.get("failed"));
+        model.addAttribute("section", "payment-management");
+        model.addAttribute("pageTitle", "Payment Management");
+        model.addAttribute("breadcrumbs", createBreadcrumbs("Payment Management"));
+        
+        return "staff/payment-management";
+    }
+    
+    @PostMapping("/payment-management/update-status")
+    public String updatePaymentStatus(@RequestParam Long paymentId,
+                                    @RequestParam String paymentStatus,
+                                    @RequestParam(required = false) String notes,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            PaymentUpdatingRequest request = new PaymentUpdatingRequest();
+            request.setPaymentId(paymentId);
+            request.setPaymentStatus(paymentStatus);
+            
+            paymentService.updatePaymentStatus(request);
+            
+            redirectAttributes.addAttribute("success", "true");
+            log.info("Payment status updated successfully for payment ID: {} to status: {}", paymentId, paymentStatus);
+        } catch (Exception e) {
+            log.error("Error updating payment status: {}", e.getMessage());
+            redirectAttributes.addAttribute("error", "true");
+        }
+        
+        return "redirect:/staff/payment-management";
+    }
+    
+    private Map<String, Long> calculatePaymentStatistics(List<PaymentResponse> payments) {
+        Map<String, Long> stats = new HashMap<>();
+        
+        stats.put("total", (long) payments.size());
+        stats.put("pending", payments.stream()
+                .filter(p -> p.getPaymentStatus() != null && 
+                        p.getPaymentStatus().equalsIgnoreCase(PaymentStatus.PENDING.name()))
+                .count());
+        stats.put("completed", payments.stream()
+                .filter(p -> p.getPaymentStatus() != null && 
+                        p.getPaymentStatus().equalsIgnoreCase(PaymentStatus.PAID.name()))
+                .count());
+        return stats;
+    }
+    
+    private List<PaymentResponse> sortPayments(List<PaymentResponse> payments, String sortBy, boolean ascending) {
+        Stream<PaymentResponse> stream = payments.stream();
+        
+        switch (sortBy) {
+            case "customerName":
+                stream = stream.sorted((p1, p2) -> {
+                    String name1 = p1.getCustomerName() != null ? p1.getCustomerName() : "";
+                    String name2 = p2.getCustomerName() != null ? p2.getCustomerName() : "";
+                    return ascending ? name1.compareTo(name2) : name2.compareTo(name1);
+                });
+                break;
+            case "netAmount":
+                stream = stream.sorted((p1, p2) -> {
+                    BigDecimal amount1 = p1.getNetAmount() != null ? p1.getNetAmount() : BigDecimal.ZERO;
+                    BigDecimal amount2 = p2.getNetAmount() != null ? p2.getNetAmount() : BigDecimal.ZERO;
+                    return ascending ? amount1.compareTo(amount2) : amount2.compareTo(amount1);
+                });
+                break;
+            case "paymentStatus":
+                stream = stream.sorted((p1, p2) -> {
+                    String status1 = p1.getPaymentStatus() != null ? p1.getPaymentStatus() : "";
+                    String status2 = p2.getPaymentStatus() != null ? p2.getPaymentStatus() : "";
+                    return ascending ? status1.compareTo(status2) : status2.compareTo(status1);
+                });
+                break;
+            case "paymentMethod":
+                stream = stream.sorted((p1, p2) -> {
+                    String method1 = p1.getPaymentMethod() != null ? p1.getPaymentMethod() : "";
+                    String method2 = p2.getPaymentMethod() != null ? p2.getPaymentMethod() : "";
+                    return ascending ? method1.compareTo(method2) : method2.compareTo(method1);
+                });
+                break;
+            case "createdAt":
+            default:
+                stream = stream.sorted((p1, p2) -> {
+                    LocalDateTime date1 = p1.getCreatedAt() != null ? p1.getCreatedAt() : LocalDateTime.MIN;
+                    LocalDateTime date2 = p2.getCreatedAt() != null ? p2.getCreatedAt() : LocalDateTime.MIN;
+                    return ascending ? date1.compareTo(date2) : date2.compareTo(date1);
+                });
+                break;
+        }
+        
+        return stream.collect(Collectors.toList());
+    }
+    
+    private List<Map<String, Object>> createBreadcrumbs(String currentPage) {
+        List<Map<String, Object>> breadcrumbs = new ArrayList<>();
+        
+        Map<String, Object> dashboard = new HashMap<>();
+        dashboard.put("name", "Dashboard");
+        dashboard.put("url", "/staff/dashboard");
+        dashboard.put("active", false);
+        breadcrumbs.add(dashboard);
+        
+        Map<String, Object> current = new HashMap<>();
+        current.put("name", currentPage);
+        current.put("url", "");
+        current.put("active", true);
+        breadcrumbs.add(current);
+        
+        return breadcrumbs;
     }
 }

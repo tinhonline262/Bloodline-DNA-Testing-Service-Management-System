@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface CRUDorderMapper {
     @Mapping(target = "idServiceOrder", source = "orderService.id")
-    @Mapping(target="finalAmount", source = "finalAmount")
+    @Mapping(target="finalAmount", source = "orderService.payments.netAmount")
     @Mapping(target = "orderStatus", source = "orderService.orderStatus")
     @Mapping(target = "userName", source = "orderService.customer.username")
     @Mapping(target = "userEmail", source = "orderService.customer.userProfile.email")

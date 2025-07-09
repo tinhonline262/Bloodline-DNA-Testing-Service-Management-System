@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
@@ -31,12 +32,14 @@ import java.util.Set;
 @Configuration
 @Component
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigurer {
-    RoleRepository roleRepository;
-    UserRepository userRepository;
-    UserRoleRepository userRoleRepository;
-    UserProfileRepository userProfileRepository;
+    final RoleRepository roleRepository;
+    final UserRepository userRepository;
+    final UserRoleRepository userRoleRepository;
+    final UserProfileRepository userProfileRepository;
+    @Value("${application.base-url}")
+    String baseURL;
 
     public void run(ApplicationArguments args) throws Exception {
         initRoleDatabase();
@@ -281,7 +284,7 @@ public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigure
 
     private void launchBrowser() throws Exception{
         if (Desktop.isDesktopSupported())
-            Desktop.getDesktop().browse(new URI("http://localhost:8080/index"));
+            Desktop.getDesktop().browse(new URI(baseURL));
         else {
             log.warn("Desktop is not supported, cannot launch Browser");
             log.info("Starting to launch Browser with OS Call System...");
@@ -289,7 +292,7 @@ public class ApplicationInitConfig implements ApplicationRunner, WebMvcConfigure
             Runtime runtime = Runtime.getRuntime();
             if (os.contains("win")) {
                 // Windows
-                runtime.exec("rundll32 url.dll,FileProtocolHandler " + "http://localhost:8080/index");
+                runtime.exec("rundll32 url.dll,FileProtocolHandler " + baseURL);
             } else {
                 log.warn("Unsupported OS. Cannot open browser automatically.");
             }
