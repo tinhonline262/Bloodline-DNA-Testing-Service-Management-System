@@ -1,105 +1,89 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Sample Collections</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background: #f6f8fa;
-        }
-        h1 {
-            color: #2a3c60;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 24px;
-            background: #fff;
-        }
-        th, td {
-            border: 1px solid #cdd2d4;
-            padding: 8px 12px;
-            text-align: left;
-        }
-        th {
-            background: #eaf0fa;
-        }
-        tr:nth-child(even) {
-            background: #f4f9fd;
-        }
-        a {
-            color: #2563eb;
-            text-decoration: none;
-            margin: 0 4px;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        button {
-            background: #2563eb;
-            color: #fff;
-            padding: 8px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #163b7b;
-        }
-        form {
-            max-width: 420px;
-            margin: auto;
-        }
-    </style>
-</head>
-<body>
-<div th:fragment="content">
-    <h1>Sample Collections</h1>
-    <form th:action="@{/staff/search-sample-collections}" method="get" class="search-form">
-        <input type="text" name="query" placeholder="Search by id" required />
-        <button type="submit">Search</button>
-        <a th:href="@{/staff/list-sample-collection}" style="margin-left:10px;">Reset</a>
-    </form>
-    <form th:action="@{/staff/filter-sample-collections}" method="get" class="filter-form">
-        <label>filter</label>
-        <select  name="status" required>
-            <option th:each="collectionStatus : ${T(com.dna_testing_system.dev.enums.CollectionStatus).values()}"
-                    th:value="${collectionStatus}"
-                    th:text="${collectionStatus}"
-                    th:selected="${collectionStatus == collectionStatus}">
-            </option>
-        </select>
-        <button type="submit">Filter</button>
-    </form>
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Order ID</th>
-            <th>Collection Date</th>
-            <th>Status</th>
-            <th>Quality</th>
-            <th>Type</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="sample : ${sampleCollections}">
-            <td th:text="${sample.collectionId}"></td>
-            <td th:text="${sample.order.id}">Order ID</td>
-            <td th:text="${#temporals.format(sample.collectionDate, 'yyyy-MM-dd HH:mm')}">Date</td>
-            <td th:text="${sample.collectionStatus}"></td>
-            <td th:text="${sample.sampleQuality}"></td>
-            <td th:text="${sample.sampleType}"></td>
-            <td>
-                <a th:href="@{/staff/details-sample-collection(sampleCollectionId=${sample.collectionId})}">Details</a>
-                |
-                <a th:href="@{/staff/update-sample-collection(sampleCollectionId=${sample.collectionId})}">Update Status</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<html th:replace="~{layouts/staff-layout :: layout(~{::#content}, ~{::#page-scripts}, 'Sample Collections', null, null)}"
+      xmlns:th="http://www.thymeleaf.org">
+<div id="content">
+    <!-- Success/Error Messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="ri-check-circle-line me-2"></i><span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="ri-error-warning-line me-2"></i><span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Sample Collections Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <div class="card-title">Sample Collections</div>
+                    <div class="ms-auto">
+                        <form th:action="@{/staff/search-sample-collections}" method="get" class="d-inline-block me-2">
+                            <input type="text" name="query" placeholder="Search by Sample ID..." class="form-control d-inline-block w-auto" required />
+                            <button type="submit" class="btn btn-primary btn-sm ms-1">Search</button>
+                            <a th:href="@{/staff/list-sample-collection}" class="btn btn-outline-secondary btn-sm ms-1">Reset</a>
+                        </form>
+                        <form th:action="@{/staff/filter-sample-collections}" method="get" class="d-inline-block">
+                            <select name="status" class="form-select form-select-sm d-inline-block w-auto" required>
+                                <option th:each="collectionStatus : ${T(com.dna_testing_system.dev.enums.CollectionStatus).values()}"
+                                        th:value="${collectionStatus}"
+                                        th:text="${collectionStatus}"></option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm ms-1">Filter</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table text-nowrap table-bordered table-hover align-middle">
+                            <thead>
+                            <tr>
+                                <th scope="col">Sample ID</th>
+                                <th scope="col">Order ID</th>
+                                <th scope="col">Collection Date</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Quality</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="sample : ${sampleCollections}">
+                                <td><strong th:text="${sample.collectionId}"></strong></td>
+                                <td><strong th:text="${sample.order.id}"></strong></td>
+                                <td th:text="${#temporals.format(sample.collectionDate, 'MMM dd, yyyy HH:mm')}"></td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${sample.collectionStatus.name() == 'PENDING'} ? 'bg-warning' :
+                                                      (${sample.collectionStatus.name() == 'COLLECTED'} ? 'bg-info' :
+                                                      (${sample.collectionStatus.name() == 'PROCESSING'} ? 'bg-primary' :
+                                                      (${sample.collectionStatus.name() == 'COMPLETED'} ? 'bg-success' : 'bg-danger')))"
+                                          th:text="${sample.collectionStatus}">Status</span>
+                                </td>
+                                <td th:text="${sample.sampleQuality}"></td>
+                                <td th:text="${sample.sampleType}"></td>
+                                <td>
+                                    <a th:href="@{/staff/details-sample-collection(sampleCollectionId=${sample.collectionId})}" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="ri-eye-line"></i>
+                                    </a>
+                                    <a th:href="@{/staff/update-sample-collection(sampleCollectionId=${sample.collectionId})}" class="btn btn-sm btn-outline-success">
+                                        <i class="ri-edit-line"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${sampleCollections == null or #lists.isEmpty(sampleCollections)}">
+                                <td colspan="7" class="text-center text-muted">No sample collections found.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</body>
+<th:block id="page-scripts">
+    <th:block th:replace="~{fragments/common/scripts :: scripts}"></th:block>
+</th:block>
 </html>

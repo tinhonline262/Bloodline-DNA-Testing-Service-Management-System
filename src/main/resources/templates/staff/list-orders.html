@@ -55,7 +55,7 @@
                                         <small class="text-muted" th:text="${order.userEmail}">customer@email.com</small>
                                     </div>
                                 </td>
-                                <td th:text="${order.createdAt != null ? #dates.format(order.createdAt, 'MMM dd, yyyy') : ''}">Date</td>
+                                <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'MMM dd, yyyy') : ''}">Date</td>
                                 <td>
                                     <span class="badge"
                                           th:classappend="${order.orderStatus.name() == 'PENDING'} ? 'bg-warning' :
@@ -67,10 +67,16 @@
                                 </td>
                                 <td th:text="${order.finalAmount}">$0.00</td>
                                 <td>
-                                    <a th:href="@{/staff/details-order(orderId=${order.idServiceOrder})}" class="btn btn-sm btn-outline-primary me-1">
+                                    <a th:href="@{/staff/details-order(orderId=${order.idServiceOrder})}"
+                                       class="btn btn-sm btn-outline-primary me-1"
+                                       data-bs-toggle="tooltip"
+                                       title="View Details">
                                         <i class="ri-eye-line"></i>
                                     </a>
-                                    <a th:href="@{/staff/update-order(orderId=${order.idServiceOrder})}" class="btn btn-sm btn-outline-success">
+                                    <a th:href="@{/staff/update-order(orderId=${order.idServiceOrder})}"
+                                       class="btn btn-sm btn-outline-success"
+                                       data-bs-toggle="tooltip"
+                                       title="Update Status">
                                         <i class="ri-edit-line"></i>
                                     </a>
                                 </td>
@@ -88,5 +94,16 @@
 </div>
 <th:block id="page-scripts">
     <th:block th:replace="~{fragments/common/scripts :: scripts}"></th:block>
+    <script>
+        // Ensure links trigger full page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const actionLinks = document.querySelectorAll('a[data-bs-toggle="tooltip"]');
+            actionLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    window.location.href = this.href;
+                });
+            });
+        });
+    </script>
 </th:block>
 </html>

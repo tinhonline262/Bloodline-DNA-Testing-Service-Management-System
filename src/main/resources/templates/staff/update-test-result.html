@@ -1,301 +1,134 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Update Test Result</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html th:replace="~{layouts/staff-layout :: layout(~{::#content}, ~{::#page-scripts}, 'Update Test Result', null, null)}"
+      xmlns:th="http://www.thymeleaf.org">
+<div id="content">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="ri-edit-line me-2"></i>Update Test Result
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/staff/update-test-result}" th:object="${testResult}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="testResultId" th:value="${testResult.testResultId}"/>
+                        <input type="hidden" name="rawDataId" th:value="${testResult.rawTestId}"/>
 
-    <style>
-        :root {
-            --primary-color: #0162e8;
-            --primary-light: #4285f4;
-            --primary-dark: #0052cc;
-            --secondary-light: #f8f9fa;
-            --border-color: #e9ecef;
-            --text-muted: #6c757d;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-        }
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="testDate" class="form-label">
+                                        <i class="ri-calendar-line me-2"></i>Result Date<span class="text-danger">*</span>
+                                    </label>
+                                    <input type="datetime-local"
+                                           class="form-control"
+                                           id="testDate"
+                                           th:field="*{testDate}"
+                                           required>
+                                    <div class="form-text">Select the date and time when the test was completed</div>
+                                </div>
+                            </div>
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--secondary-light);
-            color: #333;
-            line-height: 1.6;
-        }
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="resultStatus" class="form-label">
+                                        <i class="ri-flag-line me-2"></i>Result Status<span class="text-danger">*</span>
+                                    </label>
+                                    <select id="resultStatus"
+                                            name="resultStatus"
+                                            class="form-select"
+                                            required>
+                                        <option value="">Select Status</option>
+                                        <option th:each="status : ${T(com.dna_testing_system.dev.enums.ResultStatus).values()}"
+                                                th:value="${status}"
+                                                th:text="${status}"
+                                                th:selected="${status} == *{resultStatus}"></option>
+                                    </select>
+                                    <div class="form-text">Current status of the test result</div>
+                                </div>
+                            </div>
+                        </div>
 
-        .main-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .form-card {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--border-color);
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px 12px 0 0;
-            text-align: center;
-            border-bottom: none;
-        }
-
-        .card-header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        .form-control, .form-select {
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-            background-color: #f9fafb;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(1, 98, 232, 0.15);
-            background-color: white;
-        }
-
-        .form-control::placeholder {
-            color: var(--text-muted);
-            opacity: 0.8;
-        }
-
-        textarea.form-control {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            padding: 0.75rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            border-color: #6c757d;
-            padding: 0.75rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-            border-color: #5a6268;
-            color: white;
-        }
-
-        .file-info {
-            background: #f8f9fa;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.75rem;
-            margin-top: 0.5rem;
-        }
-
-        .file-link {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .file-link:hover {
-            color: var(--primary-dark);
-            text-decoration: underline;
-        }
-
-        .icon {
-            margin-right: 0.5rem;
-        }
-
-        .form-text {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            align-items: start;
-        }
-
-        @media (max-width: 768px) {
-            .main-container {
-                margin: 1rem auto;
-                padding: 0 0.5rem;
-            }
-
-            .card-body {
-                padding: 1.5rem;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .required::after {
-            content: " *";
-            color: var(--danger-color);
-        }
-    </style>
-</head>
-<body>
-<div class="main-container">
-    <div class="form-card">
-        <div class="card-header">
-            <h1><i class="fas fa-flask icon"></i>Update Test Result</h1>
-        </div>
-        <div class="card-body">
-            <form th:action="@{/staff/update-test-result}" th:object="${testResult}" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="testResultId" th:value="${testResult.testResultId}"/>
-                <input type="hidden" name="rawDataId" th:value="${testResult.rawTestId}"/>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="testDate" class="form-label required">
-                                <i class="fas fa-calendar-alt icon"></i>Result Date
+                        <div class="mb-4">
+                            <label for="resultSummary" class="form-label">
+                                <i class="ri-file-list-line me-2"></i>Result Summary<span class="text-danger">*</span>
                             </label>
-                            <input type="datetime-local"
+                            <input type="text"
                                    class="form-control"
-                                   id="testDate"
-                                   th:field="*{testDate}"
+                                   id="resultSummary"
+                                   name="resultSummary"
+                                   th:field="*{resultSummary}"
+                                   placeholder="Enter a brief summary of the test results"
                                    required>
-                            <div class="form-text">Select the date and time when the test was completed</div>
+                            <div class="form-text">Provide a concise summary of the test findings</div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="resultStatus" class="form-label required">
-                                <i class="fas fa-flag icon"></i>Result Status
+                        <div class="mb-4">
+                            <label for="detailedResults" class="form-label">
+                                <i class="ri-file-text-line me-2"></i>Detailed Results<span class="text-danger">*</span>
                             </label>
-                            <select id="resultStatus"
-                                    name="resultStatus"
-                                    class="form-select"
-                                    required>
-                                <option value="">Select Status</option>
-                                <option th:each="status : ${T(com.dna_testing_system.dev.enums.ResultStatus).values()}"
-                                        th:value="${status}"
-                                        th:text="${status}"
-                                        th:selected="${status} == *{resultStatus}"></option>
-                            </select>
-                            <div class="form-text">Current status of the test result</div>
+                            <textarea class="form-control"
+                                      id="detailedResults"
+                                      name="detailedResults"
+                                      th:field="*{detailedResults}"
+                                      rows="6"
+                                      placeholder="Enter comprehensive details of the test results, including findings, interpretations, and recommendations..."
+                                      required></textarea>
+                            <div class="form-text">Provide comprehensive details about the test results</div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="mb-3">
-                    <label for="resultSummary" class="form-label required">
-                        <i class="fas fa-clipboard-list icon"></i>Result Summary
-                    </label>
-                    <input type="text"
-                           class="form-control"
-                           id="resultSummary"
-                           name="resultSummary"
-                           th:field="*{resultSummary}"
-                           placeholder="Enter a brief summary of the test results"
-                           required>
-                    <div class="form-text">Provide a concise summary of the test findings</div>
-                </div>
+                        <div class="mb-4">
+                            <label for="reportFilePath" class="form-label">
+                                <i class="ri-file-pdf-line me-2"></i>Test Report (PDF)
+                            </label>
+                            <input type="file"
+                                   class="form-control"
+                                   id="reportFilePath"
+                                   name="reportFilePath"
+                                   accept="application/pdf">
+                            <div class="form-text">Upload a PDF report file (optional)</div>
 
-                <div class="mb-3">
-                    <label for="detailedResults" class="form-label required">
-                        <i class="fas fa-file-alt icon"></i>Detailed Results
-                    </label>
-                    <textarea class="form-control"
-                              id="detailedResults"
-                              name="testResults.detailedResults"
-                              th:field="*{detailedResults}"
-                              placeholder="Enter comprehensive details of the test results, including findings, interpretations, and recommendations..."
-                              required></textarea>
-                    <div class="form-text">Provide comprehensive details about the test results</div>
-                </div>
+                            <div th:if="${testResult.reportFile != null and !#strings.isEmpty(testResult.reportFile)}"
+                                 class="alert alert-info mt-2">
+                                <i class="ri-file-pdf-line me-2"></i>
+                                <strong>Current Report:</strong>
+                                <a th:href="@{/files/view(filename=${#strings.substring(testResult.reportFile, testResult.reportFile.lastIndexOf('/')+1)})}"
+                                   target="_blank"
+                                   class="alert-link">
+                                    View Current Report <i class="ri-external-link-line ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
 
-                <div class="mb-4">
-                    <label for="reportFilePath" class="form-label">
-                        <i class="fas fa-file-pdf icon"></i>Test Report (PDF)
-                    </label>
-                    <input type="file"
-                           class="form-control"
-                           id="reportFilePath"
-                           name="reportFilePath"
-                           accept="application/pdf">
-                    <div class="form-text">Upload a PDF report file (optional)</div>
-
-                    <div th:if="${testResult.reportFile != null and !#strings.isEmpty(testResult.reportFile)}" class="file-info">
-                        <i class="fas fa-file-pdf icon text-danger"></i>
-                        <strong>Current Report:</strong>
-                        <a th:href="@{/files/view(filename=${#strings.substring(testResult.reportFile, testResult.reportFile.lastIndexOf('/')+1)})}"
-                           target="_blank"
-                           class="file-link">
-                            <i class="fas fa-external-link-alt"></i> View Current Report
-                        </a>
-                    </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <a th:href="@{/staff/list-test-results}" class="btn btn-outline-secondary">
+                                <i class="ri-arrow-left-line me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ri-save-line me-2"></i>Save Updates
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="button-group">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save icon"></i>Save Updates
-                    </button>
-                    <a th:href="@{/staff/list-test-results}" class="btn btn-secondary">
-                        <i class="fas fa-times icon"></i>Cancel
-                    </a>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
-
-</body>
+<th:block id="page-scripts">
+    <th:block th:replace="~{fragments/common/scripts :: scripts}"></th:block>
+    <script>
+        // Initialize form validation and any other necessary JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+        });
+    </script>
+</th:block>
 </html>

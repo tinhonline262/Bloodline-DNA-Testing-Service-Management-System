@@ -46,6 +46,7 @@ public class CRUDstaffController {
         String currentPrincipalName = authentication.getName();
         List<CRUDorderResponse> serviceOrders = staffService.getForStaff(currentPrincipalName);
         model.addAttribute("serviceOrders", serviceOrders);
+        model.addAttribute("section", "orders");
         return "staff/list-orders"; // Assuming you have a Thymeleaf template named "list-orders.html"
     }
 
@@ -57,6 +58,7 @@ public class CRUDstaffController {
         model.addAttribute("orderTestKits", orderTestKits);
         model.addAttribute("orderParticipants", orderParticipants);
         model.addAttribute("serviceOrderByCustomerResponse", serviceOrder);
+        model.addAttribute("section", "orders");
         return "staff/details-order"; // Assuming you have a Thymeleaf template named "details-order.html"
     }
 
@@ -68,7 +70,8 @@ public class CRUDstaffController {
         model.addAttribute("orderTestKits", orderTestKits);
         model.addAttribute("orderParticipants", orderParticipants);
         model.addAttribute("serviceOrderByCustomerResponse", serviceOrder);
-        return "staff/update-order"; // Assuming you have a Thymeleaf template named "details-order.html"
+        model.addAttribute("section", "orders");
+        return "staff/update-order";
     }
     @PostMapping("/update-order")
     public String updateOrder(@RequestParam("orderId") Long orderId, @RequestParam("status") String status) {
@@ -78,20 +81,36 @@ public class CRUDstaffController {
     // create raw data
     @GetMapping("/create-raw-data")
     public String viewCreateRawData(@RequestParam("testResultsId") Long testResultsId, Model model) {
-        model.addAttribute("rawData", new RawDataRequest());
+        RawDataRequest rawDataRequest = new RawDataRequest();
+        rawDataRequest.setCollectionDate(LocalDateTime.now());
+        model.addAttribute("rawData", rawDataRequest);
         model.addAttribute("today", LocalDateTime.now());
-        model.addAttribute("testResultsId", testResultsId); // truyền vào model
+        model.addAttribute("testResultId", testResultsId);
+        model.addAttribute("section", "test-results");
         return "staff/create-raw-data";
     }
+
     @PostMapping("/create-raw-data")
-    public String createRawData(@RequestParam("filePath") MultipartFile filePath,
-                                @ModelAttribute("rawData") RawDataRequest rawDataRequest,
-                                @RequestParam("testResultsId") Long testResultsId) {
-        if (filePath != null && !filePath.isEmpty()) {
-            rawDataRequest.setFile(fileEdit.editFile(filePath));
+    public String createRawData(@RequestParam(value = "filePath", required = false) MultipartFile file,
+                              @ModelAttribute RawDataRequest rawDataRequest,
+                              @RequestParam("testResultId") Long testResultId,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            if (file != null && !file.isEmpty()) {
+                rawDataRequest.setFile(fileEdit.editFile(file));
+            }
+
+            // Ensure collection date is set if not provided
+            if (rawDataRequest.getCollectionDate() == null) {
+                rawDataRequest.setCollectionDate(LocalDateTime.now());
+            }
+
+            staffService.createRawData(rawDataRequest, testResultId);
+            redirectAttributes.addFlashAttribute("successMessage", "Raw data created successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create raw data: " + e.getMessage());
         }
-        staffService.createRawData(rawDataRequest,testResultsId);
-        return "redirect:/staff/list-test-results"; // Redirect to the list of test results after creating
+        return "redirect:/staff/list-test-results";
     }
     // end update order status
     @GetMapping("/list-sample-collection")
@@ -100,14 +119,14 @@ public class CRUDstaffController {
         String currentPrincipalName = authentication.getName();
         List<CRUDsampleCollectionResponse> sampleCollections = staffService.getSampleCollectionTasks(currentPrincipalName);
         model.addAttribute("sampleCollections", sampleCollections);
+        model.addAttribute("section", "sample-collection");
         return "staff/list-sample-collection";
     }
-
-
     @GetMapping("/details-sample-collection")
     public String detailsSampleCollection(@RequestParam("sampleCollectionId") Long sampleCollectionId, Model model) {
         CRUDsampleCollectionResponse sampleCollection = staffService.getSampleCollectionTasksById(sampleCollectionId);
         model.addAttribute("sampleCollection", sampleCollection);
+        model.addAttribute("section", "sample-collection");
         return "staff/details-sample-collection"; // Assuming you have a Thymeleaf template named "details-sample-collection.html"
     }
 
@@ -116,6 +135,7 @@ public class CRUDstaffController {
     public String viewUpdateSampleCollection(@RequestParam("sampleCollectionId") Long sampleCollectionId, Model model) {
         CRUDsampleCollectionResponse sampleCollection = staffService.getSampleCollectionTasksById(sampleCollectionId);
         model.addAttribute("sampleCollection", sampleCollection);
+        model.addAttribute("section", "sample-collection");
         return "staff/update-sample-collection";
     }
     @PostMapping("/update-sample-collection")
@@ -149,6 +169,7 @@ public class CRUDstaffController {
         String currentPrincipalName = authentication.getName();
         List<TestResultsResponse> testResults = staffService.getTestResults(currentPrincipalName);
         model.addAttribute("testResults", testResults);
+        model.addAttribute("section", "test-results");
         return "staff/list-test-results"; // Assuming you have a Thymeleaf template named "list-test-results.html"
     }
 
@@ -158,6 +179,7 @@ public class CRUDstaffController {
         RawDataResponse rawData = staffService.getRawDataById(testResult.getRawTestId());
         model.addAttribute("testResult", testResult);
         model.addAttribute("rawData", rawData);
+        model.addAttribute("section", "test-results");
         return "staff/details-test-result"; // Assuming you have a Thymeleaf template named "details-test-result.html"
     }
 
@@ -165,7 +187,8 @@ public class CRUDstaffController {
     public String viewUpdateTestResult(@RequestParam("testResultId") Long testResultId, Model model) {
         TestResultsResponse testResult = staffService.getTestResultById(testResultId);
         model.addAttribute("testResult", testResult);
-        return "staff/update-test-result"; // Assuming you have a Thymeleaf template named "update-test-result.html"
+        model.addAttribute("section", "test-results");
+        return "staff/update-test-result";
     }
 
     @PostMapping("/update-test-result")
@@ -196,12 +219,13 @@ public class CRUDstaffController {
     // end update test result
     // update raw data
     @GetMapping("/update-raw-data")
-    public String listRawData(@RequestParam("testResultId") Long testResultId,Model model) {
+    public String listRawData(@RequestParam("testResultId") Long testResultId, Model model) {
         TestResultsResponse testResult = staffService.getTestResultById(testResultId);
         RawDataResponse rawData = staffService.getRawDataById(testResult.getRawTestId());
         model.addAttribute("rawData", rawData);
         model.addAttribute("today", LocalDateTime.now());
-        return "staff/update-raw-data"; // Assuming you have a Thymeleaf template named "list-raw-data.html"
+        model.addAttribute("section", "test-results");
+        return "staff/update-raw-data";
     }
 
     @PostMapping("/update-raw-data")
