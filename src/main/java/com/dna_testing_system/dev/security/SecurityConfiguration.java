@@ -26,7 +26,6 @@ public class SecurityConfiguration {
 
     UserDetailsServiceImpl userDetailsService;
     CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -77,7 +76,7 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-    
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -85,7 +84,7 @@ public class SecurityConfiguration {
         authProvider.setPasswordEncoder(PasswordUtil.getPasswordEncoder());
         return authProvider;
     }
-    
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
