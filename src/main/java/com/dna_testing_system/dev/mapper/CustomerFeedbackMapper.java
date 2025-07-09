@@ -31,6 +31,7 @@ public interface CustomerFeedbackMapper {
     );
     @Mapping(target = "customerName", source = "customer", qualifiedByName = "fullNameFromUser")
     @Mapping(target = "serviceName", source = "service.serviceName")
+    @Mapping(target = "orderId", source = "order.id")
     @Mapping(target = "respondedByName", source = "respondedBy", qualifiedByName = "fullNameFromUser")
     CustomerFeedbackResponse toResponse(CustomerFeedback entity);
 

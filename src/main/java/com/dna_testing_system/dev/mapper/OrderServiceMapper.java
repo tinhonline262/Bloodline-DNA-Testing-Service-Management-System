@@ -18,6 +18,7 @@ public interface OrderServiceMapper {
     void updateOrderServiceFromRequest(ServiceOrderRequestByCustomer serviceOrderRequestByCustomer
             ,@MappingTarget ServiceOrder orderService);
     @Mapping(target = "idServiceOrder", source = "orderService.id")
+    @Mapping(target = "serviceId", source = "orderService.service.id")
     @Mapping(target="finalAmount", source = "finalAmount")
     @Mapping(target = "orderStatus", source = "orderService.orderStatus")
     @Mapping(target = "medicalServiceName", source = "orderService.service.serviceName")

@@ -11,6 +11,7 @@ import com.dna_testing_system.dev.exception.ResourceNotFoundException;
 import com.dna_testing_system.dev.mapper.ServiceOrderMapper;
 import com.dna_testing_system.dev.repository.*;
 import com.dna_testing_system.dev.service.EmailSender;
+import com.dna_testing_system.dev.service.NotificationService;
 import com.dna_testing_system.dev.service.OrderTaskManagementService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -35,6 +36,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
     OrderServiceRepository orderServiceRepository;
     EmailSender emailSender;
     ServiceOrderMapper serviceOrderMapper;
+    NotificationService notificationService;
 
     @Override
     public List<StaffAvailableResponse> getStaffAvailable() {
@@ -227,11 +229,13 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
             try {
                 String userEmail = order.getCustomer().getUserProfile().getEmail();
                 emailSender.sendOrderStatusUpdateNotification(order, userEmail);
+
                 log.info("Status update email notification sent to user: {}", userEmail);
             } catch (Exception e) {
                 log.error("Failed to send status update email notification: {}", e.getMessage());
             }
         }
+        notifyToCustomerTrackingOrder(order);
     }
 
     private void validateStatusTransition(ServiceOrderStatus currentStatus, ServiceOrderStatus newStatus) {
@@ -242,5 +246,18 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
         if (currentStatus == ServiceOrderStatus.CANCELLED && newStatus != ServiceOrderStatus.CANCELLED) {
             throw new ManagerException(ErrorCode.INVALID_STATUS_TRANSITION);
         }
+    }
+    private void notifyToCustomerTrackingOrder(ServiceOrder order) {
+        Notification notification = Notification.builder()
+                .recipientUser(order.getCustomer())
+                .subject("Your order: " +  order.getId() + " has been updated")
+                .messageContent("Your order has been " + order.getOrderStatus().toString())
+                .notificationCategory(NotificationCategory.IN_APP)
+                .notificationType(NotificationType.ORDER_UPDATE)
+                .build();
+
+        notificationService.save(notification);
+        notificationService.sendNotification(notification);
+        log.info("Successfully updated order {} status to {}", order.getId(), order.getOrderStatus());
     }
 }

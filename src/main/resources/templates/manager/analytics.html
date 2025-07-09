@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html
-    th:replace="~{layouts/admin-layout :: layout(~{::#content}, ~{::script}, 'Advanced Analytics', ~{::breadcrumbs}, ~{::actionButtons})}"
+    th:replace="~{layouts/manager-layout :: layout(~{::#content}, ~{::script}, 'Advanced Analytics', ~{::breadcrumbs}, ~{::actionButtons})}"
     xmlns:th="http://www.thymeleaf.org" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="light"
     data-menu-styles="light" loader="disable" data-vertical-style="overlay" class="mdl-js"
     data-toggled="icon-overlay-close">
@@ -8,7 +8,7 @@
 <body>
     <!-- Breadcrumbs -->
     <div id="breadcrumbs">
-        <li class="breadcrumb-item"><a th:href="@{/admin/analytics}">Analytics</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/manager/analytics}">Analytics</a></li>
     </div>
 
     <!-- Action Buttons -->
@@ -554,8 +554,6 @@
             // In a real application, this would generate and download a report
             alert('Exporting analytics report for period: ' + period);
 
-            // This would be an AJAX call to a server endpoint that generates and returns a report file
-            // window.location.href = '/admin/analytics/export?period=' + period;
         }
     </script>
 
