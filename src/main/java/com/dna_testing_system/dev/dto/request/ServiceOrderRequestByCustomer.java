@@ -28,6 +28,5 @@ public class ServiceOrderRequestByCustomer {
     Integer quantityKit;
     List<ParticipantRequest> participants;
     Long promotionId;
-    PaymentMethod paymentMethod;
     PaymentStatus paymentStatus;
 }
