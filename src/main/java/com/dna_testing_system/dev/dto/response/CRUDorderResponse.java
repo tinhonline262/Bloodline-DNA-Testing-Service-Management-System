@@ -24,4 +24,5 @@ public class CRUDorderResponse {
     String collectionAddress;
     BigDecimal finalAmount;
     ServiceOrderStatus orderStatus;
+    LocalDateTime createdAt;
 }

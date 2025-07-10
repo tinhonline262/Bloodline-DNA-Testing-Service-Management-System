@@ -3,14 +3,18 @@ package com.dna_testing_system.dev.service.impl;
 import com.dna_testing_system.dev.dto.request.ServiceOrderRequestByCustomer;
 import com.dna_testing_system.dev.dto.response.ServiceOrderByCustomerResponse;
 import com.dna_testing_system.dev.entity.MedicalService;
+import com.dna_testing_system.dev.entity.Payment;
 import com.dna_testing_system.dev.entity.ServiceOrder;
 import com.dna_testing_system.dev.entity.User;
+import com.dna_testing_system.dev.enums.PaymentMethod;
+import com.dna_testing_system.dev.enums.PaymentStatus;
 import com.dna_testing_system.dev.enums.ServiceOrderStatus;
 import com.dna_testing_system.dev.exception.ErrorCode;
 import com.dna_testing_system.dev.exception.ResourceNotFoundException;
 import com.dna_testing_system.dev.mapper.OrderServiceMapper;
 import com.dna_testing_system.dev.repository.MedicalServiceRepository;
 import com.dna_testing_system.dev.repository.OrderServiceRepository;
+import com.dna_testing_system.dev.repository.PaymentRepository;
 import com.dna_testing_system.dev.repository.UserRepository;
 import com.dna_testing_system.dev.service.OrderService;
 import lombok.AccessLevel;
@@ -19,6 +23,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
     final OrderServiceMapper orderServiceMapper;
     final UserRepository userRepository;
     final MedicalServiceRepository medicalServiceRepository;
+    PaymentRepository paymentRepository;
 
     @Override
     @Transactional
@@ -44,11 +50,26 @@ public class OrderServiceImpl implements OrderService {
         }
         MedicalService medicalService = medicalServiceRepository.findById(serviceOrderRequestByCustomer.getIdMedicalService())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.MEDICAL_SERVICE_NOT_EXISTS));
+
+
         ServiceOrder serviceOrder = orderServiceMapper.toOrderService(serviceOrderRequestByCustomer);
         serviceOrder.setCustomer(user);
         serviceOrder.setService(medicalService);
-        serviceOrder.setFinalAmount(medicalService.getCurrentPrice());
         serviceOrder = orderServiceRepository.save(serviceOrder);
+
+        Payment payment = Payment.builder()
+                .paymentMethod(serviceOrderRequestByCustomer.getPaymentMethod())//pttt sau
+                .paymentStatus(PaymentStatus.PENDING)
+                .order(serviceOrder)
+                .grossAmount(medicalService.getCurrentPrice())
+                .discountAmount(BigDecimal.ZERO)
+                .netAmount(medicalService.getCurrentPrice())
+                .build();
+        paymentRepository.save(payment);
+        serviceOrder.setPayments(payment);
+
+        serviceOrder = orderServiceRepository.save(serviceOrder);
+
         ServiceOrderByCustomerResponse response = orderServiceMapper.toServiceOrderByCustomerResponse(serviceOrder);
         if(response == null) {
             throw new IllegalArgumentException("Failed to create order service");
@@ -113,9 +134,15 @@ public class OrderServiceImpl implements OrderService {
         ServiceOrder serviceOrder = orderServiceRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
 
-        // Cập nhật trạng thái đơn hàng từ PENDING thành CONFIRMED
         serviceOrder.setOrderStatus(ServiceOrderStatus.CONFIRMED);
         orderServiceRepository.save(serviceOrder);
+    }
+
+    @Override
+    public ServiceOrder getOrderByIdEntity(Long orderId) {
+        ServiceOrder serviceOrder = orderServiceRepository.findById(orderId)
+            .orElseThrow(() -> new IllegalArgumentException("Order not found for ID: " + orderId));
+        return serviceOrder;
     }
 
 

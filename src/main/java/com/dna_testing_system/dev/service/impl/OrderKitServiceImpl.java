@@ -58,8 +58,7 @@ public class OrderKitServiceImpl implements OrderKitService {
         KitStatus kitStatus = KitStatus.ORDERED;
         orderKit.setKitStatus(kitStatus);
         orderKit.setOrder(serviceOrder);
-        orderKit.getOrder().setTotalAmount(orderKit.getOrder().getFinalAmount().add(orderKit.getTotalPrice()));
-        orderKit.getOrder().setFinalAmount(orderKit.getOrder().getFinalAmount().add(orderKit.getTotalPrice()));
+        orderKit.getOrder().getPayments().setGrossAmount(orderKit.getOrder().getPayments().getGrossAmount().add(orderKit.getTotalPrice()));
         orderKitRepository.save(orderKit);
         // Optionally, you might want to update the stock of the kit after ordering
         testKit.setQuantityInStock(

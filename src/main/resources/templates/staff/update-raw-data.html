@@ -1,121 +1,98 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Cập nhật Raw Data</title>
-    <meta charset="UTF-8">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 480px;
-            margin: 40px auto;
-            padding: 32px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
-        }
-        h2 {
-            margin-top: 0;
-            color: #0d47a1;
-            text-align: center;
-        }
-        .info-block {
-            background: #e3f2fd;
-            padding: 18px;
-            border-radius: 6px;
-            margin-bottom: 22px;
-        }
-        .info-block label {
-            font-weight: 600;
-            display: inline-block;
-            width: 140px;
-        }
-        form {
-            margin-top: 0;
-        }
-        .form-row {
-            margin-bottom: 16px;
-        }
-        .form-row label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: #1565c0;
-        }
-        .form-row input, .form-row textarea {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #b0bec5;
-            border-radius: 5px;
-            font-size: 15px;
-        }
-        .form-row input[type="file"] {
-            padding: 4px 0;
-        }
-        .btn-submit {
-            background: #1976d2;
-            color: #fff;
-            border: none;
-            padding: 10px 0;
-            width: 100%;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-submit:hover {
-            background: #0d47a1;
-        }
-        .file-link {
-            color: #1976d2;
-            text-decoration: underline;
-            font-size: 14px;
-        }
-        .date-block {
-            font-size: 13px;
-            color: #546e7a;
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-    <h2>Cập nhật Raw Data</h2>
-    <form th:action="@{/staff/update-raw-data}" th:object="${rawData}" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="rawDataId" th:value="${rawData.rawDataId}" />
-        <div class="form-group">
-            <label>Collection Date</label>
-            <label>
-                <input type="datetime-local" th:field="*{collectedAt}" th:max="${today}" />
-            </label>
-        </div>
-        <div class="form-row">
-            <label for="dataFormat">Định dạng</label>
-            <input type="text" id="dataFormat" name="dataFormat" th:field="*{dataFormat}" required>
-        </div>
+<html th:replace="~{layouts/staff-layout :: layout(~{::#content}, ~{::#page-scripts}, 'Update Raw Data', null, null)}"
+      xmlns:th="http://www.thymeleaf.org">
+<div id="content">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="ri-file-edit-line me-2"></i>Update Raw Data
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/staff/update-raw-data}" th:object="${rawData}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="rawDataId" th:value="${rawData.rawDataId}" />
 
-        <div class="form-row">
-            <label for="rawDataContent">Nội dung Raw Data</label>
-            <textarea id="rawDataContent" name="rawDataContent" rows="4" required th:field="*{rawDataContent}"></textarea>
-        </div>
+                        <div class="mb-3">
+                            <label for="collectedAt" class="form-label">
+                                <i class="ri-calendar-line me-2"></i>Collection Date
+                            </label>
+                            <input type="datetime-local"
+                                   class="form-control"
+                                   id="collectedAt"
+                                   th:field="*{collectedAt}"
+                                   th:max="${today}"
+                                   required>
+                            <div class="form-text">Select the date and time when the data was collected</div>
+                        </div>
 
-        <div class="form-row">
-            <label for="filePath">Dữ liệu thô (PDF):</label>
-            <input type="file" id="filePath" name="filePath" accept="application/pdf">
-            <span th:if="${rawData.filePath != null}">
-            <a th:if="${rawData.filePath != null and !#strings.isEmpty(rawData.filePath)}"
-            th:href="@{/files/view(filename=${#strings.substring(rawData.filePath, rawData.filePath.lastIndexOf('/')+1)})}"
-            target="_blank">Xem báo cáo</a>
-            </span>
-        </div>
+                        <div class="mb-3">
+                            <label for="dataFormat" class="form-label">
+                                <i class="ri-code-line me-2"></i>Data Format
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="dataFormat"
+                                   name="dataFormat"
+                                   th:field="*{dataFormat}"
+                                   placeholder="e.g., JSON, XML, CSV"
+                                   required>
+                            <div class="form-text">Specify the format of the raw data</div>
+                        </div>
 
-        <button type="submit" class="btn-submit">Cập nhật Raw Data</button>
-        <a th:href="@{/staff/list-test-results}" class="btn cancel">Hủy</a>
-    </form>
+                        <div class="mb-3">
+                            <label for="rawDataContent" class="form-label">
+                                <i class="ri-file-text-line me-2"></i>Raw Data Content
+                            </label>
+                            <textarea class="form-control"
+                                      id="rawDataContent"
+                                      name="rawDataContent"
+                                      rows="5"
+                                      th:field="*{rawDataContent}"
+                                      placeholder="Enter the raw data content here..."
+                                      required></textarea>
+                            <div class="form-text">Enter the actual raw data content</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="filePath" class="form-label">
+                                <i class="ri-file-pdf-line me-2"></i>Raw Data File (PDF)
+                            </label>
+                            <input type="file"
+                                   class="form-control"
+                                   id="filePath"
+                                   name="filePath"
+                                   accept="application/pdf">
+                            <div class="form-text">Upload a PDF file containing the raw data (optional)</div>
+
+                            <div th:if="${rawData.filePath != null and !#strings.isEmpty(rawData.filePath)}"
+                                 class="alert alert-info mt-2">
+                                <i class="ri-file-pdf-line me-2"></i>
+                                <strong>Current File:</strong>
+                                <a th:href="@{/files/view(filename=${#strings.substring(rawData.filePath, rawData.filePath.lastIndexOf('/')+1)})}"
+                                   target="_blank"
+                                   class="alert-link">
+                                    View Current Report <i class="ri-external-link-line ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a th:href="@{/staff/list-test-results}" class="btn btn-outline-secondary">
+                                <i class="ri-arrow-left-line me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ri-save-line me-2"></i>Update Raw Data
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</body>
+<th:block id="page-scripts">
+    <th:block th:replace="~{fragments/common/scripts :: scripts}"></th:block>
+</th:block>
 </html>

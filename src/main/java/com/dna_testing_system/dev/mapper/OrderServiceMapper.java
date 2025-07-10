@@ -18,12 +18,14 @@ public interface OrderServiceMapper {
     void updateOrderServiceFromRequest(ServiceOrderRequestByCustomer serviceOrderRequestByCustomer
             ,@MappingTarget ServiceOrder orderService);
     @Mapping(target = "idServiceOrder", source = "orderService.id")
-    @Mapping(target="finalAmount", source = "finalAmount")
+    @Mapping(target = "serviceId", source = "orderService.service.id")
+    @Mapping(target="finalAmount", source = "orderService.payments.netAmount")
     @Mapping(target = "orderStatus", source = "orderService.orderStatus")
     @Mapping(target = "medicalServiceName", source = "orderService.service.serviceName")
     @Mapping(target = "appointmentDate", source = "orderService.appointmentDate")
     @Mapping(target = "collectionType", source = "orderService.collectionType")
     @Mapping(target = "collectionAddress", source = "orderService.collectionAddress")
+    @Mapping(target = "payments", source = "orderService.payments")
     ServiceOrderByCustomerResponse toServiceOrderByCustomerResponse(ServiceOrder orderService);
     List<ServiceOrderByCustomerResponse> toServiceOrderByCustomerResponseList(List<ServiceOrder> orderServices);
 }

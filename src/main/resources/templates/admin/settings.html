@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html th:replace="~{layouts/admin-layout :: layout(~{::#content}, ~{::script}, 'System Settings', ~{::breadcrumbs}, ~{::actionButtons})}"
+<html th:replace="~{layouts/admin-layout :: layout(~{::#content}, ~{::page-script}, 'System Settings', ~{::breadcrumbs}, ~{::actionButtons})}"
     xmlns:th="http://www.thymeleaf.org" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="light"
     data-menu-styles="light" loader="disable" data-vertical-style="overlay" class="mdl-js"
     data-toggled="icon-overlay-close">
 
-<body>
     <!-- Breadcrumbs -->
     <div id="breadcrumbs">
         <li class="breadcrumb-item"><a th:href="@{/admin/settings}">System Settings</a></li>
@@ -472,200 +471,203 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize settings functionality
-            initializeSettings();
-        });
+    <div id="page-script">
+        <script type="text/html" th:replace="~{fragments/common/scripts :: scripts}"></script>
+        <script>
 
-        function initializeSettings() {
-            // Load current settings
-            loadCurrentSettings();
-            
-            // Setup tab navigation
-            setupTabNavigation();
-        }
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize settings functionality
+                initializeSettings();
+            });
 
-        function loadCurrentSettings() {
-            // In a real application, this would load settings from the server
-            console.log('Loading current settings...');
-        }
+            function initializeSettings() {
+                // Load current settings
+                loadCurrentSettings();
 
-        function setupTabNavigation() {
-            const tabLinks = document.querySelectorAll('[data-bs-toggle="pill"]');
-            tabLinks.forEach(link => {
-                link.addEventListener('shown.bs.tab', function(e) {
-                    // Update active state
-                    tabLinks.forEach(l => l.classList.remove('active'));
-                    e.target.classList.add('active');
+                // Setup tab navigation
+                setupTabNavigation();
+            }
+
+            function loadCurrentSettings() {
+                // In a real application, this would load settings from the server
+                console.log('Loading current settings...');
+            }
+
+            function setupTabNavigation() {
+                const tabLinks = document.querySelectorAll('[data-bs-toggle="pill"]');
+                tabLinks.forEach(link => {
+                    link.addEventListener('shown.bs.tab', function(e) {
+                        // Update active state
+                        tabLinks.forEach(l => l.classList.remove('active'));
+                        e.target.classList.add('active');
+                    });
                 });
-            });
-        }
+            }
 
-        function saveAllSettings() {
-            // Collect all form data
-            const forms = ['generalSettingsForm', 'emailSettingsForm', 'securitySettingsForm', 
-                          'notificationSettingsForm'];
-            
-            const allSettings = {};
-            
-            forms.forEach(formId => {
-                const form = document.getElementById(formId);
-                if (form) {
-                    const formData = new FormData(form);
-                    for (let [key, value] of formData.entries()) {
-                        allSettings[key] = value;
+            function saveAllSettings() {
+                // Collect all form data
+                const forms = ['generalSettingsForm', 'emailSettingsForm', 'securitySettingsForm',
+                    'notificationSettingsForm'];
+
+                const allSettings = {};
+
+                forms.forEach(formId => {
+                    const form = document.getElementById(formId);
+                    if (form) {
+                        const formData = new FormData(form);
+                        for (let [key, value] of formData.entries()) {
+                            allSettings[key] = value;
+                        }
                     }
+                });
+
+                // Add checkbox values
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    allSettings[checkbox.name] = checkbox.checked;
+                });
+
+                // Save settings
+                fetch('/admin/settings/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(allSettings)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showAlert('Settings saved successfully!', 'success');
+                        } else {
+                            showAlert('Error saving settings: ' + data.message, 'danger');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showAlert('An error occurred while saving settings.', 'danger');
+                    });
+            }
+
+            function resetToDefaults() {
+                if (confirm('Are you sure you want to reset all settings to defaults? This action cannot be undone.')) {
+                    fetch('/admin/settings/reset', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                location.reload();
+                            } else {
+                                showAlert('Error resetting settings: ' + data.message, 'danger');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showAlert('An error occurred while resetting settings.', 'danger');
+                        });
                 }
-            });
+            }
 
-            // Add checkbox values
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                allSettings[checkbox.name] = checkbox.checked;
-            });
+            function testEmailConnection() {
+                const smtpData = {
+                    host: document.getElementById('smtpHost').value,
+                    port: document.getElementById('smtpPort').value,
+                    username: document.getElementById('smtpUsername').value,
+                    password: document.getElementById('smtpPassword').value,
+                    enableTLS: document.getElementById('enableTLS').checked
+                };
 
-            // Save settings
-            fetch('/admin/settings/save', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify(allSettings)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showAlert('Settings saved successfully!', 'success');
-                } else {
-                    showAlert('Error saving settings: ' + data.message, 'danger');
+                fetch('/admin/settings/test-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(smtpData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showAlert('Email connection test successful!', 'success');
+                        } else {
+                            showAlert('Email connection test failed: ' + data.message, 'danger');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showAlert('An error occurred while testing email connection.', 'danger');
+                    });
+            }
+
+            function cleanupLogs() {
+                if (confirm('Are you sure you want to cleanup old log files?')) {
+                    fetch('/admin/settings/cleanup-logs', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showAlert('Log cleanup completed successfully!', 'success');
+                            } else {
+                                showAlert('Error during log cleanup: ' + data.message, 'danger');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showAlert('An error occurred during log cleanup.', 'danger');
+                        });
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('An error occurred while saving settings.', 'danger');
-            });
-        }
+            }
 
-        function resetToDefaults() {
-            if (confirm('Are you sure you want to reset all settings to defaults? This action cannot be undone.')) {
-                fetch('/admin/settings/reset', {
+            function createBackup() {
+                fetch('/admin/settings/create-backup', {
                     method: 'POST',
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest'
                     }
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        showAlert('Error resetting settings: ' + data.message, 'danger');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showAlert('An error occurred while resetting settings.', 'danger');
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showAlert('Backup created successfully!', 'success');
+                        } else {
+                            showAlert('Error creating backup: ' + data.message, 'danger');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showAlert('An error occurred while creating backup.', 'danger');
+                    });
             }
-        }
 
-        function testEmailConnection() {
-            const smtpData = {
-                host: document.getElementById('smtpHost').value,
-                port: document.getElementById('smtpPort').value,
-                username: document.getElementById('smtpUsername').value,
-                password: document.getElementById('smtpPassword').value,
-                enableTLS: document.getElementById('enableTLS').checked
-            };
-
-            fetch('/admin/settings/test-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify(smtpData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showAlert('Email connection test successful!', 'success');
-                } else {
-                    showAlert('Email connection test failed: ' + data.message, 'danger');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('An error occurred while testing email connection.', 'danger');
-            });
-        }
-
-        function cleanupLogs() {
-            if (confirm('Are you sure you want to cleanup old log files?')) {
-                fetch('/admin/settings/cleanup-logs', {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showAlert('Log cleanup completed successfully!', 'success');
-                    } else {
-                        showAlert('Error during log cleanup: ' + data.message, 'danger');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showAlert('An error occurred during log cleanup.', 'danger');
-                });
-            }
-        }
-
-        function createBackup() {
-            fetch('/admin/settings/create-backup', {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showAlert('Backup created successfully!', 'success');
-                } else {
-                    showAlert('Error creating backup: ' + data.message, 'danger');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('An error occurred while creating backup.', 'danger');
-            });
-        }
-
-        function showAlert(message, type) {
-            // Create and show bootstrap alert
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-            alertDiv.style.top = '20px';
-            alertDiv.style.right = '20px';
-            alertDiv.style.zIndex = '9999';
-            alertDiv.innerHTML = `
+            function showAlert(message, type) {
+                // Create and show bootstrap alert
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+                alertDiv.style.top = '20px';
+                alertDiv.style.right = '20px';
+                alertDiv.style.zIndex = '9999';
+                alertDiv.innerHTML = `
                 ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
-            document.body.appendChild(alertDiv);
+                document.body.appendChild(alertDiv);
 
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.remove();
-                }
-            }, 5000);
-        }
-    </script>
-</body>
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 5000);
+            }
+        </script>
+    </div>
 </html>

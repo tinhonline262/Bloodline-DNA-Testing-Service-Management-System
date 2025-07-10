@@ -187,6 +187,8 @@
 </div>
 
 <div id="page-scripts">
+    <script type="text/html" th:replace="~{fragments/common/scripts :: scripts}"></script>
+
     <script>
         function updateReportStatus(reportId, status) {
             if (confirm('Are you sure you want to update this report status to ' + status.toLowerCase() + '?')) {

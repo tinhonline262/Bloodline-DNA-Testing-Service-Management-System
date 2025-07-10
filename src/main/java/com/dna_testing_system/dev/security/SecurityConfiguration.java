@@ -33,22 +33,24 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/css/**", "/js/**", "/images/**", "/webjars/**",
-                                "/", "/register", "/login", "/error", "/assets/**",
-                                "/uploads/**",  "/api/**", "/ws/**", "/cancel"
+                                "/", "/register", "/login", "/error", "/assets/**", "/uploads/**", "/api/**", "/ws/**", "/cancel", "/public/**",
+                                "/files/**", "/uploads_information/**"  // Add permission for file directories
                         ).permitAll()
-                        .requestMatchers("/manager/**", "/manager/services/**", "/manager/service-types/**").hasAnyRole(RoleType.MANAGER.name(),  RoleType.ADMIN.name())
+                        .requestMatchers("/manager/**", "/manager/services/**", "/manager/service-types/**").hasAnyRole(RoleType.MANAGER.name(), RoleType.ADMIN.name())
                         .requestMatchers("/admin/**").hasAnyRole(RoleType.ADMIN.name())
+                        .requestMatchers("/staff/**").hasAnyRole(RoleType.STAFF.name(), RoleType.MANAGER.name(), RoleType.ADMIN.name())
                         .requestMatchers("/user/**").authenticated()
                         .anyRequest().permitAll()
                 )
-//                .csrf(csrf -> csrf
-//                        .ignoringRequestMatchers("/register")
-//                )
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf
+                    .ignoringRequestMatchers("/register")
+                    .ignoringRequestMatchers("/staff/create-raw-data")  // Allow raw data creation
+                    .ignoringRequestMatchers("/staff/update-raw-data")  // Allow raw data updates
+                    .ignoringRequestMatchers("/files/**")              // Allow file operations
+                )
                 .formLogin(form -> form
                         .loginPage("/login")
-//                        .defaultSuccessUrl("/user/home", true)
-                                .successHandler(customAuthenticationSuccessHandler)
+                        .successHandler(customAuthenticationSuccessHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout

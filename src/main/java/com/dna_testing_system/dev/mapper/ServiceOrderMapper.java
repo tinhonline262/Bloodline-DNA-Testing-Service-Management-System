@@ -39,6 +39,10 @@ public interface ServiceOrderMapper {
     @Mapping(target = "testingResultAnalysisDate", expression = "java(getTestResultAnalysisDate(order))")
     @Mapping(target = "detailedResults", source = "testResults", qualifiedByName = "mapDetailedResults")
     @Mapping(target = "rawData", source = "testResults", qualifiedByName = "mapRawData")
+    @Mapping(target = "totalAmount", source = "payments.grossAmount")
+    @Mapping(target = "discountAmount", source = "payments.discountAmount")
+    @Mapping(target = "finalAmount", source = "payments.netAmount")
+    @Mapping(target = "paymentStatus", source = "payments.paymentStatus")
     ServiceOrderResponse toDto(ServiceOrder order);
 
     default String getFullName(User user) {
