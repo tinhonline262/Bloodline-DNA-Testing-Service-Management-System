@@ -402,6 +402,8 @@
 </div>
 
 <div id="page-scripts">
+    <script type="text/html" th:replace="~{fragments/common/scripts :: scripts}"></script>
+
     <script>
         function showResponseModal(feedbackId, feedbackTitle) {
             document.getElementById('feedbackTitle').textContent = feedbackTitle;

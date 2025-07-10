@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html
-    th:replace="~{layouts/admin-layout :: layout(~{::#content}, ~{::script}, 'System Logs', ~{::breadcrumbs}, ~{::actionButtons})}"
+    th:replace="~{layouts/admin-layout :: layout(~{::#content}, ~{::page-script}, 'System Logs', ~{::breadcrumbs}, ~{::actionButtons})}"
     xmlns:th="http://www.thymeleaf.org" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="light"
     data-menu-styles="light" loader="disable" data-vertical-style="overlay" class="mdl-js"
     data-toggled="icon-overlay-close">
 
-<body>
     <!-- Breadcrumbs -->
     <div id="breadcrumbs">
         <li class="breadcrumb-item"><a th:href="@{/admin/logs}">System Logs</a></li>
@@ -261,253 +260,257 @@
         </div>
     </div>
 
-    <script>
-        let autoRefreshInterval;
-        let logContainer;
+    <div id="page-script">
+        <script type="text/html" th:replace="~{fragments/common/scripts :: scripts}"></script>
 
-        document.addEventListener('DOMContentLoaded', function () {
-            logContainer = document.getElementById('logContainer');
-            initializeLogViewer();
-            setupAutoRefresh();
-            // Initialize log volume chart
-            createLogVolumeChart();
-        });
+        <script>
+            let autoRefreshInterval;
+            let logContainer;
 
-        function initializeLogViewer() {
-            // Setup follow logs functionality
-            const followCheckbox = document.getElementById('followLogs');
-            followCheckbox.addEventListener('change', function () {
-                if (this.checked) {
-                    scrollToBottom();
-                }
+            document.addEventListener('DOMContentLoaded', function () {
+                logContainer = document.getElementById('logContainer');
+                initializeLogViewer();
+                setupAutoRefresh();
+                // Initialize log volume chart
+                createLogVolumeChart();
             });
 
-            // Setup auto refresh
-            const autoRefreshCheckbox = document.getElementById('autoRefresh');
-            autoRefreshCheckbox.addEventListener('change', function () {
-                if (this.checked) {
-                    setupAutoRefresh();
-                } else {
-                    clearInterval(autoRefreshInterval);
-                }
-            });
-        }
+            function initializeLogViewer() {
+                // Setup follow logs functionality
+                const followCheckbox = document.getElementById('followLogs');
+                followCheckbox.addEventListener('change', function () {
+                    if (this.checked) {
+                        scrollToBottom();
+                    }
+                });
 
-        function setupAutoRefresh() {
-            clearInterval(autoRefreshInterval);
-            autoRefreshInterval = setInterval(function () {
-                const autoRefresh = document.getElementById('autoRefresh');
-                if (autoRefresh && autoRefresh.checked) {
-                    refreshLogs();
-                }
-            }, 5000); // Refresh every 5 seconds
-        }
+                // Setup auto refresh
+                const autoRefreshCheckbox = document.getElementById('autoRefresh');
+                autoRefreshCheckbox.addEventListener('change', function () {
+                    if (this.checked) {
+                        setupAutoRefresh();
+                    } else {
+                        clearInterval(autoRefreshInterval);
+                    }
+                });
+            }
 
-        function refreshLogs() {
-            // In a real application, this would fetch new logs from the server
-            console.log('Refreshing logs...');
+            function setupAutoRefresh() {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = setInterval(function () {
+                    const autoRefresh = document.getElementById('autoRefresh');
+                    if (autoRefresh && autoRefresh.checked) {
+                        refreshLogs();
+                    }
+                }, 5000); // Refresh every 5 seconds
+            }
 
-            // Update last updated timestamp
-            const now = new Date();
-            const timestamp = now.toLocaleString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            document.getElementById('lastUpdated').textContent = timestamp;
+            function refreshLogs() {
+                // In a real application, this would fetch new logs from the server
+                console.log('Refreshing logs...');
 
-            // Simulate adding new log entry
-            addNewLogEntry();
-        }
+                // Update last updated timestamp
+                const now = new Date();
+                const timestamp = now.toLocaleString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                document.getElementById('lastUpdated').textContent = timestamp;
 
-        function addNewLogEntry() {
-            const logTypes = ['INFO', 'WARN', 'ERROR', 'DEBUG'];
-            const randomType = logTypes[Math.floor(Math.random() * logTypes.length)];
-            const now = new Date();
-            const timestamp = now.toISOString().replace('T', ' ').substring(0, 23);
+                // Simulate adding new log entry
+                addNewLogEntry();
+            }
 
-            const messages = {
-                'INFO': 'System operation completed successfully',
-                'WARN': 'Resource usage approaching threshold',
-                'ERROR': 'Operation failed with exception',
-                'DEBUG': 'Debug trace information'
-            };
+            function addNewLogEntry() {
+                const logTypes = ['INFO', 'WARN', 'ERROR', 'DEBUG'];
+                const randomType = logTypes[Math.floor(Math.random() * logTypes.length)];
+                const now = new Date();
+                const timestamp = now.toISOString().replace('T', ' ').substring(0, 23);
 
-            const badgeColors = {
-                'INFO': 'bg-info',
-                'WARN': 'bg-warning',
-                'ERROR': 'bg-danger',
-                'DEBUG': 'bg-secondary'
-            };
+                const messages = {
+                    'INFO': 'System operation completed successfully',
+                    'WARN': 'Resource usage approaching threshold',
+                    'ERROR': 'Operation failed with exception',
+                    'DEBUG': 'Debug trace information'
+                };
 
-            const newLogEntry = document.createElement('div');
-            newLogEntry.className = 'log-entry mb-2';
-            newLogEntry.setAttribute('data-level', randomType);
-            newLogEntry.innerHTML = `
+                const badgeColors = {
+                    'INFO': 'bg-info',
+                    'WARN': 'bg-warning',
+                    'ERROR': 'bg-danger',
+                    'DEBUG': 'bg-secondary'
+                };
+
+                const newLogEntry = document.createElement('div');
+                newLogEntry.className = 'log-entry mb-2';
+                newLogEntry.setAttribute('data-level', randomType);
+                newLogEntry.innerHTML = `
                 <span class="text-muted">[${timestamp}]</span>
                 <span class="badge ${badgeColors[randomType]} ms-2">${randomType}</span>
                 <span class="ms-2">com.dna_testing_system.service.TestService</span>
                 <span class="ms-2">- ${messages[randomType]}</span>
             `;
 
-            const logContent = logContainer.querySelector('.p-3');
-            logContent.insertBefore(newLogEntry, logContent.firstChild);
-
-            // Follow logs if enabled
-            const followLogs = document.getElementById('followLogs');
-            if (followLogs && followLogs.checked) {
-                scrollToBottom();
-            }
-
-            // Limit number of log entries to prevent memory issues
-            const logEntries = logContent.querySelectorAll('.log-entry');
-            if (logEntries.length > 1000) {
-                for (let i = 1000; i < logEntries.length; i++) {
-                    logEntries[i].remove();
-                }
-            }
-        }
-
-        function filterLogs() {
-            const level = document.getElementById('logLevel').value;
-            const searchTerm = document.getElementById('searchLogs').value.toLowerCase();
-            const logEntries = document.querySelectorAll('.log-entry');
-
-            logEntries.forEach(entry => {
-                const entryLevel = entry.getAttribute('data-level');
-                const entryText = entry.textContent.toLowerCase();
-
-                let showEntry = true;
-
-                // Filter by level
-                if (level && entryLevel !== level) {
-                    showEntry = false;
-                }
-
-                // Filter by search term
-                if (searchTerm && !entryText.includes(searchTerm)) {
-                    showEntry = false;
-                }
-
-                entry.style.display = showEntry ? 'block' : 'none';
-            });
-        }
-
-        function clearLogs() {
-            if (confirm('Are you sure you want to clear all log entries? This action cannot be undone.')) {
                 const logContent = logContainer.querySelector('.p-3');
-                logContent.innerHTML = '<div class="text-center text-muted py-5">Logs cleared</div>';
-            }
-        }
+                logContent.insertBefore(newLogEntry, logContent.firstChild);
 
-        function scrollToTop() {
-            logContainer.scrollTop = 0;
-        }
+                // Follow logs if enabled
+                const followLogs = document.getElementById('followLogs');
+                if (followLogs && followLogs.checked) {
+                    scrollToBottom();
+                }
 
-        function scrollToBottom() {
-            logContainer.scrollTop = logContainer.scrollHeight;
-        }
-
-        // Initialize search functionality
-        document.getElementById('searchLogs').addEventListener('input', function () {
-            filterLogs();
-        });
-
-        document.getElementById('logLevel').addEventListener('change', function () {
-            filterLogs();
-        });
-
-        // Initialize log volume chart
-        function createLogVolumeChart() {
-            const ctx = document.getElementById('logVolumeChart').getContext('2d');
-            const chartData = {
-                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-                datasets: [
-                    {
-                        label: 'Info',
-                        data: [45, 29, 68, 78, 93, 56],
-                        backgroundColor: 'rgba(23, 162, 184, 0.5)',
-                        borderColor: 'rgba(23, 162, 184, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Warning',
-                        data: [12, 9, 15, 19, 22, 17],
-                        backgroundColor: 'rgba(255, 193, 7, 0.5)',
-                        borderColor: 'rgba(255, 193, 7, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Error',
-                        data: [3, 2, 5, 4, 6, 3],
-                        backgroundColor: 'rgba(220, 53, 69, 0.5)',
-                        borderColor: 'rgba(220, 53, 69, 1)',
-                        borderWidth: 1
+                // Limit number of log entries to prevent memory issues
+                const logEntries = logContent.querySelectorAll('.log-entry');
+                if (logEntries.length > 1000) {
+                    for (let i = 1000; i < logEntries.length; i++) {
+                        logEntries[i].remove();
                     }
-                ]
-            };
+                }
+            }
 
-            new Chart(ctx, {
-                type: 'bar',
-                data: chartData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            stacked: true
+            function filterLogs() {
+                const level = document.getElementById('logLevel').value;
+                const searchTerm = document.getElementById('searchLogs').value.toLowerCase();
+                const logEntries = document.querySelectorAll('.log-entry');
+
+                logEntries.forEach(entry => {
+                    const entryLevel = entry.getAttribute('data-level');
+                    const entryText = entry.textContent.toLowerCase();
+
+                    let showEntry = true;
+
+                    // Filter by level
+                    if (level && entryLevel !== level) {
+                        showEntry = false;
+                    }
+
+                    // Filter by search term
+                    if (searchTerm && !entryText.includes(searchTerm)) {
+                        showEntry = false;
+                    }
+
+                    entry.style.display = showEntry ? 'block' : 'none';
+                });
+            }
+
+            function clearLogs() {
+                if (confirm('Are you sure you want to clear all log entries? This action cannot be undone.')) {
+                    const logContent = logContainer.querySelector('.p-3');
+                    logContent.innerHTML = '<div class="text-center text-muted py-5">Logs cleared</div>';
+                }
+            }
+
+            function scrollToTop() {
+                logContainer.scrollTop = 0;
+            }
+
+            function scrollToBottom() {
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
+
+            // Initialize search functionality
+            document.getElementById('searchLogs').addEventListener('input', function () {
+                filterLogs();
+            });
+
+            document.getElementById('logLevel').addEventListener('change', function () {
+                filterLogs();
+            });
+
+            // Initialize log volume chart
+            function createLogVolumeChart() {
+                const ctx = document.getElementById('logVolumeChart').getContext('2d');
+                const chartData = {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                    datasets: [
+                        {
+                            label: 'Info',
+                            data: [45, 29, 68, 78, 93, 56],
+                            backgroundColor: 'rgba(23, 162, 184, 0.5)',
+                            borderColor: 'rgba(23, 162, 184, 1)',
+                            borderWidth: 1
                         },
-                        y: {
-                            stacked: true,
-                            beginAtZero: true
+                        {
+                            label: 'Warning',
+                            data: [12, 9, 15, 19, 22, 17],
+                            backgroundColor: 'rgba(255, 193, 7, 0.5)',
+                            borderColor: 'rgba(255, 193, 7, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Error',
+                            data: [3, 2, 5, 4, 6, 3],
+                            backgroundColor: 'rgba(220, 53, 69, 0.5)',
+                            borderColor: 'rgba(220, 53, 69, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                };
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                stacked: true
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true
+                            }
                         }
                     }
-                }
-            });
-        }
-    </script>
+                });
+            }
+        </script>
 
-    <style>
-        .log-entry {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 5px 0;
-            font-size: 13px;
-            line-height: 1.4;
-        }
+        <style>
+            .log-entry {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 5px 0;
+                font-size: 13px;
+                line-height: 1.4;
+            }
 
-        .log-entry:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
+            .log-entry:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
 
-        .log-container {
-            font-family: 'Courier New', Consolas, monospace;
-        }
+            .log-container {
+                font-family: 'Courier New', Consolas, monospace;
+            }
 
-        .log-container .badge {
-            font-size: 10px;
-            min-width: 50px;
-        }
+            .log-container .badge {
+                font-size: 10px;
+                min-width: 50px;
+            }
 
-        .log-container::-webkit-scrollbar {
-            width: 8px;
-        }
+            .log-container::-webkit-scrollbar {
+                width: 8px;
+            }
 
-        .log-container::-webkit-scrollbar-track {
-            background: #2a2a2a;
-        }
+            .log-container::-webkit-scrollbar-track {
+                background: #2a2a2a;
+            }
 
-        .log-container::-webkit-scrollbar-thumb {
-            background: #555;
-            border-radius: 4px;
-        }
+            .log-container::-webkit-scrollbar-thumb {
+                background: #555;
+                border-radius: 4px;
+            }
 
-        .log-container::-webkit-scrollbar-thumb:hover {
-            background: #777;
-        }
-    </style>
-</body>
+            .log-container::-webkit-scrollbar-thumb:hover {
+                background: #777;
+            }
+        </style>
+    </div>
+
 
 </html>

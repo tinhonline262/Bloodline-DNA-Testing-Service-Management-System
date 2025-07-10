@@ -375,6 +375,8 @@
 </div>
 
 <div id="page-scripts">
+    <script type="text/html" th:replace="~{fragments/common/scripts :: scripts}"></script>
+
     <script>
         function updateOrderStatus(orderId, status) {
             if (confirm('Are you sure you want to update this order status to ' + status.toLowerCase().replace('_', ' ') + '?')) {

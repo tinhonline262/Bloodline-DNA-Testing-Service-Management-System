@@ -94,9 +94,7 @@
             <h3>Assignment Details:</h3>
             <p><strong>Order Number:</strong> <span th:text="${order.getId()}">ORD12345</span></p>
             <p><strong>Assignment Date:</strong> <span th:text="${#temporals.format(sampleCollection.assignAt, 'dd/MM/yyyy HH:mm')}">June 27, 2025</span></p>
-            <p><strong>Test Type:</strong> <span th:text="${order != null and order.service != null and order.service.serviceType != null
-                  ? order.service.serviceType.typeName
-                  : 'N/A'}">Paternity Test</span></p>
+            <p><strong>Test Type:</strong> <span th:text="${order?.service?.serviceType?.typeName ?: 'N/A'}">Paternity Test</span></p>
             <p><strong>Customer Name:</strong> <span th:text="${order.customer != null and order.customer.userProfile != null} ? order.customer.userProfile.firstName + ' ' + order.customer.userProfile.lastName : 'N/A'">John Doe</span></p>
             <p><strong>Appointment Date:</strong> <span th:text="${#temporals.format(order.appointmentDate, 'dd/MM/yyyy HH:mm')}">July 1, 2025 10:00 AM</span></p>
 <!--            <p><strong>Sample Type:</strong> <span th:text="${order.getSampleType() != null ? order.getSampleType() : 'Blood/Saliva'}">Blood/Saliva</span></p>-->

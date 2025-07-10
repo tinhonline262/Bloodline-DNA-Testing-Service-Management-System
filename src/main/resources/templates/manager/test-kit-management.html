@@ -400,6 +400,8 @@
 </div>
 
 <div id="page-scripts">
+    <script type="text/html" th:replace="~{fragments/common/scripts :: scripts}"></script>
+
     <script>
         // Handle view test kit detail
         function viewTestKitDetail(button) {
@@ -439,6 +441,7 @@
                 alertInstance.close();
             });
         }, 5000);
+
     </script>
 </div>
 

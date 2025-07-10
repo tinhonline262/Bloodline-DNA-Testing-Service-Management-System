@@ -117,6 +117,7 @@
                         <option value="" th:selected="${param.status == null or param.status == ''}">All Status</option>
                         <option value="pending" th:selected="${param.status == 'pending'}">Pending</option>
                         <option value="paid" th:selected="${param.status == 'paid'}">Paid</option>
+                        <option value="failed" th:selected="${param.status == 'failed'}">Failed</option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -164,7 +165,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr th:each="payment : ${payments}">
+                        <tr th:each="payment : ${payments}" th:data-payment-id="${payment.id}">
                             <td>
                                 <span class="fw-semibold text-primary"
                                     th:text="'#' + ${payment.id != null ? payment.id : 'N/A'}">#12345</span>
@@ -221,7 +222,8 @@
                             <td>
                                 <span class="badge"
                                     th:classappend="${payment.paymentStatus != null and payment.paymentStatus.toLowerCase() == 'pending' ? 'bg-warning-transparent text-warning' :
-                                    (payment.paymentStatus != null and payment.paymentStatus.toLowerCase() == 'paid' ? 'bg-success-transparent text-success' : 'bg-secondary-transparent text-secondary')}"
+                                    (payment.paymentStatus != null and payment.paymentStatus.toLowerCase() == 'paid' ? 'bg-success-transparent text-success' :
+                                    (payment.paymentStatus != null and payment.paymentStatus.toLowerCase() == 'failed' ? 'bg-danger-transparent text-danger' : 'bg-secondary-transparent text-secondary'))}"
                                     th:text="${payment.paymentStatus != null ? payment.paymentStatus : 'Unknown'}">Pending</span>
                             </td>
                             <td>
@@ -247,6 +249,9 @@
                                         <li><a class="dropdown-item" href="#"
                                                 th:onclick="'updatePaymentStatus(' + ${payment.id} + ', \'PAID\')'">
                                                 <i class="ri-check-line me-2"></i>Mark as Paid</a></li>
+                                        <li><a class="dropdown-item" href="#"
+                                                th:onclick="'updatePaymentStatus(' + ${payment.id} + ', \'FAILED\')'">
+                                                <i class="ri-close-line me-2"></i>Mark as Failed</a></li>
                                         <li><a class="dropdown-item" href="#"
                                                 th:onclick="'updatePaymentStatus(' + ${payment.id} + ', \'PENDING\')'">
                                                 <i class="ri-time-line me-2"></i>Mark as Pending</a></li>
@@ -336,6 +341,7 @@
 </div>
 
 <div id="page-scripts">
+    <script type="text/html" th:replace="~{fragments/common/scripts :: scripts}"></script>
     <script>
         function updatePaymentStatus(paymentId, status) {
             document.getElementById('paymentIdInput').value = paymentId;
@@ -352,7 +358,7 @@
         function showPaymentDetails(paymentId) {
             // Find the payment row by data attribute
             const paymentRow = document.querySelector(`tr[data-payment-id="${paymentId}"]`);
-            
+
             if (!paymentRow) {
                 const detailsContent = `
                     <div class="text-center">
@@ -366,7 +372,7 @@
             } else {
                 // Extract details from the table row
                 const cells = paymentRow.querySelectorAll('td');
-                
+
                 // Get payment information
                 const paymentIdText = cells[0]?.querySelector('.fw-semibold')?.textContent?.trim() || 'N/A';
                 const orderIdText = cells[0]?.querySelector('.small')?.textContent?.trim() || '';
@@ -380,7 +386,7 @@
                 const discountInfo = cells[4]?.querySelector('.small')?.textContent?.trim() || '';
                 const status = cells[5]?.querySelector('.badge')?.textContent?.trim() || 'N/A';
                 const dateInfo = cells[6]?.textContent?.trim() || 'N/A';
-                
+
                 const detailsContent = `
                     <div class="row">
                         <div class="col-md-6">
@@ -409,6 +415,9 @@
                         <button type="button" class="btn btn-outline-primary me-2" onclick="updatePaymentStatus(${paymentId}, 'PAID')">
                             <i class="ri-check-line me-1"></i>Mark as Paid
                         </button>
+                        <button type="button" class="btn btn-outline-danger me-2" onclick="updatePaymentStatus(${paymentId}, 'FAILED')">
+                            <i class="ri-close-line me-1"></i>Mark as Failed
+                        </button>
                         <button type="button" class="btn btn-outline-warning" onclick="updatePaymentStatus(${paymentId}, 'PENDING')">
                             <i class="ri-time-line me-1"></i>Mark as Pending
                         </button>
@@ -420,11 +429,12 @@
             const modal = new bootstrap.Modal(document.getElementById('paymentDetailsModal'));
             modal.show();
         }
-        
+
         function getStatusBadgeClass(status) {
             const statusLower = status.toLowerCase();
             if (statusLower.includes('pending')) return 'bg-warning-transparent text-warning';
             if (statusLower.includes('paid')) return 'bg-success-transparent text-success';
+            if (statusLower.includes('failed')) return 'bg-danger-transparent text-danger';
             return 'bg-secondary-transparent text-secondary';
         }
 

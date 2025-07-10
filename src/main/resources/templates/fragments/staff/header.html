@@ -321,26 +321,39 @@
                     noNotificationMsg.remove();
                 }
 
+                // Format createdAt timestamp using JavaScript Date
+                const createdAt = new Date(notification.createdAt);
+                const formattedDate = createdAt.toLocaleString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
                 // Create new notification item
                 const newNotificationHtml = `
-            <li class="dropdown-item px-3 new-notification">
-                <div class="d-flex">
-                    <span class="avatar avatar-md me-2 avatar-rounded flex-shrink-0 bg-info">
-                        <i class="la la-bell fs-20"></i>
-                    </span>
-                    <div class="ms-3">
-                        <a href="/staff/notifications">
-                            <h5 class="notification-label text-dark mb-1">${notification.subject}</h5>
-                        </a>
-                        <div class="notification-subtext">${notification.messageContent}</div>
-                        <div class="notification-time" th:text="${#temporals.format(noti.createdAt, 'dd/MM/yyyy HH:mm')}">
-                                        27/06/2025 14:30
-                                    </div>
-                        <small class="text-muted">Just now</small>
+                <li class="dropdown-item px-3 new-notification">
+                    <div class="d-flex">
+                        <span class="avatar avatar-md me-2 avatar-rounded flex-shrink-0 bg-info">
+                            <i class="la la-bell fs-20"></i>
+                        </span>
+                        <div class="ms-3">
+                            <a href="/staff/notifications">
+                                <h5 class="notification-label text-dark mb-1">${notification.subject}</h5>
+                            </a>
+                            <div class="notification-subtext mb-1">${notification.messageContent}</div>
+                            <div class="notification-time">${formattedDate}</div>
+                            <small class="text-muted">Just now</small>
+                        </div>
+                        <div class="ms-auto d-flex flex-column align-items-end">
+                            <a href="/staff/notifications" class="mt-1">
+                                <i class="las la-angle-right text-end text-muted icon"></i>
+                            </a>
+                        </div>
                     </div>
-                </div>
-            </li>
-        `;
+                </li>
+            `;
 
                 // Add to top of the list
                 notificationList.insertAdjacentHTML('afterbegin', newNotificationHtml);

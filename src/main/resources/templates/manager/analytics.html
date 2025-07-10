@@ -5,7 +5,6 @@
     data-menu-styles="light" loader="disable" data-vertical-style="overlay" class="mdl-js"
     data-toggled="icon-overlay-close">
 
-<body>
     <!-- Breadcrumbs -->
     <div id="breadcrumbs">
         <li class="breadcrumb-item"><a th:href="@{/manager/analytics}">Analytics</a></li>
@@ -297,292 +296,295 @@
         </div>
     </div>
 
-    <!-- Chart.js for charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div id="page-script">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script type="text/html" th:replace="~{fragments/common/scripts :: scripts}"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            initializeCharts();
-            startRealTimeUpdates();
-        });
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                initializeCharts();
+                startRealTimeUpdates();
+            });
 
-        function initializeCharts() {
-            // Use the data provided by the server if available
-            const revenueChartData = /*[[${revenueChartData}]]*/ null;
-            const orderStatusChartData = /*[[${orderStatusChartData}]]*/ null;
-            const userActivityChartData = /*[[${userActivityChartData}]]*/ null;
-            const servicePerformanceChartData = /*[[${servicePerformanceChartData}]]*/ null;
+            function initializeCharts() {
+                // Use the data provided by the server if available
+                const revenueChartData = /*[[${revenueChartData}]]*/ null;
+                const orderStatusChartData = /*[[${orderStatusChartData}]]*/ null;
+                const userActivityChartData = /*[[${userActivityChartData}]]*/ null;
+                const servicePerformanceChartData = /*[[${servicePerformanceChartData}]]*/ null;
 
-            createRevenueChart(revenueChartData);
-            createOrderStatusChart(orderStatusChartData);
-            createUserActivityChart(userActivityChartData);
-            createServicePerformanceChart(servicePerformanceChartData);
-            createSystemGauges();
-        }
+                createRevenueChart(revenueChartData);
+                createOrderStatusChart(orderStatusChartData);
+                createUserActivityChart(userActivityChartData);
+                createServicePerformanceChart(servicePerformanceChartData);
+                createSystemGauges();
+            }
 
-        function createRevenueChart(serverData) {
-            const ctx = document.getElementById('revenueChart').getContext('2d');
+            function createRevenueChart(serverData) {
+                const ctx = document.getElementById('revenueChart').getContext('2d');
 
-            // Use server data if available, otherwise use default data
-            const chartData = serverData ? JSON.parse(serverData) : {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Revenue',
-                    data: [12000, 19000, 15000, 25000, 22000, 30000, 35000, 32000, 40000, 38000, 45000, 50000],
-                    borderColor: 'rgb(75, 192, 192)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            };
+                // Use server data if available, otherwise use default data
+                const chartData = serverData ? JSON.parse(serverData) : {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [12000, 19000, 15000, 25000, 22000, 30000, 35000, 32000, 40000, 38000, 45000, 50000],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                };
 
-            new Chart(ctx, {
-                type: 'line',
-                data: chartData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function (value) {
-                                    return '$' + value.toLocaleString();
+                new Chart(ctx, {
+                    type: 'line',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        return '$' + value.toLocaleString();
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            });
-        }
+                });
+            }
 
-        function createOrderStatusChart(serverData) {
-            const ctx = document.getElementById('orderStatusChart').getContext('2d');
+            function createOrderStatusChart(serverData) {
+                const ctx = document.getElementById('orderStatusChart').getContext('2d');
 
-            // Use server data if available, otherwise use default data
-            const chartData = serverData ? JSON.parse(serverData) : {
-                labels: ['Completed', 'Processing', 'Pending', 'Cancelled'],
-                datasets: [{
-                    data: [65, 20, 10, 5],
-                    backgroundColor: [
-                        '#28a745',
-                        '#17a2b8',
-                        '#ffc107',
-                        '#dc3545'
-                    ]
-                }]
-            };
+                // Use server data if available, otherwise use default data
+                const chartData = serverData ? JSON.parse(serverData) : {
+                    labels: ['Completed', 'Processing', 'Pending', 'Cancelled'],
+                    datasets: [{
+                        data: [65, 20, 10, 5],
+                        backgroundColor: [
+                            '#28a745',
+                            '#17a2b8',
+                            '#ffc107',
+                            '#dc3545'
+                        ]
+                    }]
+                };
 
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: chartData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
                         }
                     }
-                }
-            });
-        }
+                });
+            }
 
-        function createUserActivityChart(serverData) {
-            const ctx = document.getElementById('userActivityChart').getContext('2d');
+            function createUserActivityChart(serverData) {
+                const ctx = document.getElementById('userActivityChart').getContext('2d');
 
-            // Use server data if available, otherwise use default data
-            const chartData = serverData ? JSON.parse(serverData) : {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Active Users',
-                    data: [1200, 1900, 1500, 1700, 2100, 1800, 1400],
-                    backgroundColor: 'rgba(54, 162, 235, 0.8)'
-                }]
-            };
+                // Use server data if available, otherwise use default data
+                const chartData = serverData ? JSON.parse(serverData) : {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Active Users',
+                        data: [1200, 1900, 1500, 1700, 2100, 1800, 1400],
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)'
+                    }]
+                };
 
-            new Chart(ctx, {
-                type: 'bar',
-                data: chartData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            function createServicePerformanceChart(serverData) {
+                const ctx = document.getElementById('servicePerformanceChart').getContext('2d');
+
+                // Use server data if available, otherwise use default data
+                const chartData = serverData ? JSON.parse(serverData) : {
+                    labels: ['Paternity', 'Ancestry', 'Sibling', 'Health', 'Maternity'],
+                    datasets: [{
+                        label: 'Performance Score',
+                        data: [90, 85, 88, 75, 92],
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        pointBackgroundColor: 'rgb(255, 99, 132)'
+                    }]
+                };
+
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+            function createSystemGauges() {
+                // Get system metrics data from the model if available
+                const systemMetrics = /*[[${systemMetrics}]]*/ null;
+
+                const cpuUsage = systemMetrics ? systemMetrics.cpuUsage : 25;
+                const memoryUsage = systemMetrics ? systemMetrics.memoryUsage : 65;
+                const diskUsage = systemMetrics ? systemMetrics.diskUsage : 78;
+                const networkUsage = systemMetrics ? systemMetrics.networkUsage : 35;
+
+                createGauge('cpuGauge', cpuUsage, 'CPU');
+                createGauge('memoryGauge', memoryUsage, 'Memory');
+                createGauge('diskGauge', diskUsage, 'Disk');
+                createGauge('networkGauge', networkUsage, 'Network');
+            }
+
+            function createGauge(canvasId, value, label) {
+                const ctx = document.getElementById(canvasId).getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [value, 100 - value],
+                            backgroundColor: [
+                                value > 80 ? '#dc3545' : value > 60 ? '#ffc107' : '#28a745',
+                                '#e9ecef'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        cutout: '80%',
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
                         }
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true
+                    plugins: [{
+                        id: 'gaugeText',
+                        beforeDraw: function (chart) {
+                            const width = chart.width;
+                            const height = chart.height;
+                            const ctx = chart.ctx;
+
+                            ctx.restore();
+                            const fontSize = (height / 80).toFixed(2);
+                            ctx.font = fontSize + "em sans-serif";
+                            ctx.textBaseline = "middle";
+                            ctx.fillStyle = "#333";
+
+                            const text = value + "%";
+                            const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                            const textY = height / 2;
+
+                            ctx.fillText(text, textX, textY);
+                            ctx.save();
                         }
-                    }
-                }
-            });
-        }
-
-        function createServicePerformanceChart(serverData) {
-            const ctx = document.getElementById('servicePerformanceChart').getContext('2d');
-
-            // Use server data if available, otherwise use default data
-            const chartData = serverData ? JSON.parse(serverData) : {
-                labels: ['Paternity', 'Ancestry', 'Sibling', 'Health', 'Maternity'],
-                datasets: [{
-                    label: 'Performance Score',
-                    data: [90, 85, 88, 75, 92],
-                    borderColor: 'rgb(255, 99, 132)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    pointBackgroundColor: 'rgb(255, 99, 132)'
-                }]
-            };
-
-            new Chart(ctx, {
-                type: 'radar',
-                data: chartData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            beginAtZero: true,
-                            max: 100
-                        }
-                    }
-                }
-            });
-        }
-
-        function createSystemGauges() {
-            // Get system metrics data from the model if available
-            const systemMetrics = /*[[${systemMetrics}]]*/ null;
-
-            const cpuUsage = systemMetrics ? systemMetrics.cpuUsage : 25;
-            const memoryUsage = systemMetrics ? systemMetrics.memoryUsage : 65;
-            const diskUsage = systemMetrics ? systemMetrics.diskUsage : 78;
-            const networkUsage = systemMetrics ? systemMetrics.networkUsage : 35;
-
-            createGauge('cpuGauge', cpuUsage, 'CPU');
-            createGauge('memoryGauge', memoryUsage, 'Memory');
-            createGauge('diskGauge', diskUsage, 'Disk');
-            createGauge('networkGauge', networkUsage, 'Network');
-        }
-
-        function createGauge(canvasId, value, label) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [value, 100 - value],
-                        backgroundColor: [
-                            value > 80 ? '#dc3545' : value > 60 ? '#ffc107' : '#28a745',
-                            '#e9ecef'
-                        ],
-                        borderWidth: 0
                     }]
-                },
-                options: {
-                    responsive: false,
-                    cutout: '80%',
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            enabled: false
-                        }
-                    }
-                },
-                plugins: [{
-                    id: 'gaugeText',
-                    beforeDraw: function (chart) {
-                        const width = chart.width;
-                        const height = chart.height;
-                        const ctx = chart.ctx;
+                });
+            }
 
-                        ctx.restore();
-                        const fontSize = (height / 80).toFixed(2);
-                        ctx.font = fontSize + "em sans-serif";
-                        ctx.textBaseline = "middle";
-                        ctx.fillStyle = "#333";
+            function startRealTimeUpdates() {
+                // Update system metrics every 10 seconds
+                setInterval(function () {
+                    updateSystemMetrics();
+                }, 10000);
+            }
 
-                        const text = value + "%";
-                        const textX = Math.round((width - ctx.measureText(text).width) / 2);
-                        const textY = height / 2;
+            function updateSystemMetrics() {
+                // In a real application, this would fetch real-time data from the server via AJAX
+                console.log('Updating system metrics...');
 
-                        ctx.fillText(text, textX, textY);
-                        ctx.save();
-                    }
-                }]
-            });
-        }
+                // Simulate metric updates
+                const metrics = {
+                    cpu: Math.floor(Math.random() * 30) + 15,
+                    memory: Math.floor(Math.random() * 40) + 50,
+                    disk: Math.floor(Math.random() * 20) + 70,
+                    network: Math.floor(Math.random() * 50) + 15
+                };
 
-        function startRealTimeUpdates() {
-            // Update system metrics every 10 seconds
-            setInterval(function () {
-                updateSystemMetrics();
-            }, 10000);
-        }
+                // Update gauge charts would go here
+                // For demo purposes, we'll just log the values
+                console.log('New metrics:', metrics);
+            }
 
-        function updateSystemMetrics() {
-            // In a real application, this would fetch real-time data from the server via AJAX
-            console.log('Updating system metrics...');
+            function exportAnalytics() {
+                // Get current period
+                const urlParams = new URLSearchParams(window.location.search);
+                const period = urlParams.get('period') || 'month';
 
-            // Simulate metric updates
-            const metrics = {
-                cpu: Math.floor(Math.random() * 30) + 15,
-                memory: Math.floor(Math.random() * 40) + 50,
-                disk: Math.floor(Math.random() * 20) + 70,
-                network: Math.floor(Math.random() * 50) + 15
-            };
+                // In a real application, this would generate and download a report
+                alert('Exporting analytics report for period: ' + period);
 
-            // Update gauge charts would go here
-            // For demo purposes, we'll just log the values
-            console.log('New metrics:', metrics);
-        }
+            }
+        </script>
 
-        function exportAnalytics() {
-            // Get current period
-            const urlParams = new URLSearchParams(window.location.search);
-            const period = urlParams.get('period') || 'month';
+        <style>
+            .bg-gradient-primary {
+                background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            }
 
-            // In a real application, this would generate and download a report
-            alert('Exporting analytics report for period: ' + period);
+            .bg-gradient-success {
+                background: linear-gradient(45deg, #11998e 0%, #38ef7d 100%);
+            }
 
-        }
-    </script>
+            .bg-gradient-info {
+                background: linear-gradient(45deg, #3182ce 0%, #63b3ed 100%);
+            }
 
-    <style>
-        .bg-gradient-primary {
-            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-        }
+            .bg-gradient-warning {
+                background: linear-gradient(45deg, #ed8936 0%, #fbb040 100%);
+            }
 
-        .bg-gradient-success {
-            background: linear-gradient(45deg, #11998e 0%, #38ef7d 100%);
-        }
+            .table-responsive {
+                max-height: 400px;
+            }
 
-        .bg-gradient-info {
-            background: linear-gradient(45deg, #3182ce 0%, #63b3ed 100%);
-        }
+            .card {
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+                border: 1px solid rgba(0, 0, 0, 0.125);
+            }
+        </style>
+    </div>
+    <!-- Chart.js for charts -->
 
-        .bg-gradient-warning {
-            background: linear-gradient(45deg, #ed8936 0%, #fbb040 100%);
-        }
-
-        .table-responsive {
-            max-height: 400px;
-        }
-
-        .card {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            border: 1px solid rgba(0, 0, 0, 0.125);
-        }
-    </style>
-</body>
 
 </html>

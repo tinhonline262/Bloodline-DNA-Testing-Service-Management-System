@@ -99,6 +99,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
 
         try {
             emailSender.sendTestAssignmentNotification(order, sampleCollection, staffRequest);
+            notifyToStaffForAssign(order, staffRequest);
             log.info("Email notification sent to staff member: {}", staffRequest.getUserProfile().getEmail());
         } catch (Exception e) {
             log.error("Failed to send email notification to staff: {}", e.getMessage());
@@ -121,6 +122,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
 
         try {
             emailSender.sendTestAssignmentNotification(order, testResult, staffRequest);
+            notifyToStaffForAssign(order, staffRequest);
             log.info("Email notification sent to staff member: {}", staffRequest.getUserProfile().getEmail());
         } catch (Exception e) {
             log.error("Failed to send email notification to staff: {}", e.getMessage());
@@ -215,6 +217,7 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
             order.getTestResults().forEach(testResult -> {
                 testResult.setResultStatus(ResultStatus.CANCELLED);
             });
+            order.getPayments().setPaymentStatus(PaymentStatus.FAILED);
         }
         if (newStatus.equals(ServiceOrderStatus.COMPLETED)) {
             order.getSampleCollections().forEach(sampleCollection -> {
@@ -259,5 +262,19 @@ public class OrderTaskManagementServiceImpl implements OrderTaskManagementServic
         notificationService.save(notification);
         notificationService.sendNotification(notification);
         log.info("Successfully updated order {} status to {}", order.getId(), order.getOrderStatus());
+    }
+
+    private void notifyToStaffForAssign(ServiceOrder order, User recipient) {
+        Notification notification = Notification.builder()
+                .recipientUser(recipient)
+                .subject("You have new task")
+                .messageContent("You have new task with order " + order.getId())
+                .notificationCategory(NotificationCategory.IN_APP)
+                .notificationType(NotificationType.SYSTEM_ANNOUNCEMENT)
+                .build();
+
+        notificationService.save(notification);
+        notificationService.sendNotification(notification);
+        log.info("Successfully has order {} task to {}", order.getId(), recipient.getUsername());
     }
 }
