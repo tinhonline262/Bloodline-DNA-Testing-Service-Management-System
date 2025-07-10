@@ -41,14 +41,22 @@ public class TestKitController {
         return "admin-manager/view-test-kits"; // Return the view name for displaying test kits
     }
 
+
     @GetMapping("/test-kits/search")
     public String searchTestKits(@RequestParam("searchQuery") String kitName, Model model) {
-        List<TestKitResponse> testKits = testKitService.GetTestKitResponseByName(kitName);
+        List<TestKitResponse> testKits = testKitService.searchTestKits(kitName);
+
         if (testKits.isEmpty()) {
-            return "redirect:/test-kits"; // Redirect to the test kits page if no results found
+            model.addAttribute("searchMessage", "Không tìm thấy test kit nào với từ khóa: \"" + kitName + "\"");
+            model.addAttribute("searchQuery", kitName);
+            model.addAttribute("testKits", testKitService.GetTestKitResponseList());
+        } else {
+            model.addAttribute("searchMessage", "Tìm thấy " + testKits.size() + " test kit(s) với từ khóa: \"" + kitName + "\"");
+            model.addAttribute("searchQuery", kitName);
+            model.addAttribute("testKits", testKits);
         }
-        model.addAttribute("testKits", testKits);
-        return "admin-manager/view-test-kits"; // Return the view name for displaying search results
+
+        return "admin-manager/view-test-kits";
     }
 
     @GetMapping("/test-kits/update")
