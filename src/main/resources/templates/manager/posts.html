@@ -36,7 +36,7 @@
           </div>
         </td>
         <td th:text="${post.postContent}" style="text-align: justify; margin: 2px"></td>
-        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}"></td>
+        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
         <td th:text="${post.postCategory}"></td>
         <td th:text="${post.postStatus}"></td>
         <td>
