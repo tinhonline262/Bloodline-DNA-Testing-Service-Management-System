@@ -44,8 +44,10 @@ public class SecurityConfiguration {
                 )
                 .csrf(csrf -> csrf
                     .ignoringRequestMatchers("/register")
-                    .ignoringRequestMatchers("/staff/create-raw-data")  // Allow raw data creation
-                    .ignoringRequestMatchers("/staff/update-raw-data")  // Allow raw data updates
+                    .ignoringRequestMatchers("/staff/**")
+                        .ignoringRequestMatchers("/user/**")
+                        .ignoringRequestMatchers("/admin/**")
+                        .ignoringRequestMatchers("/manager/**")
                     .ignoringRequestMatchers("/files/**")              // Allow file operations
                 )
                 .formLogin(form -> form
