@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,9 +43,7 @@ public class UploadImgController {
     public ResponseEntity<byte[]> getImage(@PathVariable String fileName) {
         try {
             byte[] bytes = uploadImageService.readImageContent(fileName);
-            String contentType = Files.probeContentType(Paths.get("uploads", fileName));
-            MediaType mediaType = contentType != null ? MediaType.parseMediaType(contentType) : MediaType.APPLICATION_OCTET_STREAM;
-            return ResponseEntity.ok().contentType(mediaType).body(bytes);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bytes);
         } catch (Exception e) {
             return ResponseEntity.noContent().build();
         }
