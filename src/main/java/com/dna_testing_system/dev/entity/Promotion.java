@@ -47,7 +47,6 @@ public class Promotion {
     String promotionDescription;
 
     @Enumerated(EnumType.STRING)
-    @Size(max = 50)
     @NotNull
     @Column(name = "promotion_type", nullable = false, length = 50)
     PromotionType promotionType;

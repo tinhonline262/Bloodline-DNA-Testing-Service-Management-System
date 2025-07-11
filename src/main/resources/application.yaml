@@ -22,9 +22,9 @@ spring:
   thymeleaf:
     cache: false
   datasource:
-    url: ${DBMS_CONNECTION:jdbc:mysql://35.78.119.4:3306/dna_testing_system}
+    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/dna_testing_system}
     username: ${DBMS_USERNAME:root}
-    password: ${DBMS_PASSWORD:password}
+    password: ${DBMS_PASSWORD:root}
   jpa:
     hibernate:
       ddl-auto: update
@@ -37,4 +37,4 @@ logging:
     springframework.web.socket: DEBUG
     springframework.security: DEBUG
 application:
-  base-url: "http://localhost:8080/"
+  base-url: "http://localhost:8080/index"

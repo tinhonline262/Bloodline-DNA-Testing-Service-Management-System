@@ -4,12 +4,14 @@ import com.dna_testing_system.dev.dto.request.ContentPostRequest;
 import com.dna_testing_system.dev.dto.response.ContentPostResponse;
 import com.dna_testing_system.dev.exception.ApplicationException;
 import com.dna_testing_system.dev.service.ContentPostService;
+import com.dna_testing_system.dev.service.UploadImageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ContentPostController {
     ContentPostService contentPostService;
+    UploadImageService uploadImageService;
 
     // Hien thi danh sach bai viet dang co
     @GetMapping(value = "")
@@ -38,7 +41,15 @@ public class ContentPostController {
     // Save a new post
     // localhost:8080/manager/posts/save
     @PostMapping("/save")
-    public String savePost(@ModelAttribute("post") ContentPostRequest request, RedirectAttributes redirectAttributes) {
+    public String savePost(@ModelAttribute("post") ContentPostRequest request,
+                           @RequestParam("imageFile") MultipartFile imageFile,
+                           RedirectAttributes redirectAttributes) {
+        if (!imageFile.isEmpty()) {
+            String savedFileName = uploadImageService.saveImage(imageFile);
+            // Gan url
+            String imageUrl = "/upload/files/" + savedFileName;
+            request.setFeaturedImageUrl(imageUrl);
+        }
         contentPostService.savePost(request);
         redirectAttributes.addFlashAttribute("message", "New post saved successfully!");
         return "redirect:/manager/posts";
@@ -70,7 +81,16 @@ public class ContentPostController {
 
     // Xu ly cap nhat bai viet
     @PostMapping("/update/{id}")
-    public String updatePost(@PathVariable("id") Long id, @ModelAttribute("post") ContentPostRequest request, RedirectAttributes redirectAttributes ) {
+    public String updatePost(@PathVariable("id") Long id,
+                             @RequestParam("imageFile") MultipartFile imageFile,
+                             @ModelAttribute("post") ContentPostRequest request,
+                             RedirectAttributes redirectAttributes ) {
+        if (!imageFile.isEmpty()) {
+            String savedFileName = uploadImageService.saveImage(imageFile);
+            // Gan url
+            String imageUrl = "/upload/files/" + savedFileName;
+            request.setFeaturedImageUrl(imageUrl);
+        }
         contentPostService.updatePost(id, request);
         redirectAttributes.addFlashAttribute("message", "Post updated successfully!");
         return "redirect:/manager/posts";

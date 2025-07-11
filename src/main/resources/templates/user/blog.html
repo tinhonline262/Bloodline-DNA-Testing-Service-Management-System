@@ -102,13 +102,19 @@
                             <div class="list-group-item text-bg-light fw-bold">
                                 List of all posts
                             </div>
-<!--                            Item-->
+                                <!-- Item-->
                                 <div class="list-group">
                                         <div th:each="i : ${#numbers.sequence(0, posts.size() - 1, 2)}" class="row mb-4">
                                             <div class="col-md-6 mb-3" th:each="j : ${#numbers.sequence(i, i + 1)}"
                                                  th:if="${j < posts.size()}" th:with="post=${posts[j]}">
 
-                                                <a href="#!" class="list-group-item list-group-item-action h-100">
+                                                <a href="javascript:void(0);" class="list-group-item list-group-item-action h-100"
+                                                data-bs-toggle="modal" data-bs-target="#postDetailModal"
+                                                   th:data-title="${post.postTitle}"
+                                                   th:data-content="${post.postContent}"
+                                                   th:data-date="${#temporals.format(post.createdAt, 'dd/MM/yyyy')}"
+                                                   th:data-image="${post.featuredImageUrl}"
+                                                >
                                                     <div class="row align-items-center">
                                                         <div class="col-4 d-flex justify-content-center">
                                                             <img th:src="${post.featuredImageUrl}" alt="Image" class="rounded img-fluid img-fit"/>
@@ -128,8 +134,68 @@
                         </div>
                     </div>
                 </div>
+                <!-- Modal: Post Detail -->
+                <div class="modal fade" id="postDetailModal" tabindex="-1" aria-labelledby="postDetailModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content border-0 shadow-lg rounded-4">
+                            <div class="modal-header bg-primary text-white rounded-top-4">
+                                <h5 class="modal-title fw-bold" id="postDetailModalLabel">Chi tiết bài viết</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body px-4 py-4">
+                                <!-- Ngày đăng -->
+                                <p class="text-muted small mb-2 text-start">
+                                    <strong class="text-dark">Ngày đăng:</strong>
+                                    <span id="modalDate"></span>
+                                </p>
+
+                                <!-- Tiêu đề -->
+                                <h3 id="modalTitle" class="fw-semibold mb-3 text-primary"></h3>
+
+                                <!-- Ảnh đại diện -->
+                                <img id="modalImage" src="" alt="Post image"
+                                     class="img-fluid rounded-3 border border-2 border-light mb-4 w-100"
+                                     style="max-height: 400px; object-fit: cover;">
+
+                                <!-- Nội dung -->
+                                <p id="modalContent" class="text-secondary lh-lg fs-6"></p>
+                            </div>
+
+                            <div class="modal-footer border-0 px-4 pb-4">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                    <i class="bi bi-x-circle me-1"></i> Đóng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
     </div>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('postDetailModal');
+
+            modal.addEventListener('show.bs.modal', function (event) {
+                const trigger = event.relatedTarget;
+
+                const title = trigger.getAttribute('data-title');
+                const content = trigger.getAttribute('data-content');
+                const date = trigger.getAttribute('data-date');
+                const image = trigger.getAttribute('data-image');
+
+                document.getElementById('modalTitle').textContent = title || "Không có tiêu đề";
+                document.getElementById('modalContent').textContent = content || "Không có nội dung";
+                document.getElementById('modalDate').textContent = date || "";
+                document.getElementById('modalImage').src = image || "";
+            });
+        });
+    </script>
+
+    <!-- Bootstrap JS Bundle (gồm cả Popper) -->
+    <script th:src="@{/assets/libs/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
 </body>
 </html>
