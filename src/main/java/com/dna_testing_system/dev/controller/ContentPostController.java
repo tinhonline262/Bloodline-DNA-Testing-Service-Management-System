@@ -47,7 +47,7 @@ public class ContentPostController {
         if (!imageFile.isEmpty()) {
             String savedFileName = uploadImageService.saveImage(imageFile);
             // Gan url
-            String imageUrl = "/uploads/files/" + savedFileName;
+            String imageUrl = "/upload/files/" + savedFileName;
             request.setFeaturedImageUrl(imageUrl);
         }
         contentPostService.savePost(request);
@@ -88,7 +88,7 @@ public class ContentPostController {
         if (!imageFile.isEmpty()) {
             String savedFileName = uploadImageService.saveImage(imageFile);
             // Gan url
-            String imageUrl = "/uploads/files/" + savedFileName;
+            String imageUrl = "/upload/files/" + savedFileName;
             request.setFeaturedImageUrl(imageUrl);
         }
         contentPostService.updatePost(id, request);
