@@ -1,6 +1,7 @@
 package com.dna_testing_system.dev.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -19,6 +20,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Configuration
 @EnableWebSocketMessageBroker
 public class NotificationConfig implements WebSocketMessageBrokerConfigurer {
+    @Value("${application.base-url}")
+    String baseURL;
     @Override
     public void configureMessageBroker(MessageBrokerRegistry configuration) {
         configuration.enableSimpleBroker("/user", "/queue", "/topic");
@@ -29,7 +32,7 @@ public class NotificationConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://localhost:8080")
+                .setAllowedOrigins(baseURL)
                 .withSockJS();
     }
 
